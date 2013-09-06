@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Search Campaign"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="campaignSearchForm" styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanelCampaignSearch" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <rich:collapsiblePanel  header="Search Campaign">
+                    <h:panelGrid columns="4" width="100%">
+
+                        <h:outputLabel value="Campaign Name:"/>
+                        <rich:autocomplete id="name" value="#{campaignSearchBean.campaignSearchCriteria.name}" mode="cachedAjax" minChars="2" autocompleteMethod="#{campaignSearchBean.autocomplete}" autofill="false" styleClass="inputSearch" style="border: none; background: transparent"/>
+                        <h:outputLabel value="Created Range:" />
+                        <h:panelGroup>
+                            <h:outputLabel value="From"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="CreateFromDate" binding="#{creatfromDate}" value="#{campaignSearchBean.campaignSearchCriteria.createFromDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotAfterTodayValidator"/>
+                            </rich:calendar>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <h:outputLabel value="To"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="CreateToDate" value="#{campaignSearchBean.campaignSearchCriteria.createToDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotBeforeFromDateValidator"/>
+                                <f:attribute name="Comparefield"  value="#{creatfromDate}" />
+                            </rich:calendar>
+                        </h:panelGroup>
+
+                        <h:outputLabel value="Assigned To:"/>
+                        <rich:autocomplete id="assignto" value="#{campaignSearchBean.campaignSearchCriteria.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" styleClass="inputSearch" style="border: none; background: transparent"/>
+                        <h:outputLabel value="Start Range:" />
+                        <h:panelGroup>
+                            <h:outputLabel value="From"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="StartFromDate" binding="#{startfromDate}" value="#{campaignSearchBean.campaignSearchCriteria.startFromDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotAfterTodayValidator"/>
+                            </rich:calendar>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <h:outputLabel value="To"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="StartToDate" value="#{campaignSearchBean.campaignSearchCriteria.startToDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotBeforeFromDateValidator"/>
+                                <f:attribute name="Comparefield"  value="#{startfromDate}" />
+                            </rich:calendar>
+                        </h:panelGroup>
+
+                        <h:outputLabel value="Campaign Status:"/>
+                        <h:selectOneMenu id ="status" value="#{campaignSearchBean.campaignSearchCriteria.activeStatus}">
+                            <f:selectItems value="#{campaignSearchBean.campaignStatusListForSearch}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel value="Completed Range:" />
+                        <h:panelGroup>
+                            <h:outputLabel value="From"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="CompleteFromDate" binding="#{completefromDate}" value="#{campaignSearchBean.campaignSearchCriteria.completeFromDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotAfterTodayValidator"/>
+                            </rich:calendar>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <h:outputLabel value="To"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="CompleteToDate" value="#{campaignSearchBean.campaignSearchCriteria.completeToDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotBeforeFromDateValidator"/>
+                                <f:attribute name="Comparefield"  value="#{completefromDate}" />
+                            </rich:calendar>
+                        </h:panelGroup>
+                        
+                        <h:outputLabel value="Campaign Type:"/>
+                        <h:selectOneMenu id ="type" value="#{campaignSearchBean.campaignSearchCriteria.type}">
+                            <f:selectItems value="#{campaignSearchBean.campaignTypeListForSearch}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel value=""/>
+                        <h:outputLabel value=""/>
+                    </h:panelGrid>
+                    <br/>
+                    <h:panelGroup>
+                        <h:commandButton id="reset" value="#{bundleCrm.ResetButton}" action="#{campaignSearchBean.reset()}" immediate="true"/>
+                        <a4j:commandButton id="search" render="messagePanelCampaignSearch, campaignResultPanel" value="#{bundleCrm.SearchButtonName}" action="#{campaignSearchBean.search()}" style="float: right"/>
+                    </h:panelGroup>
+                </rich:collapsiblePanel>
+                <br/>
+                <br/>
+                <h:panelGroup id="campaignResultPanel">
+                    <h:panelGroup rendered="#{campaignSearchBean.noCampaignFound}">
+                        <h:outputLabel value="No Campaign Found." styleClass="no-search-result-found"/>
+                    </h:panelGroup>
+                    <h:panelGroup id="campaignsearchresult" rendered="#{campaignSearchBean.resultCount > 0}">
+                        <h:outputText value="#{campaignSearchBean.pagination.pageFirstItem + 1}..#{campaignSearchBean.pagination.pageLastItem + 1}/#{campaignSearchBean.pagination.itemsCount}"/><h:outputText  value="&#160;&#160;&#160;" />
+                        <a4j:commandLink render="campaignResultPanel" action="#{campaignSearchBean.previous}" value="#{bundle.Previous} #{campaignSearchBean.pagination.pageSize}" rendered="#{campaignSearchBean.pagination.hasPreviousPage}"/><h:outputText  value="&#160;&#160;&#160;" />
+                        <a4j:commandLink render="campaignResultPanel" action="#{campaignSearchBean.next}" value="#{bundle.Next} #{campaignSearchBean.pagination.pageSize}" rendered="#{campaignSearchBean.pagination.hasNextPage}"/><h:outputText  value="&#160;&#160;&#160;" />
+                        <h:outputLabel value="#{bundleCrm.RowsPerPage}"/>
+                        <h:selectOneMenu id="rowsPerPage" value="#{campaignSearchBean.rowsPerPage}">
+                            <a4j:ajax event="valueChange" render="campaignsearchresult" listener="#{campaignSearchBean.rowsPerPageChanged()}" />
+                            <f:selectItems value="#{customerSearchBean.rowsPerPageList}" var="rowsPerPage" itemLabel="#{rowsPerPage}" itemValue="#{rowsPerPage}"/>
+                        </h:selectOneMenu>
+                        <rich:dataTable id="campaignResultTable" styleClass="table" value="#{campaignSearchBean.items}" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                            <rich:column sortBy="#{item.name}" sortOrder="#{campaignSortingBean.nameOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Name" render="campaignResultTable" action="#{campaignSortingBean.sortByName()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.active}" sortOrder="#{campaignSortingBean.statusOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Status" render="campaignResultTable" action="#{campaignSortingBean.sortByStatus()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.active ? 'active' : 'inactive'}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.type}" sortOrder="#{campaignSortingBean.typeOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Type" render="campaignResultTable" action="#{campaignSortingBean.sortByType()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.type}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.assignedUser}" sortOrder="#{campaignSortingBean.ownerOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Assign To" render="campaignResultTable" action="#{campaignSortingBean.sortByOwner()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.assignedUser}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Criteria"/>
+                                </f:facet>
+                                <h:outputText value="#{item.criteria}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText  value="&#160;&#160;&#160;" />
+                                </f:facet>
+                                <h:commandLink action="#{campaignSearchBean.prepareDetails}" value="Detail"/>
+
+                            </rich:column>
+                        </rich:dataTable>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

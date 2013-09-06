@@ -1,0 +1,91 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich">
+    <h:panelGroup>
+        <h:panelGroup id="messagePanelContact" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h:panelGrid columns="3">
+            <h:panelGroup>
+                <h:outputText value="Contacts" style="font-weight:bold;"/>
+                <h:panelGroup rendered="#{customerDetailBean.selected.customerContactCollection.size()==0}">
+                    <br/>
+                    <h:outputLabel value="No Contacts Found." styleClass="no-result-found"/>
+                    <a onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" href="" style="cursor: pointer">google</a>
+                    <h:outputText  value="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;" />
+                </h:panelGroup>
+                <rich:dataTable rendered="#{customerDetailBean.selected.customerContactCollection.size() > 0}" value="#{customerDetailBean.selected.customerContactCollection}" 
+                                var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Name"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastName}, #{item.firstName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Primary Phone"/>
+                        </f:facet>
+                        <h:outputText value="#{item.primaryPhone}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Primary Email"/>
+                        </f:facet>
+                        <h:outputText value="#{item.primaryEmail}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Primary"/>
+                        </f:facet>
+                        <h:outputText value="#{item.principal}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header"/>
+                        <h:commandLink  action="#{customerDetailBean.prepareContactDetail(item)}" value="detail"/>
+                    </h:column>
+                </rich:dataTable>
+            </h:panelGroup>
+            <h:outputText  value="&#160;&#160;&#160;&#160;&#160;&#160;" />
+            <h:panelGroup>
+                <h:panelGroup >
+                    <h:outputText value="Contact Detail" style="font-weight:bold;"/>
+                    <h:commandButton style="float: right" value="#{bundleCrm.NewContactButton}" action="#{customerDetailBean.performNewContact()}" rendered="#{!customerDetailBean.shownContactButton}"/>
+                </h:panelGroup>
+                <h:panelGrid columns="2" rendered="true">
+                    <h:outputLabel value="First Name:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.firstName}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="Last Name:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.lastName}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="Primary Phone:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.primaryPhone}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="Secondary Phone:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.secondaryPhone}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="Primary Email:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.primaryEmail}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="Secondary Email:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.secondaryEmail}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="Address1:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.address1}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="Address2:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.address2}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="City:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.city}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="County"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.county}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                    <h:outputLabel value="State:"/>
+                    <h:selectOneMenu value="#{customerDetailBean.currentContact.addressId.state}" disabled="#{!customerDetailBean.allowEditContact}">
+                        <f:selectItems value="#{customerDetailBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="Zip Code:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.zipCode}" disabled="#{!customerDetailBean.allowEditContact}"/>
+                </h:panelGrid>
+                <h:commandButton value="Cancel" action="#{customerDetailBean.cancelContactAction()}" rendered="#{customerDetailBean.shownContactButton}"/>
+                <h:commandButton value="#{customerDetailBean.contactButtonText}" action="#{customerDetailBean.performContactAction(loginBean.userName)}" rendered="#{customerDetailBean.shownContactButton}"/>
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:panelGroup>
+</ui:composition>
+

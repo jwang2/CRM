@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditPostalAddressTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{postalAddressController.selected.id}" title="#{bundle.EditPostalAddressTitle_id}" required="true" requiredMessage="#{bundle.EditPostalAddressRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_address1}" for="address1" />
+                    <h:inputText id="address1" value="#{postalAddressController.selected.address1}" title="#{bundle.EditPostalAddressTitle_address1}" />
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_address2}" for="address2" />
+                    <h:inputText id="address2" value="#{postalAddressController.selected.address2}" title="#{bundle.EditPostalAddressTitle_address2}" />
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_city}" for="city" />
+                    <h:inputText id="city" value="#{postalAddressController.selected.city}" title="#{bundle.EditPostalAddressTitle_city}" />
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_state}" for="state" />
+                    <h:inputText id="state" value="#{postalAddressController.selected.state}" title="#{bundle.EditPostalAddressTitle_state}" />
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_zipCode}" for="zipCode" />
+                    <h:inputText id="zipCode" value="#{postalAddressController.selected.zipCode}" title="#{bundle.EditPostalAddressTitle_zipCode}" />
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_phoneNumber}" for="phoneNumber" />
+                    <h:inputText id="phoneNumber" value="#{postalAddressController.selected.phoneNumber}" title="#{bundle.EditPostalAddressTitle_phoneNumber}" />
+                    <h:outputLabel value="#{bundle.EditPostalAddressLabel_fax}" for="fax" />
+                    <h:inputText id="fax" value="#{postalAddressController.selected.fax}" title="#{bundle.EditPostalAddressTitle_fax}" />
+                </h:panelGrid>
+                <h:commandLink action="#{postalAddressController.update}" value="#{bundle.EditPostalAddressSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditPostalAddressViewLink}"/>
+                <br />
+                <h:commandLink action="#{postalAddressController.prepareList}" value="#{bundle.EditPostalAddressShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditPostalAddressIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

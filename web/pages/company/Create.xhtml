@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateCompanyTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{companyController.selected.id}" title="#{bundle.CreateCompanyTitle_id}" required="true" requiredMessage="#{bundle.CreateCompanyRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_companyName}" for="companyName" />
+                    <h:inputText id="companyName" value="#{companyController.selected.companyName}" title="#{bundle.CreateCompanyTitle_companyName}" required="true" requiredMessage="#{bundle.CreateCompanyRequiredMessage_companyName}"/>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_status}" for="status" />
+                    <h:inputText id="status" value="#{companyController.selected.status}" title="#{bundle.CreateCompanyTitle_status}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_version}" for="version" />
+                    <h:inputText id="version" value="#{companyController.selected.version}" title="#{bundle.CreateCompanyTitle_version}" required="true" requiredMessage="#{bundle.CreateCompanyRequiredMessage_version}"/>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_companyEmail}" for="companyEmail" />
+                    <h:inputText id="companyEmail" value="#{companyController.selected.companyEmail}" title="#{bundle.CreateCompanyTitle_companyEmail}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_type}" for="type" />
+                    <h:inputText id="type" value="#{companyController.selected.type}" title="#{bundle.CreateCompanyTitle_type}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_agreementSignedDate}" for="agreementSignedDate" />
+                    <h:inputText id="agreementSignedDate" value="#{companyController.selected.agreementSignedDate}" title="#{bundle.CreateCompanyTitle_agreementSignedDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_dbaName}" for="dbaName" />
+                    <h:inputText id="dbaName" value="#{companyController.selected.dbaName}" title="#{bundle.CreateCompanyTitle_dbaName}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_dealerBusinessType}" for="dealerBusinessType" />
+                    <h:inputText id="dealerBusinessType" value="#{companyController.selected.dealerBusinessType}" title="#{bundle.CreateCompanyTitle_dealerBusinessType}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_region}" for="region" />
+                    <h:inputText id="region" value="#{companyController.selected.region}" title="#{bundle.CreateCompanyTitle_region}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_startDate}" for="startDate" />
+                    <h:inputText id="startDate" value="#{companyController.selected.startDate}" title="#{bundle.CreateCompanyTitle_startDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_endDate}" for="endDate" />
+                    <h:inputText id="endDate" value="#{companyController.selected.endDate}" title="#{bundle.CreateCompanyTitle_endDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_billingSameAddress}" for="billingSameAddress" />
+                    <h:inputText id="billingSameAddress" value="#{companyController.selected.billingSameAddress}" title="#{bundle.CreateCompanyTitle_billingSameAddress}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_fundingFax}" for="fundingFax" />
+                    <h:inputText id="fundingFax" value="#{companyController.selected.fundingFax}" title="#{bundle.CreateCompanyTitle_fundingFax}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_fundingMethod}" for="fundingMethod" />
+                    <h:inputText id="fundingMethod" value="#{companyController.selected.fundingMethod}" title="#{bundle.CreateCompanyTitle_fundingMethod}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_fixedPercentAmtFinanced}" for="fixedPercentAmtFinanced" />
+                    <h:inputText id="fixedPercentAmtFinanced" value="#{companyController.selected.fixedPercentAmtFinanced}" title="#{bundle.CreateCompanyTitle_fixedPercentAmtFinanced}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_financialInstitutionId}" for="financialInstitutionId" />
+                    <h:inputText id="financialInstitutionId" value="#{companyController.selected.financialInstitutionId}" title="#{bundle.CreateCompanyTitle_financialInstitutionId}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_brokerCreated}" for="brokerCreated" />
+                    <h:inputText id="brokerCreated" value="#{companyController.selected.brokerCreated}" title="#{bundle.CreateCompanyTitle_brokerCreated}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{companyController.selected.dateCreated}" title="#{bundle.CreateCompanyTitle_dateCreated}" required="true" requiredMessage="#{bundle.CreateCompanyRequiredMessage_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{companyController.selected.lastUpdated}" title="#{bundle.CreateCompanyTitle_lastUpdated}" required="true" requiredMessage="#{bundle.CreateCompanyRequiredMessage_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_createdBy}" for="createdBy" />
+                    <h:inputText id="createdBy" value="#{companyController.selected.createdBy}" title="#{bundle.CreateCompanyTitle_createdBy}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_updatedBy}" for="updatedBy" />
+                    <h:inputText id="updatedBy" value="#{companyController.selected.updatedBy}" title="#{bundle.CreateCompanyTitle_updatedBy}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_financialInstitutionName}" for="financialInstitutionName" />
+                    <h:inputText id="financialInstitutionName" value="#{companyController.selected.financialInstitutionName}" title="#{bundle.CreateCompanyTitle_financialInstitutionName}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_routingNumber}" for="routingNumber" />
+                    <h:inputText id="routingNumber" value="#{companyController.selected.routingNumber}" title="#{bundle.CreateCompanyTitle_routingNumber}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_accountNumber}" for="accountNumber" />
+                    <h:inputText id="accountNumber" value="#{companyController.selected.accountNumber}" title="#{bundle.CreateCompanyTitle_accountNumber}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_taxId}" for="taxId" />
+                    <h:inputText id="taxId" value="#{companyController.selected.taxId}" title="#{bundle.CreateCompanyTitle_taxId}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_licenseNumber}" for="licenseNumber" />
+                    <h:inputText id="licenseNumber" value="#{companyController.selected.licenseNumber}" title="#{bundle.CreateCompanyTitle_licenseNumber}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_contactSameSales}" for="contactSameSales" />
+                    <h:inputText id="contactSameSales" value="#{companyController.selected.contactSameSales}" title="#{bundle.CreateCompanyTitle_contactSameSales}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_aulDealerId}" for="aulDealerId" />
+                    <h:inputText id="aulDealerId" value="#{companyController.selected.aulDealerId}" title="#{bundle.CreateCompanyTitle_aulDealerId}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_bulk}" for="bulk" />
+                    <h:inputText id="bulk" value="#{companyController.selected.bulk}" title="#{bundle.CreateCompanyTitle_bulk}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_loan}" for="loan" />
+                    <h:inputText id="loan" value="#{companyController.selected.loan}" title="#{bundle.CreateCompanyTitle_loan}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_businessLength}" for="businessLength" />
+                    <h:inputText id="businessLength" value="#{companyController.selected.businessLength}" title="#{bundle.CreateCompanyTitle_businessLength}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_portfolioSize}" for="portfolioSize" />
+                    <h:inputText id="portfolioSize" value="#{companyController.selected.portfolioSize}" title="#{bundle.CreateCompanyTitle_portfolioSize}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_soldBefore}" for="soldBefore" />
+                    <h:inputText id="soldBefore" value="#{companyController.selected.soldBefore}" title="#{bundle.CreateCompanyTitle_soldBefore}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_soldprice}" for="soldprice" />
+                    <h:inputText id="soldprice" value="#{companyController.selected.soldprice}" title="#{bundle.CreateCompanyTitle_soldprice}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_projectionSell}" for="projectionSell" />
+                    <h:inputText id="projectionSell" value="#{companyController.selected.projectionSell}" title="#{bundle.CreateCompanyTitle_projectionSell}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_useGps}" for="useGps" />
+                    <h:inputText id="useGps" value="#{companyController.selected.useGps}" title="#{bundle.CreateCompanyTitle_useGps}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_interestCalculationMethod}" for="interestCalculationMethod" />
+                    <h:inputText id="interestCalculationMethod" value="#{companyController.selected.interestCalculationMethod}" title="#{bundle.CreateCompanyTitle_interestCalculationMethod}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_softwareType}" for="softwareType" />
+                    <h:inputText id="softwareType" value="#{companyController.selected.softwareType}" title="#{bundle.CreateCompanyTitle_softwareType}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_irrName}" for="irrName" />
+                    <h:inputText id="irrName" value="#{companyController.selected.irrName}" title="#{bundle.CreateCompanyTitle_irrName}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_dealerScorePct}" for="dealerScorePct" />
+                    <h:inputText id="dealerScorePct" value="#{companyController.selected.dealerScorePct}" title="#{bundle.CreateCompanyTitle_dealerScorePct}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_logo}" for="logo" />
+                    <h:inputTextarea rows="4" cols="30" id="logo" value="#{companyController.selected.logo}" title="#{bundle.CreateCompanyTitle_logo}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_logoType}" for="logoType" />
+                    <h:inputText id="logoType" value="#{companyController.selected.logoType}" title="#{bundle.CreateCompanyTitle_logoType}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_bonusPool}" for="bonusPool" />
+                    <h:inputText id="bonusPool" value="#{companyController.selected.bonusPool}" title="#{bundle.CreateCompanyTitle_bonusPool}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_recourseFlag}" for="recourseFlag" />
+                    <h:inputText id="recourseFlag" value="#{companyController.selected.recourseFlag}" title="#{bundle.CreateCompanyTitle_recourseFlag}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_bkFlag}" for="bkFlag" />
+                    <h:inputText id="bkFlag" value="#{companyController.selected.bkFlag}" title="#{bundle.CreateCompanyTitle_bkFlag}" />
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_billingAddressId}" for="billingAddressId" />
+                    <h:selectOneMenu id="billingAddressId" value="#{companyController.selected.billingAddressId}" title="#{bundle.CreateCompanyTitle_billingAddressId}" >
+                        <f:selectItems value="#{postalAddressController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_postalAddressId}" for="postalAddressId" />
+                    <h:selectOneMenu id="postalAddressId" value="#{companyController.selected.postalAddressId}" title="#{bundle.CreateCompanyTitle_postalAddressId}" >
+                        <f:selectItems value="#{postalAddressController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_salesRep}" for="salesRep" />
+                    <h:selectOneMenu id="salesRep" value="#{companyController.selected.salesRep}" title="#{bundle.CreateCompanyTitle_salesRep}" >
+                        <f:selectItems value="#{contactController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateCompanyLabel_contactId}" for="contactId" />
+                    <h:selectOneMenu id="contactId" value="#{companyController.selected.contactId}" title="#{bundle.CreateCompanyTitle_contactId}" >
+                        <f:selectItems value="#{contactController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{companyController.create}" value="#{bundle.CreateCompanySaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{companyController.prepareList}" value="#{bundle.CreateCompanyShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateCompanyIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewCompanyTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewCompanyLabel_id}"/>
+                    <h:outputText value="#{companyController.selected.id}" title="#{bundle.ViewCompanyTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_companyName}"/>
+                    <h:outputText value="#{companyController.selected.companyName}" title="#{bundle.ViewCompanyTitle_companyName}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_status}"/>
+                    <h:outputText value="#{companyController.selected.status}" title="#{bundle.ViewCompanyTitle_status}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_version}"/>
+                    <h:outputText value="#{companyController.selected.version}" title="#{bundle.ViewCompanyTitle_version}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_companyEmail}"/>
+                    <h:outputText value="#{companyController.selected.companyEmail}" title="#{bundle.ViewCompanyTitle_companyEmail}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_type}"/>
+                    <h:outputText value="#{companyController.selected.type}" title="#{bundle.ViewCompanyTitle_type}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_agreementSignedDate}"/>
+                    <h:outputText value="#{companyController.selected.agreementSignedDate}" title="#{bundle.ViewCompanyTitle_agreementSignedDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_dbaName}"/>
+                    <h:outputText value="#{companyController.selected.dbaName}" title="#{bundle.ViewCompanyTitle_dbaName}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_dealerBusinessType}"/>
+                    <h:outputText value="#{companyController.selected.dealerBusinessType}" title="#{bundle.ViewCompanyTitle_dealerBusinessType}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_region}"/>
+                    <h:outputText value="#{companyController.selected.region}" title="#{bundle.ViewCompanyTitle_region}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_startDate}"/>
+                    <h:outputText value="#{companyController.selected.startDate}" title="#{bundle.ViewCompanyTitle_startDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_endDate}"/>
+                    <h:outputText value="#{companyController.selected.endDate}" title="#{bundle.ViewCompanyTitle_endDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_billingSameAddress}"/>
+                    <h:outputText value="#{companyController.selected.billingSameAddress}" title="#{bundle.ViewCompanyTitle_billingSameAddress}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_fundingFax}"/>
+                    <h:outputText value="#{companyController.selected.fundingFax}" title="#{bundle.ViewCompanyTitle_fundingFax}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_fundingMethod}"/>
+                    <h:outputText value="#{companyController.selected.fundingMethod}" title="#{bundle.ViewCompanyTitle_fundingMethod}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_fixedPercentAmtFinanced}"/>
+                    <h:outputText value="#{companyController.selected.fixedPercentAmtFinanced}" title="#{bundle.ViewCompanyTitle_fixedPercentAmtFinanced}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_financialInstitutionId}"/>
+                    <h:outputText value="#{companyController.selected.financialInstitutionId}" title="#{bundle.ViewCompanyTitle_financialInstitutionId}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_brokerCreated}"/>
+                    <h:outputText value="#{companyController.selected.brokerCreated}" title="#{bundle.ViewCompanyTitle_brokerCreated}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_dateCreated}"/>
+                    <h:outputText value="#{companyController.selected.dateCreated}" title="#{bundle.ViewCompanyTitle_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_lastUpdated}"/>
+                    <h:outputText value="#{companyController.selected.lastUpdated}" title="#{bundle.ViewCompanyTitle_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_createdBy}"/>
+                    <h:outputText value="#{companyController.selected.createdBy}" title="#{bundle.ViewCompanyTitle_createdBy}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_updatedBy}"/>
+                    <h:outputText value="#{companyController.selected.updatedBy}" title="#{bundle.ViewCompanyTitle_updatedBy}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_financialInstitutionName}"/>
+                    <h:outputText value="#{companyController.selected.financialInstitutionName}" title="#{bundle.ViewCompanyTitle_financialInstitutionName}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_routingNumber}"/>
+                    <h:outputText value="#{companyController.selected.routingNumber}" title="#{bundle.ViewCompanyTitle_routingNumber}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_accountNumber}"/>
+                    <h:outputText value="#{companyController.selected.accountNumber}" title="#{bundle.ViewCompanyTitle_accountNumber}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_taxId}"/>
+                    <h:outputText value="#{companyController.selected.taxId}" title="#{bundle.ViewCompanyTitle_taxId}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_licenseNumber}"/>
+                    <h:outputText value="#{companyController.selected.licenseNumber}" title="#{bundle.ViewCompanyTitle_licenseNumber}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_contactSameSales}"/>
+                    <h:outputText value="#{companyController.selected.contactSameSales}" title="#{bundle.ViewCompanyTitle_contactSameSales}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_aulDealerId}"/>
+                    <h:outputText value="#{companyController.selected.aulDealerId}" title="#{bundle.ViewCompanyTitle_aulDealerId}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_bulk}"/>
+                    <h:outputText value="#{companyController.selected.bulk}" title="#{bundle.ViewCompanyTitle_bulk}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_loan}"/>
+                    <h:outputText value="#{companyController.selected.loan}" title="#{bundle.ViewCompanyTitle_loan}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_businessLength}"/>
+                    <h:outputText value="#{companyController.selected.businessLength}" title="#{bundle.ViewCompanyTitle_businessLength}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_portfolioSize}"/>
+                    <h:outputText value="#{companyController.selected.portfolioSize}" title="#{bundle.ViewCompanyTitle_portfolioSize}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_soldBefore}"/>
+                    <h:outputText value="#{companyController.selected.soldBefore}" title="#{bundle.ViewCompanyTitle_soldBefore}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_soldprice}"/>
+                    <h:outputText value="#{companyController.selected.soldprice}" title="#{bundle.ViewCompanyTitle_soldprice}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_projectionSell}"/>
+                    <h:outputText value="#{companyController.selected.projectionSell}" title="#{bundle.ViewCompanyTitle_projectionSell}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_useGps}"/>
+                    <h:outputText value="#{companyController.selected.useGps}" title="#{bundle.ViewCompanyTitle_useGps}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_interestCalculationMethod}"/>
+                    <h:outputText value="#{companyController.selected.interestCalculationMethod}" title="#{bundle.ViewCompanyTitle_interestCalculationMethod}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_softwareType}"/>
+                    <h:outputText value="#{companyController.selected.softwareType}" title="#{bundle.ViewCompanyTitle_softwareType}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_irrName}"/>
+                    <h:outputText value="#{companyController.selected.irrName}" title="#{bundle.ViewCompanyTitle_irrName}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_dealerScorePct}"/>
+                    <h:outputText value="#{companyController.selected.dealerScorePct}" title="#{bundle.ViewCompanyTitle_dealerScorePct}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_logo}"/>
+                    <h:outputText value="#{companyController.selected.logo}" title="#{bundle.ViewCompanyTitle_logo}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_logoType}"/>
+                    <h:outputText value="#{companyController.selected.logoType}" title="#{bundle.ViewCompanyTitle_logoType}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_bonusPool}"/>
+                    <h:outputText value="#{companyController.selected.bonusPool}" title="#{bundle.ViewCompanyTitle_bonusPool}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_recourseFlag}"/>
+                    <h:outputText value="#{companyController.selected.recourseFlag}" title="#{bundle.ViewCompanyTitle_recourseFlag}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_bkFlag}"/>
+                    <h:outputText value="#{companyController.selected.bkFlag}" title="#{bundle.ViewCompanyTitle_bkFlag}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_billingAddressId}"/>
+                    <h:outputText value="#{companyController.selected.billingAddressId}" title="#{bundle.ViewCompanyTitle_billingAddressId}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_postalAddressId}"/>
+                    <h:outputText value="#{companyController.selected.postalAddressId}" title="#{bundle.ViewCompanyTitle_postalAddressId}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_salesRep}"/>
+                    <h:outputText value="#{companyController.selected.salesRep}" title="#{bundle.ViewCompanyTitle_salesRep}"/>
+                    <h:outputText value="#{bundle.ViewCompanyLabel_contactId}"/>
+                    <h:outputText value="#{companyController.selected.contactId}" title="#{bundle.ViewCompanyTitle_contactId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{companyController.destroyAndView}" value="#{bundle.ViewCompanyDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewCompanyEditLink}"/>
+                <br />
+                <h:commandLink action="#{companyController.prepareCreate}" value="#{bundle.ViewCompanyCreateLink}" />
+                <br />
+                <h:commandLink action="#{companyController.prepareList}" value="#{bundle.ViewCompanyShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewCompanyIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

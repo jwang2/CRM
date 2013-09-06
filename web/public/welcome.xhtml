@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="/template.xhtml">
+    <ui:define name="body">   
+
+        <h:form id="landingPage" onkeypress="if (event.keyCode == 13) {document.getElementById('landingPage:loginButton').click(); return false;}">
+            <a4j:region>
+                <div id="index-wrapper">
+                    <h:panelGroup id="messagePanel">
+                        <h:messages errorStyle="color: red" infoStyle="color: green"/>
+                    </h:panelGroup>
+                    <div class="index-middleblock">
+                        <a4j:region>
+                            <div class="index-signupbox">
+                                <div class="index-signupboxwrap">
+                                    <h2>LOG IN TO YOUR ACCOUNT</h2>
+                                    <div class="index-loginform">
+                                        <h:panelGroup styleClass="index-loginelements">
+                                            <h:inputText styleClass="texttab1 #{component.valid ? '': 'failed-validation'}" 
+                                                         value="#{loginBean.userName}"
+                                                         required="true" requiredMessage="Username is missing">
+                                                <rich:validator/>
+                                            </h:inputText>
+                                            <rich:placeholder value="Username" selector=".texttab1"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="index-loginelements">
+                                            <h:inputSecret styleClass="texttab #{component.valid ? '': 'failed-validation'}" 
+                                                           value="#{loginBean.password}" 
+                                                           required="true" requiredMessage="Password is missing">
+                                                <rich:validator/>
+                                            </h:inputSecret>
+                                            <rich:placeholder value="Password" selector=".texttab"/>
+                                        </h:panelGroup>
+                                        <h:link outcome="/public/forgotpassword.xhtml" value="Forgot Password"/>
+                                        <br/>
+                                    </div>
+
+                                    <h:commandButton id="loginButton" class="index-loginbutton"  action="#{loginBean.login()}" value="LOGIN"/>
+                                </div>
+                            </div>
+                        </a4j:region>
+                    </div>
+
+
+                </div>
+            </a4j:region>
+        </h:form>
+    </ui:define>
+</ui:composition>
+
+

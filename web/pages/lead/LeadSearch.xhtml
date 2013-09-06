@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundleCrm.SearchLeadTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup layout="block" id="leadMessagePanel">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <rich:collapsiblePanel header="Search Lead">
+                    <h:panelGrid columns="4" width="100%">
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByDealerName}"/>
+                        <rich:autocomplete value="#{leadSearchBean.leadSearchCriteria.dealerName}" mode="cachedAjax" minChars="2" autocompleteMethod="#{leadSearchBean.autocompleteDealer}" autofill="false" styleClass="inputSearch" style="border: none; background: transparent"/>
+                        <h:outputLabel value="Dealer Status:"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.statusOperator}">
+                                <f:selectItems value="#{customerSearchBean.statusOperators}" var="statusOperator" itemLabel="#{statusOperator}" itemValue="#{statusOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:selectOneMenu  id="status" value="#{leadSearchBean.leadSearchCriteria.status}">
+                                <f:selectItems value="#{customerSearchBean.customerStatusesForSearch}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+                            </h:selectOneMenu>
+                        </h:panelGroup>
+                        
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByFicoName}"/>
+                        <rich:autocomplete value="#{leadSearchBean.leadSearchCriteria.ficoName}" mode="cachedAjax" minChars="2" autocompleteMethod="#{leadSearchBean.autocompleteFico}" autofill="false" styleClass="inputSearch" style="border: none; background: transparent"/>
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByState}"/>
+                        <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.state}">
+                            <f:selectItems value="#{leadSearchBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByUploadDate}"/>
+                        <h:panelGroup >
+                            <h:outputLabel value="From"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="FromDate" binding="#{fromDate}" value="#{leadSearchBean.leadSearchCriteria.uploadStartDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotAfterTodayValidator"/>
+                            </rich:calendar>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <h:outputLabel value="To"/>
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                            <rich:calendar id="ToDate" value="#{leadSearchBean.leadSearchCriteria.uploadEndDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="NotBeforeFromDateValidator"/>
+                                <f:attribute name="Comparefield"  value="#{fromDate}" />
+                            </rich:calendar>
+                        </h:panelGroup>
+                        <h:outputLabel value=""/>
+                        <h:outputLabel value=""/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="6" width="100%">
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByTotalFianced}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.totalFinancedOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="totalFinancedOperator" itemLabel="#{totalFinancedOperator}" itemValue="#{totalFinancedOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.totalFinanced}" label="Total Financed">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:outputLabel value=""/>
+                        <h:outputLabel value=""/>
+                        <h:outputLabel value=""/>
+                        <h:outputLabel value=""/>
+
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByTotalLoan}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.totalLoanOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="totalLoanOperator" itemLabel="#{totalLoanOperator}" itemValue="#{totalLoanOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.totalLoan}" label="Total Loan">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByTotalLease}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.totalLeaseOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="totalLeaseOperator" itemLabel="#{totalLeaseOperator}" itemValue="#{totalLeaseOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.totalLease}" label="Total Lease">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByTotalNoLender}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.totalNoLenderOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="totalNoLenderOperator" itemLabel="#{totalNoLenderOperator}" itemValue="#{totalNoLenderOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.totalNoLender}" label="Total No Lender">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByNewLoan}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.newLoanOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="newLoanOperator" itemLabel="#{newLoanOperator}" itemValue="#{newLoanOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.newLoan}" label="New Loan">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByNewLease}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.newLeaseOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="newLeaseOperator" itemLabel="#{newLeaseOperator}" itemValue="#{newLeaseOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.newLease}" label="New Lease">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByNewNoLender}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.newNoLenderOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="newNoLenderOperator" itemLabel="#{newNoLenderOperator}" itemValue="#{newNoLenderOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.newNoLender}" label="New No Lender">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByUsedLoan}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.usedLoanOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="usedLoanOperator" itemLabel="#{usedLoanOperator}" itemValue="#{usedLoanOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.usedLoan}" label="Used Loan">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByUsedLease}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.usedLeaseOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="usedLeaseOperator" itemLabel="#{usedLeaseOperator}" itemValue="#{usedLeaseOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.usedLease}" label="Used Lease">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:outputLabel value="#{bundleCrm.SearchLeadByUsedNoLender}"/>
+                        <h:panelGroup>
+                            <h:selectOneMenu value="#{leadSearchBean.leadSearchCriteria.usedNoLenderOperator}">
+                                <f:selectItems value="#{leadSearchBean.operators}" var="usedNoLenderOperator" itemLabel="#{usedNoLenderOperator}" itemValue="#{usedNoLenderOperator}"/>
+                            </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
+                            <h:inputText value="#{leadSearchBean.leadSearchCriteria.usedNoLender}" label="Used No Lender">
+                                <f:validateLongRange minimum="1"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                    <br/>
+                    <h:panelGroup>
+                        <h:commandButton id="reset" value="#{bundleCrm.ResetButton}" action="#{leadSearchBean.reset()}" immediate="true" />
+                        <a4j:commandButton id="search" render="leadResultPanel, leadMessagePanel" value="#{bundleCrm.SearchButtonName}" action="#{leadSearchBean.search()}" style="float: right"/>
+                    </h:panelGroup>
+                </rich:collapsiblePanel>
+                <br/>
+                <br/>
+                <h:panelGroup id="leadResultPanel">
+                    <h:panelGroup rendered="#{leadSearchBean.noLeadFound}">
+                        <h:outputLabel value="No Lead Found." styleClass="no-search-result-found"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{leadSearchBean.resultCount > 0}">
+                        <h:outputText value="#{leadSearchBean.pagination.pageFirstItem + 1}..#{leadSearchBean.pagination.pageLastItem + 1}/#{leadSearchBean.pagination.itemsCount}"/><h:outputText  value="&#160;&#160;&#160;" />
+                        <a4j:commandLink render="leadResultPanel" action="#{leadSearchBean.previous}" value="#{bundle.Previous} #{leadSearchBean.pagination.pageSize}" rendered="#{leadSearchBean.pagination.hasPreviousPage}"/><h:outputText  value="&#160;&#160;&#160;" />
+                        <a4j:commandLink render="leadResultPanel" action="#{leadSearchBean.next}" value="#{bundle.Next} #{leadSearchBean.pagination.pageSize}" rendered="#{leadSearchBean.pagination.hasNextPage}"/><h:outputText  value="&#160;&#160;&#160;&#160;&#160;&#160;" />
+                        <h:outputLabel value="#{bundleCrm.RowsPerPage}"/>
+                        <h:selectOneMenu value="#{leadSearchBean.rowsPerPage}">
+                            <a4j:ajax event="valueChange" render="panelgroup13" listener="#{leadSearchBean.rowsPerPageChanged()}" />
+                            <f:selectItems value="#{leadSearchBean.rowsPerPageList}" var="rowsPerPage" itemLabel="#{rowsPerPage}" itemValue="#{rowsPerPage}"/>
+                        </h:selectOneMenu>
+                        <rich:dataTable id='ls_searchresult_table' styleClass="table" value="#{leadSearchBean.items}" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                            <rich:column sortBy="#{item.dealerName}" sortOrder="#{leadSortingBean.dealerNameOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Dealer" render="ls_searchresult_table" action="#{leadSortingBean.sortByDealerName()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dealerName}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.ficoName}" sortOrder="#{leadSortingBean.ficoNameOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Finance Company" render="ls_searchresult_table" action="#{leadSortingBean.sortByFicoName()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.ficoName}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.totalFinanced}" sortOrder="#{leadSortingBean.totalFinancedOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Total Financed" render="ls_searchresult_table" action="#{leadSortingBean.sortByTotalFinanced()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.totalFinanced}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.totalLoan}" sortOrder="#{leadSortingBean.totalLoanOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="Total Loan" render="ls_searchresult_table" action="#{leadSortingBean.sortByTotalLoan()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.totalLoan}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Total Lease"/>
+                                </f:facet>
+                                <h:outputText value="#{item.totalLease}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Total No Lender"/>
+                                </f:facet>
+                                <h:outputText value="#{item.totalNoLender}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="New Loan"/>
+                                </f:facet>
+                                <h:outputText value="#{item.newLoan}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="New Lease"/>
+                                </f:facet>
+                                <h:outputText value="#{item.newLease}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="New No Lender"/>
+                                </f:facet>
+                                <h:outputText value="#{item.newNoLender}"/>
+                            </rich:column>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText  value="&#160;&#160;&#160;" />
+                                </f:facet>
+                                <h:commandLink action="#{customerDetailBean.prepareDetail(item)}" value="Detail"/>
+                            </rich:column>
+                        </rich:dataTable>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

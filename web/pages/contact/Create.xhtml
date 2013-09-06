@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateContactTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateContactLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{contactController.selected.id}" title="#{bundle.CreateContactTitle_id}" required="true" requiredMessage="#{bundle.CreateContactRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateContactLabel_firstName}" for="firstName" />
+                    <h:inputText id="firstName" value="#{contactController.selected.firstName}" title="#{bundle.CreateContactTitle_firstName}" required="true" requiredMessage="#{bundle.CreateContactRequiredMessage_firstName}"/>
+                    <h:outputLabel value="#{bundle.CreateContactLabel_lastName}" for="lastName" />
+                    <h:inputText id="lastName" value="#{contactController.selected.lastName}" title="#{bundle.CreateContactTitle_lastName}" required="true" requiredMessage="#{bundle.CreateContactRequiredMessage_lastName}"/>
+                    <h:outputLabel value="#{bundle.CreateContactLabel_phoneNumber}" for="phoneNumber" />
+                    <h:inputText id="phoneNumber" value="#{contactController.selected.phoneNumber}" title="#{bundle.CreateContactTitle_phoneNumber}" required="true" requiredMessage="#{bundle.CreateContactRequiredMessage_phoneNumber}"/>
+                    <h:outputLabel value="#{bundle.CreateContactLabel_cellPhone}" for="cellPhone" />
+                    <h:inputText id="cellPhone" value="#{contactController.selected.cellPhone}" title="#{bundle.CreateContactTitle_cellPhone}" />
+                    <h:outputLabel value="#{bundle.CreateContactLabel_fax}" for="fax" />
+                    <h:inputText id="fax" value="#{contactController.selected.fax}" title="#{bundle.CreateContactTitle_fax}" />
+                    <h:outputLabel value="#{bundle.CreateContactLabel_email}" for="email" />
+                    <h:inputText id="email" value="#{contactController.selected.email}" title="#{bundle.CreateContactTitle_email}" />
+                    <h:outputLabel value="#{bundle.CreateContactLabel_title}" for="title" />
+                    <h:inputText id="title" value="#{contactController.selected.title}" title="#{bundle.CreateContactTitle_title}" />
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{contactController.create}" value="#{bundle.CreateContactSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{contactController.prepareList}" value="#{bundle.CreateContactShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateContactIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

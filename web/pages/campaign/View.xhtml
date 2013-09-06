@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewCampaignTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewCampaignLabel_id}"/>
+                    <h:outputText value="#{campaignController.selected.id}" title="#{bundle.ViewCampaignTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_name}"/>
+                    <h:outputText value="#{campaignController.selected.name}" title="#{bundle.ViewCampaignTitle_name}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_description}"/>
+                    <h:outputText value="#{campaignController.selected.description}" title="#{bundle.ViewCampaignTitle_description}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_active}"/>
+                    <h:outputText value="#{campaignController.selected.active}" title="#{bundle.ViewCampaignTitle_active}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_assignedUser}"/>
+                    <h:outputText value="#{campaignController.selected.assignedUser}" title="#{bundle.ViewCampaignTitle_assignedUser}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_criteria}"/>
+                    <h:outputText value="#{campaignController.selected.criteria}" title="#{bundle.ViewCampaignTitle_criteria}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_startDate}"/>
+                    <h:outputText value="#{campaignController.selected.startDate}" title="#{bundle.ViewCampaignTitle_startDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_completedDate}"/>
+                    <h:outputText value="#{campaignController.selected.completedDate}" title="#{bundle.ViewCampaignTitle_completedDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_createUser}"/>
+                    <h:outputText value="#{campaignController.selected.createUser}" title="#{bundle.ViewCampaignTitle_createUser}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_dateCreated}"/>
+                    <h:outputText value="#{campaignController.selected.dateCreated}" title="#{bundle.ViewCampaignTitle_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_updateUser}"/>
+                    <h:outputText value="#{campaignController.selected.updateUser}" title="#{bundle.ViewCampaignTitle_updateUser}"/>
+                    <h:outputText value="#{bundle.ViewCampaignLabel_lastUpdated}"/>
+                    <h:outputText value="#{campaignController.selected.lastUpdated}" title="#{bundle.ViewCampaignTitle_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{campaignController.destroyAndView}" value="#{bundle.ViewCampaignDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewCampaignEditLink}"/>
+                <br />
+                <h:commandLink action="#{campaignController.prepareCreate}" value="#{bundle.ViewCampaignCreateLink}" />
+                <br />
+                <h:commandLink action="#{campaignController.prepareList}" value="#{bundle.ViewCampaignShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewCampaignIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

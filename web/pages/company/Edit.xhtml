@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditCompanyTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{companyController.selected.id}" title="#{bundle.EditCompanyTitle_id}" required="true" requiredMessage="#{bundle.EditCompanyRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_companyName}" for="companyName" />
+                    <h:inputText id="companyName" value="#{companyController.selected.companyName}" title="#{bundle.EditCompanyTitle_companyName}" required="true" requiredMessage="#{bundle.EditCompanyRequiredMessage_companyName}"/>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_status}" for="status" />
+                    <h:inputText id="status" value="#{companyController.selected.status}" title="#{bundle.EditCompanyTitle_status}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_version}" for="version" />
+                    <h:inputText id="version" value="#{companyController.selected.version}" title="#{bundle.EditCompanyTitle_version}" required="true" requiredMessage="#{bundle.EditCompanyRequiredMessage_version}"/>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_companyEmail}" for="companyEmail" />
+                    <h:inputText id="companyEmail" value="#{companyController.selected.companyEmail}" title="#{bundle.EditCompanyTitle_companyEmail}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_type}" for="type" />
+                    <h:inputText id="type" value="#{companyController.selected.type}" title="#{bundle.EditCompanyTitle_type}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_agreementSignedDate}" for="agreementSignedDate" />
+                    <h:inputText id="agreementSignedDate" value="#{companyController.selected.agreementSignedDate}" title="#{bundle.EditCompanyTitle_agreementSignedDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_dbaName}" for="dbaName" />
+                    <h:inputText id="dbaName" value="#{companyController.selected.dbaName}" title="#{bundle.EditCompanyTitle_dbaName}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_dealerBusinessType}" for="dealerBusinessType" />
+                    <h:inputText id="dealerBusinessType" value="#{companyController.selected.dealerBusinessType}" title="#{bundle.EditCompanyTitle_dealerBusinessType}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_region}" for="region" />
+                    <h:inputText id="region" value="#{companyController.selected.region}" title="#{bundle.EditCompanyTitle_region}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_startDate}" for="startDate" />
+                    <h:inputText id="startDate" value="#{companyController.selected.startDate}" title="#{bundle.EditCompanyTitle_startDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_endDate}" for="endDate" />
+                    <h:inputText id="endDate" value="#{companyController.selected.endDate}" title="#{bundle.EditCompanyTitle_endDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_billingSameAddress}" for="billingSameAddress" />
+                    <h:inputText id="billingSameAddress" value="#{companyController.selected.billingSameAddress}" title="#{bundle.EditCompanyTitle_billingSameAddress}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_fundingFax}" for="fundingFax" />
+                    <h:inputText id="fundingFax" value="#{companyController.selected.fundingFax}" title="#{bundle.EditCompanyTitle_fundingFax}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_fundingMethod}" for="fundingMethod" />
+                    <h:inputText id="fundingMethod" value="#{companyController.selected.fundingMethod}" title="#{bundle.EditCompanyTitle_fundingMethod}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_fixedPercentAmtFinanced}" for="fixedPercentAmtFinanced" />
+                    <h:inputText id="fixedPercentAmtFinanced" value="#{companyController.selected.fixedPercentAmtFinanced}" title="#{bundle.EditCompanyTitle_fixedPercentAmtFinanced}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_financialInstitutionId}" for="financialInstitutionId" />
+                    <h:inputText id="financialInstitutionId" value="#{companyController.selected.financialInstitutionId}" title="#{bundle.EditCompanyTitle_financialInstitutionId}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_brokerCreated}" for="brokerCreated" />
+                    <h:inputText id="brokerCreated" value="#{companyController.selected.brokerCreated}" title="#{bundle.EditCompanyTitle_brokerCreated}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{companyController.selected.dateCreated}" title="#{bundle.EditCompanyTitle_dateCreated}" required="true" requiredMessage="#{bundle.EditCompanyRequiredMessage_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{companyController.selected.lastUpdated}" title="#{bundle.EditCompanyTitle_lastUpdated}" required="true" requiredMessage="#{bundle.EditCompanyRequiredMessage_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_createdBy}" for="createdBy" />
+                    <h:inputText id="createdBy" value="#{companyController.selected.createdBy}" title="#{bundle.EditCompanyTitle_createdBy}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_updatedBy}" for="updatedBy" />
+                    <h:inputText id="updatedBy" value="#{companyController.selected.updatedBy}" title="#{bundle.EditCompanyTitle_updatedBy}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_financialInstitutionName}" for="financialInstitutionName" />
+                    <h:inputText id="financialInstitutionName" value="#{companyController.selected.financialInstitutionName}" title="#{bundle.EditCompanyTitle_financialInstitutionName}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_routingNumber}" for="routingNumber" />
+                    <h:inputText id="routingNumber" value="#{companyController.selected.routingNumber}" title="#{bundle.EditCompanyTitle_routingNumber}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_accountNumber}" for="accountNumber" />
+                    <h:inputText id="accountNumber" value="#{companyController.selected.accountNumber}" title="#{bundle.EditCompanyTitle_accountNumber}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_taxId}" for="taxId" />
+                    <h:inputText id="taxId" value="#{companyController.selected.taxId}" title="#{bundle.EditCompanyTitle_taxId}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_licenseNumber}" for="licenseNumber" />
+                    <h:inputText id="licenseNumber" value="#{companyController.selected.licenseNumber}" title="#{bundle.EditCompanyTitle_licenseNumber}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_contactSameSales}" for="contactSameSales" />
+                    <h:inputText id="contactSameSales" value="#{companyController.selected.contactSameSales}" title="#{bundle.EditCompanyTitle_contactSameSales}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_aulDealerId}" for="aulDealerId" />
+                    <h:inputText id="aulDealerId" value="#{companyController.selected.aulDealerId}" title="#{bundle.EditCompanyTitle_aulDealerId}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_bulk}" for="bulk" />
+                    <h:inputText id="bulk" value="#{companyController.selected.bulk}" title="#{bundle.EditCompanyTitle_bulk}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_loan}" for="loan" />
+                    <h:inputText id="loan" value="#{companyController.selected.loan}" title="#{bundle.EditCompanyTitle_loan}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_businessLength}" for="businessLength" />
+                    <h:inputText id="businessLength" value="#{companyController.selected.businessLength}" title="#{bundle.EditCompanyTitle_businessLength}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_portfolioSize}" for="portfolioSize" />
+                    <h:inputText id="portfolioSize" value="#{companyController.selected.portfolioSize}" title="#{bundle.EditCompanyTitle_portfolioSize}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_soldBefore}" for="soldBefore" />
+                    <h:inputText id="soldBefore" value="#{companyController.selected.soldBefore}" title="#{bundle.EditCompanyTitle_soldBefore}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_soldprice}" for="soldprice" />
+                    <h:inputText id="soldprice" value="#{companyController.selected.soldprice}" title="#{bundle.EditCompanyTitle_soldprice}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_projectionSell}" for="projectionSell" />
+                    <h:inputText id="projectionSell" value="#{companyController.selected.projectionSell}" title="#{bundle.EditCompanyTitle_projectionSell}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_useGps}" for="useGps" />
+                    <h:inputText id="useGps" value="#{companyController.selected.useGps}" title="#{bundle.EditCompanyTitle_useGps}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_interestCalculationMethod}" for="interestCalculationMethod" />
+                    <h:inputText id="interestCalculationMethod" value="#{companyController.selected.interestCalculationMethod}" title="#{bundle.EditCompanyTitle_interestCalculationMethod}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_softwareType}" for="softwareType" />
+                    <h:inputText id="softwareType" value="#{companyController.selected.softwareType}" title="#{bundle.EditCompanyTitle_softwareType}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_irrName}" for="irrName" />
+                    <h:inputText id="irrName" value="#{companyController.selected.irrName}" title="#{bundle.EditCompanyTitle_irrName}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_dealerScorePct}" for="dealerScorePct" />
+                    <h:inputText id="dealerScorePct" value="#{companyController.selected.dealerScorePct}" title="#{bundle.EditCompanyTitle_dealerScorePct}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_logo}" for="logo" />
+                    <h:inputTextarea rows="4" cols="30" id="logo" value="#{companyController.selected.logo}" title="#{bundle.EditCompanyTitle_logo}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_logoType}" for="logoType" />
+                    <h:inputText id="logoType" value="#{companyController.selected.logoType}" title="#{bundle.EditCompanyTitle_logoType}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_bonusPool}" for="bonusPool" />
+                    <h:inputText id="bonusPool" value="#{companyController.selected.bonusPool}" title="#{bundle.EditCompanyTitle_bonusPool}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_recourseFlag}" for="recourseFlag" />
+                    <h:inputText id="recourseFlag" value="#{companyController.selected.recourseFlag}" title="#{bundle.EditCompanyTitle_recourseFlag}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_bkFlag}" for="bkFlag" />
+                    <h:inputText id="bkFlag" value="#{companyController.selected.bkFlag}" title="#{bundle.EditCompanyTitle_bkFlag}" />
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_billingAddressId}" for="billingAddressId" />
+                    <h:selectOneMenu id="billingAddressId" value="#{companyController.selected.billingAddressId}" title="#{bundle.EditCompanyTitle_billingAddressId}" >
+                        <f:selectItems value="#{postalAddressController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_postalAddressId}" for="postalAddressId" />
+                    <h:selectOneMenu id="postalAddressId" value="#{companyController.selected.postalAddressId}" title="#{bundle.EditCompanyTitle_postalAddressId}" >
+                        <f:selectItems value="#{postalAddressController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_salesRep}" for="salesRep" />
+                    <h:selectOneMenu id="salesRep" value="#{companyController.selected.salesRep}" title="#{bundle.EditCompanyTitle_salesRep}" >
+                        <f:selectItems value="#{contactController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditCompanyLabel_contactId}" for="contactId" />
+                    <h:selectOneMenu id="contactId" value="#{companyController.selected.contactId}" title="#{bundle.EditCompanyTitle_contactId}" >
+                        <f:selectItems value="#{contactController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{companyController.update}" value="#{bundle.EditCompanySaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditCompanyViewLink}"/>
+                <br />
+                <h:commandLink action="#{companyController.prepareList}" value="#{bundle.EditCompanyShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditCompanyIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

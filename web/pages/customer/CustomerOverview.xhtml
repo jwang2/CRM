@@ -1,0 +1,76 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <h:panelGroup>
+        <h:panelGroup id="messagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h:panelGrid columns="3">
+            <h:outputText value="#{bundle.ViewCustomerLabel_id}"/>
+            <h:outputText value="#{customerDetailBean.selected.id}" title="#{bundle.ViewCustomerTitle_id}"/>
+            <h:outputLabel value=""/>
+
+            <h:outputText value="#{bundle.ViewCustomerLabel_name}"/>
+            <h:inputText size="80" value="#{customerDetailBean.selected.name}" title="#{bundle.ViewCustomerTitle_name}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
+            <h:outputLabel value=""/>
+
+            <h:outputText value="#{bundle.ViewCustomerLabel_type}"/>
+            <h:selectOneMenu value="#{customerDetailBean.selected.type}" title="#{bundle.ViewCustomerTitle_type}" disabled="#{!customerDetailBean.allowEditCustomer}">
+                <f:selectItems value="#{customerDetailBean.customerTypes}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value=""/>
+
+            <h:outputText value="#{bundle.ViewCustomerLabel_status}"/>
+            <h:selectOneMenu  value="#{customerDetailBean.selected.status}" title="#{bundle.ViewCustomerTitle_status}" disabled="#{!customerDetailBean.allowEditCustomer}">
+                <f:selectItems value="#{customerDetailBean.customerStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value=""/>
+
+            <h:outputText value="#{bundle.ViewCustomerLabel_accountEmail}"/>
+            <h:inputText size="80" value="#{customerDetailBean.selected.accountEmail}" title="#{bundle.ViewCustomerTitle_accountEmail}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
+            <h:outputLabel value=""/>
+
+            <h:outputText value="#{bundle.ViewCustomerLabel_website}"/>
+            <h:inputText size="80" value="#{customerDetailBean.selected.website}" title="#{bundle.ViewCustomerTitle_website}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
+            <a onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" href="" style="cursor: pointer">google</a>
+
+            <h:outputText value="#{bundle.ViewCustomerLabel_phone}"/>
+            <h:inputText size="80" value="#{customerDetailBean.selected.phone}" title="#{bundle.ViewCustomerTitle_phone}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
+            <a onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" href="" style="cursor: pointer">google</a>
+
+            <h:outputText value="Address:"/>
+            <h:inputText size="80" value="#{customerDetailBean.selectedMainAddress.address1}" title="main address" disabled="#{!customerDetailBean.allowEditCustomer}"/>
+            <h:outputText value=""/>
+
+            <h:outputText value=""/>
+            <h:panelGroup>
+                <h:inputText size="25" value="#{customerDetailBean.selectedMainAddress.city}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
+                <h:outputText value="&#160;" />
+                <h:selectOneMenu id="state" value="#{customerDetailBean.selectedMainAddress.state}" disabled="#{!customerDetailBean.allowEditCustomer}">
+                    <f:selectItems value="#{customerDetailBean.stateList}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+                </h:selectOneMenu>
+                <h:outputText value="&#160;" />
+                <h:inputText size="15" value="#{customerDetailBean.selectedMainAddress.zipCode}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
+            </h:panelGroup>
+            <h:outputLabel value=""/>
+
+            <h:outputText value="#{bundle.ViewCustomerLabel_lastUpdated}"/>
+            <h:outputText value="#{customerDetailBean.selected.lastUpdated}" title="#{bundle.ViewCustomerTitle_lastUpdated}">
+                <!--<f:convertDateTime locale="en_US" type="both" pattern="MM/dd/yyyy HH:mm:ss" timeZone="EDT"/>-->
+            </h:outputText>
+            <h:outputLabel value=""/>
+
+            <h:outputText value=""/>
+            <h:outputText value=""/>
+            <h:outputText value=""/>
+
+            <h:outputText value=""/>
+            <h:panelGroup>
+                <h:commandButton value="Cancel" action="#{customerDetailBean.cancelCustomerEditAction()}" rendered="#{customerDetailBean.allowEditCustomer}"/>
+                <h:commandButton value="#{customerDetailBean.customerEditButtonName}" action="#{customerDetailBean.performCustomerEdit(loginBean.userName)}"/>
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:panelGroup>
+</ui:composition>
+

@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8" />       
+        <title><ui:insert name="title">AC Autopay CRM</ui:insert></title>
+
+        <link rel="stylesheet" type="text/css" media="screen" 
+              href="http://www.devslide.com/public/labs/browser-detection/browser-detection.css" />
+        <script type="text/javascript" src="http://www.devslide.com/public/labs/browser-detection/browser-detection.js"/>
+        <script type="text/javascript">
+            var displayPoweredBy = false;
+            var notSupportedBrowsers = [{'os': 'Any', 'browser': 'MSIE', 'version': 9}, {'os': 'Any', 'browser': 'Firefox', 'version': 3}, {'os': 'Any', 'browser': 'Safari', 'version': 5}];
+
+            function stopEnterKey(evt) {
+                var evt = (evt) ? evt : ((event) ? event : null);
+                var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+                if (evt.keyCode == 13) {
+                    if (node.type == "text") {
+                        return false;
+                    }
+                }
+            }
+
+            document.onkeypress = stopEnterKey;
+        </script>
+
+        <meta name="keywords" content="" />
+        <meta name="description" content="" />
+        <h:outputStylesheet name="css/style.css"/>
+        <h:outputScript name="scripts/formatting.js"/>
+
+        <script>
+            function gowait() {
+                document.getElementById("statPane").style.textAlign = "center";
+                document.getElementById("statPane").style.verticalAlign = "middle";
+                document.getElementById("statPane").style.visibility = "visible";
+            }
+
+            function done() {
+                document.getElementById("statPane").style.visibility = "hidden";
+            }
+        </script>
+
+    </h:head>
+
+    <h:body>
+
+        <a4j:status onstart="#{rich:component('statPane')}.show()" 
+                    onstop="#{rich:component('statPane')}.hide()" />
+
+        <rich:popupPanel id="statPane" autosized="true" style="left: 50%; top: 50%">
+            <h:graphicImage value="/images/ai.gif" alt="ai" />
+            Please wait...
+        </rich:popupPanel>
+
+        <div id="wrapper">
+            <header id="header">
+                <f:subview id="subHeader">
+                    <ui:include src="header.xhtml"/> 
+                </f:subview>
+            </header>  
+            <br/>
+
+            <div class="navigation">
+                <h:form id="navform">
+                    <ul id="nav">
+                        <li class="#{view.viewId.startsWith('/pages/dashboard/', 0) ? 'current' : ''}">
+                            <h:link outcome="/pages/dashboard/DashboardPage.xhtml" value="Home" rendered="#{loginBean.loggedIn}"/>
+                        </li>
+                        <li class="#{view.viewId.startsWith('/pages/customer/', 0) ? 'current' : ''}">
+                            <h:link outcome="/pages/customer/CustomerSearch.xhtml" value="Customers" rendered="#{loginBean.loggedIn}"/>
+                        </li>
+                        <li class="#{view.viewId.startsWith('/pages/lead/', 0) ? 'current' : ''}">
+                            <h:link outcome="/pages/lead/LeadSearch.xhtml" value="Leads" rendered="#{loginBean.loggedIn}"/>
+                        </li>
+                        <li class="#{view.viewId.startsWith('/pages/campaign/', 0) ? 'current' : ''}">
+                            <h:link outcome="/pages/campaign/CampaignSearch.xhtml" value="Campaigns" rendered="#{loginBean.loggedIn}"/>
+                        </li>
+                        <li class="#{view.viewId.startsWith('/pages/upload/', 0) ? 'current' : ''}">
+                            <h:link outcome="/pages/upload/UploadDealerDetails.xhtml" value="Upload Dealer Details" rendered="#{loginBean.superUser}"/>
+                        </li>
+                    </ul>
+                </h:form>
+            </div>
+
+            <div id="content">
+                <ui:insert name="body">Content</ui:insert>
+
+                <rich:jQuery selector="input[name$='Button'], input[name$=Back]"
+                             query="on ( 'click', function() { gowait(); } )"/>
+                <rich:jQuery selector="a[id$='Link']"
+                             query="on ( 'click', function() { gowait(); } )"/>
+            </div>
+
+        </div> 
+
+        <footer id="footer">
+            <div id="fcenter">
+                Powered by <b>AC Autopay Customer Management</b>           
+                <div>
+                    Terms and Privacy
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    Contact Us
+                </div>
+                <div>
+                    An Access Capital Company. &copy; 2013 All Rights Reserved
+                    <div style="display: none;">Version: 0.2</div>
+                </div>
+            </div> 
+        </footer>
+        <h:outputStylesheet name="datepick/jquery.datepick.css"/>
+        <h:outputScript name="datepick/jquery.datepick.js"/>
+        <h:outputScript name="datepick/jquery.datepick.ext.js"/>
+        <h:outputScript name="scripts/jsf.js"/>
+
+    </h:body>
+
+</html>

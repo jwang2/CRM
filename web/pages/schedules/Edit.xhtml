@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditSchedulesTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{schedulesController.selected.id}" title="#{bundle.EditSchedulesTitle_id}" required="true" requiredMessage="#{bundle.EditSchedulesRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_scheduledDatetime}" for="scheduledDatetime" />
+                    <h:inputText id="scheduledDatetime" value="#{schedulesController.selected.scheduledDatetime}" title="#{bundle.EditSchedulesTitle_scheduledDatetime}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_finishedDatetime}" for="finishedDatetime" />
+                    <h:inputText id="finishedDatetime" value="#{schedulesController.selected.finishedDatetime}" title="#{bundle.EditSchedulesTitle_finishedDatetime}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_assignedUser}" for="assignedUser" />
+                    <h:inputText id="assignedUser" value="#{schedulesController.selected.assignedUser}" title="#{bundle.EditSchedulesTitle_assignedUser}" required="true" requiredMessage="#{bundle.EditSchedulesRequiredMessage_assignedUser}"/>
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_status}" for="status" />
+                    <h:inputText id="status" value="#{schedulesController.selected.status}" title="#{bundle.EditSchedulesTitle_status}" />
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_note}" for="note" />
+                    <h:inputText id="note" value="#{schedulesController.selected.note}" title="#{bundle.EditSchedulesTitle_note}" />
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{schedulesController.selected.createUser}" title="#{bundle.EditSchedulesTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{schedulesController.selected.dateCreated}" title="#{bundle.EditSchedulesTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{schedulesController.selected.updateUser}" title="#{bundle.EditSchedulesTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{schedulesController.selected.lastUpdated}" title="#{bundle.EditSchedulesTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_leadId}" for="leadId" />
+                    <h:selectOneMenu id="leadId" value="#{schedulesController.selected.leadId}" title="#{bundle.EditSchedulesTitle_leadId}" >
+                        <f:selectItems value="#{leadController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditSchedulesLabel_customerId}" for="customerId" />
+                    <h:selectOneMenu id="customerId" value="#{schedulesController.selected.customerId}" title="#{bundle.EditSchedulesTitle_customerId}" >
+                        <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{schedulesController.update}" value="#{bundle.EditSchedulesSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditSchedulesViewLink}"/>
+                <br />
+                <h:commandLink action="#{schedulesController.prepareList}" value="#{bundle.EditSchedulesShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditSchedulesIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

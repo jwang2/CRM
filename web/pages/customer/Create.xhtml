@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateCustomerTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{customerController.selected.id}" title="#{bundle.CreateCustomerTitle_id}" required="true" requiredMessage="#{bundle.CreateCustomerRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_name}" for="name" />
+                    <h:inputText id="name" value="#{customerController.selected.name}" title="#{bundle.CreateCustomerTitle_name}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_compareName}" for="compareName" />
+                    <h:inputText id="compareName" value="#{customerController.selected.compareName}" title="#{bundle.CreateCustomerTitle_compareName}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_type}" for="type" />
+                    <h:inputText id="type" value="#{customerController.selected.type}" title="#{bundle.CreateCustomerTitle_type}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_status}" for="status" />
+                    <h:inputText id="status" value="#{customerController.selected.status}" title="#{bundle.CreateCustomerTitle_status}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_accountEmail}" for="accountEmail" />
+                    <h:inputText id="accountEmail" value="#{customerController.selected.accountEmail}" title="#{bundle.CreateCustomerTitle_accountEmail}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_website}" for="website" />
+                    <h:inputText id="website" value="#{customerController.selected.website}" title="#{bundle.CreateCustomerTitle_website}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_phone}" for="phone" />
+                    <h:inputText id="phone" value="#{customerController.selected.phone}" title="#{bundle.CreateCustomerTitle_phone}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_fileDate}" for="fileDate" />
+                    <h:inputText id="fileDate" value="#{customerController.selected.fileDate}" title="#{bundle.CreateCustomerTitle_fileDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{customerController.selected.createUser}" title="#{bundle.CreateCustomerTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{customerController.selected.dateCreated}" title="#{bundle.CreateCustomerTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{customerController.selected.updateUser}" title="#{bundle.CreateCustomerTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{customerController.selected.lastUpdated}" title="#{bundle.CreateCustomerTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCustomerLabel_parentCustomerId}" for="parentCustomerId" />
+                    <h:selectOneMenu id="parentCustomerId" value="#{customerController.selected.parentCustomerId}" title="#{bundle.CreateCustomerTitle_parentCustomerId}" >
+                        <f:selectItems value="#{parentCustomerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{customerController.create}" value="#{bundle.CreateCustomerSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{customerController.prepareList}" value="#{bundle.CreateCustomerShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateCustomerIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

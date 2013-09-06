@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListCompanyTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListCompanyEmpty}" rendered="#{companyController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{companyController.items.rowCount > 0}">
+                    <h:outputText value="#{companyController.pagination.pageFirstItem + 1}..#{companyController.pagination.pageLastItem + 1}/#{companyController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{companyController.previous}" value="#{bundle.Previous} #{companyController.pagination.pageSize}" rendered="#{companyController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{companyController.next}" value="#{bundle.Next} #{companyController.pagination.pageSize}" rendered="#{companyController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{companyController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_companyName}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.companyName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_status}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.status}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_version}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.version}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_companyEmail}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.companyEmail}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_type}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.type}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_agreementSignedDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.agreementSignedDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_dbaName}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dbaName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_dealerBusinessType}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dealerBusinessType}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_region}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.region}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_startDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.startDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_endDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.endDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_billingSameAddress}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.billingSameAddress}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_fundingFax}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fundingFax}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_fundingMethod}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fundingMethod}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_fixedPercentAmtFinanced}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fixedPercentAmtFinanced}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_financialInstitutionId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.financialInstitutionId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_brokerCreated}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.brokerCreated}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_dateCreated}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dateCreated}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_lastUpdated}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.lastUpdated}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_createdBy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.createdBy}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_updatedBy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.updatedBy}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_financialInstitutionName}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.financialInstitutionName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_routingNumber}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.routingNumber}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_accountNumber}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.accountNumber}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_taxId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.taxId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_licenseNumber}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.licenseNumber}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_contactSameSales}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.contactSameSales}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_aulDealerId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.aulDealerId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_bulk}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bulk}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_loan}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.loan}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_businessLength}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.businessLength}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_portfolioSize}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.portfolioSize}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_soldBefore}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.soldBefore}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_soldprice}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.soldprice}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_projectionSell}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.projectionSell}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_useGps}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.useGps}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_interestCalculationMethod}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.interestCalculationMethod}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_softwareType}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.softwareType}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_irrName}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.irrName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_dealerScorePct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dealerScorePct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_logo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.logo}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_logoType}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.logoType}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_bonusPool}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bonusPool}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_recourseFlag}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.recourseFlag}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_bkFlag}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bkFlag}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_billingAddressId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.billingAddressId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_postalAddressId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.postalAddressId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_salesRep}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.salesRep}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompanyTitle_contactId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.contactId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{companyController.prepareView}" value="#{bundle.ListCompanyViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{companyController.prepareEdit}" value="#{bundle.ListCompanyEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{companyController.destroy}" value="#{bundle.ListCompanyDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{companyController.prepareCreate}" value="#{bundle.ListCompanyCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListCompanyIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

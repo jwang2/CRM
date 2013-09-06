@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Upload Dealer Details"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:outputText value="Upload Dealer Details" style="font-weight:bold; font-size: 1.5em"></h:outputText>
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanelUpload" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green;  font-weight:bold; font-size: 1em" layout="table"/>
+                </h:panelGroup>
+                <h:panelGroup id="fileuploadpanel">
+                    <h:panelGrid columns="3" width="100%">
+                        <h:outputLabel value="Date of File:"/>
+                        <h:panelGroup>
+                            <rich:calendar id="DateOfFile" value="#{fileUploadBean.uploadFileDate}"  datePattern="MM/dd/yyyy" enableManualInput="true">
+                                <f:validator validatorId="EmptyCalendarValidator"/>
+                            </rich:calendar>
+                            <h:outputLabel value="(input pattern MM/dd/yyyy)"/>
+                        </h:panelGroup>
+                        <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" id="upload" acceptedTypes="xls, xlsx"
+                                         addLabel="Upload Excel File"  listHeight="100"
+                                         ontyperejected="alert('Only .xls, .xlsx Excel files are accepted');" maxFilesQuantity="1">
+                        </rich:fileUpload>
+                    </h:panelGrid>
+                    <br/>
+                    <h:panelGroup>
+                        <a4j:commandButton render="messagePanelUpload, fileuploadpanel, uploadedFilesPanel" value="#{bundleCrm.UploadToDatabaseButton}" action="#{fileUploadBean.loadDataFromFile(loginBean.userName, true)}" style="float: right" oncomplete="if(#{fileUploadBean.needShowPopup}){#{rich:component('uploadPopup')}.show();}" />
+                    </h:panelGroup>
+                    <ui:include src="/pages/upload/UploadSameMonthOption.xhtml"/>
+                </h:panelGroup>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <h:outputText value="Files have been uploaded:" style="font-weight:bold; font-size: 1em"></h:outputText>
+                <h:panelGroup id="uploadedFilesPanel">
+                    <rich:dataTable id="uploadedFileResultTable" rendered="#{fileUploadBean.alreadyUploadedFiles.size()>0}" value="#{fileUploadBean.alreadyUploadedFiles}" 
+                                    var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                        <rich:column>
+                            <f:facet name="header">
+                                <h:outputText value="File"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fileName}"/>
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">
+                                <h:outputText value="File Date"/>
+                            </f:facet>
+                            <h:outputText value="#{fileUploadBean.getYearMonthStr(item.fileDate)}"/>
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">
+                                <h:outputText value="Uploaded Date"/>
+                            </f:facet>
+                            <h:outputText value="#{item.uploadDate}"/>
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">
+                                <h:outputText value="Uploaded by"/>
+                            </f:facet>
+                            <h:outputText value="#{item.uploadUser}"/>
+                        </rich:column>
+                    </rich:dataTable>
+                </h:panelGroup>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

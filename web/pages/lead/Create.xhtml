@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateLeadTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{leadController.selected.id}" title="#{bundle.CreateLeadTitle_id}" required="true" requiredMessage="#{bundle.CreateLeadRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalFinanced}" for="totalFinanced" />
+                    <h:inputText id="totalFinanced" value="#{leadController.selected.totalFinanced}" title="#{bundle.CreateLeadTitle_totalFinanced}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalFinancedPct}" for="totalFinancedPct" />
+                    <h:inputText id="totalFinancedPct" value="#{leadController.selected.totalFinancedPct}" title="#{bundle.CreateLeadTitle_totalFinancedPct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalLoan}" for="totalLoan" />
+                    <h:inputText id="totalLoan" value="#{leadController.selected.totalLoan}" title="#{bundle.CreateLeadTitle_totalLoan}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalLoanPct}" for="totalLoanPct" />
+                    <h:inputText id="totalLoanPct" value="#{leadController.selected.totalLoanPct}" title="#{bundle.CreateLeadTitle_totalLoanPct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_newLoan}" for="newLoan" />
+                    <h:inputText id="newLoan" value="#{leadController.selected.newLoan}" title="#{bundle.CreateLeadTitle_newLoan}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_newLoanPct}" for="newLoanPct" />
+                    <h:inputText id="newLoanPct" value="#{leadController.selected.newLoanPct}" title="#{bundle.CreateLeadTitle_newLoanPct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_usedLoan}" for="usedLoan" />
+                    <h:inputText id="usedLoan" value="#{leadController.selected.usedLoan}" title="#{bundle.CreateLeadTitle_usedLoan}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_usedLoanPct}" for="usedLoanPct" />
+                    <h:inputText id="usedLoanPct" value="#{leadController.selected.usedLoanPct}" title="#{bundle.CreateLeadTitle_usedLoanPct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalLease}" for="totalLease" />
+                    <h:inputText id="totalLease" value="#{leadController.selected.totalLease}" title="#{bundle.CreateLeadTitle_totalLease}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalLeasePct}" for="totalLeasePct" />
+                    <h:inputText id="totalLeasePct" value="#{leadController.selected.totalLeasePct}" title="#{bundle.CreateLeadTitle_totalLeasePct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_newLease}" for="newLease" />
+                    <h:inputText id="newLease" value="#{leadController.selected.newLease}" title="#{bundle.CreateLeadTitle_newLease}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_newLeasePct}" for="newLeasePct" />
+                    <h:inputText id="newLeasePct" value="#{leadController.selected.newLeasePct}" title="#{bundle.CreateLeadTitle_newLeasePct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_usedLease}" for="usedLease" />
+                    <h:inputText id="usedLease" value="#{leadController.selected.usedLease}" title="#{bundle.CreateLeadTitle_usedLease}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_usedLeasePct}" for="usedLeasePct" />
+                    <h:inputText id="usedLeasePct" value="#{leadController.selected.usedLeasePct}" title="#{bundle.CreateLeadTitle_usedLeasePct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalNoLender}" for="totalNoLender" />
+                    <h:inputText id="totalNoLender" value="#{leadController.selected.totalNoLender}" title="#{bundle.CreateLeadTitle_totalNoLender}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_totalNoLenderPct}" for="totalNoLenderPct" />
+                    <h:inputText id="totalNoLenderPct" value="#{leadController.selected.totalNoLenderPct}" title="#{bundle.CreateLeadTitle_totalNoLenderPct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_newNoLender}" for="newNoLender" />
+                    <h:inputText id="newNoLender" value="#{leadController.selected.newNoLender}" title="#{bundle.CreateLeadTitle_newNoLender}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_newNoLenderPct}" for="newNoLenderPct" />
+                    <h:inputText id="newNoLenderPct" value="#{leadController.selected.newNoLenderPct}" title="#{bundle.CreateLeadTitle_newNoLenderPct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_usedNoLender}" for="usedNoLender" />
+                    <h:inputText id="usedNoLender" value="#{leadController.selected.usedNoLender}" title="#{bundle.CreateLeadTitle_usedNoLender}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_usedNoLenderPct}" for="usedNoLenderPct" />
+                    <h:inputText id="usedNoLenderPct" value="#{leadController.selected.usedNoLenderPct}" title="#{bundle.CreateLeadTitle_usedNoLenderPct}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_fileDate}" for="fileDate" />
+                    <h:inputText id="fileDate" value="#{leadController.selected.fileDate}" title="#{bundle.CreateLeadTitle_fileDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{leadController.selected.createUser}" title="#{bundle.CreateLeadTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{leadController.selected.dateCreated}" title="#{bundle.CreateLeadTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{leadController.selected.updateUser}" title="#{bundle.CreateLeadTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{leadController.selected.lastUpdated}" title="#{bundle.CreateLeadTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_financeCompanyId}" for="financeCompanyId" />
+                    <h:selectOneMenu id="financeCompanyId" value="#{leadController.selected.financeCompanyId}" title="#{bundle.CreateLeadTitle_financeCompanyId}" required="true" requiredMessage="#{bundle.CreateLeadRequiredMessage_financeCompanyId}">
+                        <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateLeadLabel_dealerId}" for="dealerId" />
+                    <h:selectOneMenu id="dealerId" value="#{leadController.selected.dealerId}" title="#{bundle.CreateLeadTitle_dealerId}" required="true" requiredMessage="#{bundle.CreateLeadRequiredMessage_dealerId}">
+                        <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{leadController.create}" value="#{bundle.CreateLeadSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{leadController.prepareList}" value="#{bundle.CreateLeadShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateLeadIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

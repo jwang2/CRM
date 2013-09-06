@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateCustomerContactTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{customerContactController.selected.id}" title="#{bundle.CreateCustomerContactTitle_id}" required="true" requiredMessage="#{bundle.CreateCustomerContactRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_firstName}" for="firstName" />
+                    <h:inputText id="firstName" value="#{customerContactController.selected.firstName}" title="#{bundle.CreateCustomerContactTitle_firstName}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_lastName}" for="lastName" />
+                    <h:inputText id="lastName" value="#{customerContactController.selected.lastName}" title="#{bundle.CreateCustomerContactTitle_lastName}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_primaryPhone}" for="primaryPhone" />
+                    <h:inputText id="primaryPhone" value="#{customerContactController.selected.primaryPhone}" title="#{bundle.CreateCustomerContactTitle_primaryPhone}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_secondaryPhone}" for="secondaryPhone" />
+                    <h:inputText id="secondaryPhone" value="#{customerContactController.selected.secondaryPhone}" title="#{bundle.CreateCustomerContactTitle_secondaryPhone}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_primaryEmail}" for="primaryEmail" />
+                    <h:inputText id="primaryEmail" value="#{customerContactController.selected.primaryEmail}" title="#{bundle.CreateCustomerContactTitle_primaryEmail}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_secondaryEmail}" for="secondaryEmail" />
+                    <h:inputText id="secondaryEmail" value="#{customerContactController.selected.secondaryEmail}" title="#{bundle.CreateCustomerContactTitle_secondaryEmail}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_principal}" for="principal" />
+                    <h:inputText id="principal" value="#{customerContactController.selected.principal}" title="#{bundle.CreateCustomerContactTitle_principal}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{customerContactController.selected.createUser}" title="#{bundle.CreateCustomerContactTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{customerContactController.selected.dateCreated}" title="#{bundle.CreateCustomerContactTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{customerContactController.selected.updateUser}" title="#{bundle.CreateCustomerContactTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{customerContactController.selected.lastUpdated}" title="#{bundle.CreateCustomerContactTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_customerId}" for="customerId" />
+                    <h:selectOneMenu id="customerId" value="#{customerContactController.selected.customerId}" title="#{bundle.CreateCustomerContactTitle_customerId}" required="true" requiredMessage="#{bundle.CreateCustomerContactRequiredMessage_customerId}">
+                        <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateCustomerContactLabel_addressId}" for="addressId" />
+                    <h:selectOneMenu id="addressId" value="#{customerContactController.selected.addressId}" title="#{bundle.CreateCustomerContactTitle_addressId}" >
+                        <f:selectItems value="#{addressController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{customerContactController.create}" value="#{bundle.CreateCustomerContactSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{customerContactController.prepareList}" value="#{bundle.CreateCustomerContactShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateCustomerContactIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

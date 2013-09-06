@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateKnownCustomerNamesTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateKnownCustomerNamesLabel_knownName}" for="knownName" />
+                    <h:inputText id="knownName" value="#{knownCustomerNamesController.selected.knownName}" title="#{bundle.CreateKnownCustomerNamesTitle_knownName}" required="true" requiredMessage="#{bundle.CreateKnownCustomerNamesRequiredMessage_knownName}"/>
+                    <h:outputLabel value="#{bundle.CreateKnownCustomerNamesLabel_compareName}" for="compareName" />
+                    <h:inputText id="compareName" value="#{knownCustomerNamesController.selected.compareName}" title="#{bundle.CreateKnownCustomerNamesTitle_compareName}" />
+                    <h:outputLabel value="#{bundle.CreateKnownCustomerNamesLabel_customerId}" for="customerId" />
+                    <h:selectOneMenu id="customerId" value="#{knownCustomerNamesController.selected.customerId}" title="#{bundle.CreateKnownCustomerNamesTitle_customerId}" required="true" requiredMessage="#{bundle.CreateKnownCustomerNamesRequiredMessage_customerId}">
+                        <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{knownCustomerNamesController.create}" value="#{bundle.CreateKnownCustomerNamesSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{knownCustomerNamesController.prepareList}" value="#{bundle.CreateKnownCustomerNamesShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateKnownCustomerNamesIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

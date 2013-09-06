@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewCustomerNoteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewCustomerNoteLabel_id}"/>
+                    <h:outputText value="#{customerNoteController.selected.id}" title="#{bundle.ViewCustomerNoteTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewCustomerNoteLabel_note}"/>
+                    <h:outputText value="#{customerNoteController.selected.note}" title="#{bundle.ViewCustomerNoteTitle_note}"/>
+                    <h:outputText value="#{bundle.ViewCustomerNoteLabel_createUser}"/>
+                    <h:outputText value="#{customerNoteController.selected.createUser}" title="#{bundle.ViewCustomerNoteTitle_createUser}"/>
+                    <h:outputText value="#{bundle.ViewCustomerNoteLabel_dateCreated}"/>
+                    <h:outputText value="#{customerNoteController.selected.dateCreated}" title="#{bundle.ViewCustomerNoteTitle_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCustomerNoteLabel_updateUser}"/>
+                    <h:outputText value="#{customerNoteController.selected.updateUser}" title="#{bundle.ViewCustomerNoteTitle_updateUser}"/>
+                    <h:outputText value="#{bundle.ViewCustomerNoteLabel_lastUpdated}"/>
+                    <h:outputText value="#{customerNoteController.selected.lastUpdated}" title="#{bundle.ViewCustomerNoteTitle_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCustomerNoteLabel_customerId}"/>
+                    <h:outputText value="#{customerNoteController.selected.customerId}" title="#{bundle.ViewCustomerNoteTitle_customerId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{customerNoteController.destroyAndView}" value="#{bundle.ViewCustomerNoteDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewCustomerNoteEditLink}"/>
+                <br />
+                <h:commandLink action="#{customerNoteController.prepareCreate}" value="#{bundle.ViewCustomerNoteCreateLink}" />
+                <br />
+                <h:commandLink action="#{customerNoteController.prepareList}" value="#{bundle.ViewCustomerNoteShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewCustomerNoteIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewLeadTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewLeadLabel_id}"/>
+                    <h:outputText value="#{leadController.selected.id}" title="#{bundle.ViewLeadTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalFinanced}"/>
+                    <h:outputText value="#{leadController.selected.totalFinanced}" title="#{bundle.ViewLeadTitle_totalFinanced}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalFinancedPct}"/>
+                    <h:outputText value="#{leadController.selected.totalFinancedPct}" title="#{bundle.ViewLeadTitle_totalFinancedPct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalLoan}"/>
+                    <h:outputText value="#{leadController.selected.totalLoan}" title="#{bundle.ViewLeadTitle_totalLoan}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalLoanPct}"/>
+                    <h:outputText value="#{leadController.selected.totalLoanPct}" title="#{bundle.ViewLeadTitle_totalLoanPct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_newLoan}"/>
+                    <h:outputText value="#{leadController.selected.newLoan}" title="#{bundle.ViewLeadTitle_newLoan}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_newLoanPct}"/>
+                    <h:outputText value="#{leadController.selected.newLoanPct}" title="#{bundle.ViewLeadTitle_newLoanPct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_usedLoan}"/>
+                    <h:outputText value="#{leadController.selected.usedLoan}" title="#{bundle.ViewLeadTitle_usedLoan}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_usedLoanPct}"/>
+                    <h:outputText value="#{leadController.selected.usedLoanPct}" title="#{bundle.ViewLeadTitle_usedLoanPct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalLease}"/>
+                    <h:outputText value="#{leadController.selected.totalLease}" title="#{bundle.ViewLeadTitle_totalLease}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalLeasePct}"/>
+                    <h:outputText value="#{leadController.selected.totalLeasePct}" title="#{bundle.ViewLeadTitle_totalLeasePct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_newLease}"/>
+                    <h:outputText value="#{leadController.selected.newLease}" title="#{bundle.ViewLeadTitle_newLease}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_newLeasePct}"/>
+                    <h:outputText value="#{leadController.selected.newLeasePct}" title="#{bundle.ViewLeadTitle_newLeasePct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_usedLease}"/>
+                    <h:outputText value="#{leadController.selected.usedLease}" title="#{bundle.ViewLeadTitle_usedLease}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_usedLeasePct}"/>
+                    <h:outputText value="#{leadController.selected.usedLeasePct}" title="#{bundle.ViewLeadTitle_usedLeasePct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalNoLender}"/>
+                    <h:outputText value="#{leadController.selected.totalNoLender}" title="#{bundle.ViewLeadTitle_totalNoLender}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_totalNoLenderPct}"/>
+                    <h:outputText value="#{leadController.selected.totalNoLenderPct}" title="#{bundle.ViewLeadTitle_totalNoLenderPct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_newNoLender}"/>
+                    <h:outputText value="#{leadController.selected.newNoLender}" title="#{bundle.ViewLeadTitle_newNoLender}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_newNoLenderPct}"/>
+                    <h:outputText value="#{leadController.selected.newNoLenderPct}" title="#{bundle.ViewLeadTitle_newNoLenderPct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_usedNoLender}"/>
+                    <h:outputText value="#{leadController.selected.usedNoLender}" title="#{bundle.ViewLeadTitle_usedNoLender}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_usedNoLenderPct}"/>
+                    <h:outputText value="#{leadController.selected.usedNoLenderPct}" title="#{bundle.ViewLeadTitle_usedNoLenderPct}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_fileDate}"/>
+                    <h:outputText value="#{leadController.selected.fileDate}" title="#{bundle.ViewLeadTitle_fileDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewLeadLabel_createUser}"/>
+                    <h:outputText value="#{leadController.selected.createUser}" title="#{bundle.ViewLeadTitle_createUser}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_dateCreated}"/>
+                    <h:outputText value="#{leadController.selected.dateCreated}" title="#{bundle.ViewLeadTitle_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewLeadLabel_updateUser}"/>
+                    <h:outputText value="#{leadController.selected.updateUser}" title="#{bundle.ViewLeadTitle_updateUser}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_lastUpdated}"/>
+                    <h:outputText value="#{leadController.selected.lastUpdated}" title="#{bundle.ViewLeadTitle_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewLeadLabel_financeCompanyId}"/>
+                    <h:outputText value="#{leadController.selected.financeCompanyId}" title="#{bundle.ViewLeadTitle_financeCompanyId}"/>
+                    <h:outputText value="#{bundle.ViewLeadLabel_dealerId}"/>
+                    <h:outputText value="#{leadController.selected.dealerId}" title="#{bundle.ViewLeadTitle_dealerId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{leadController.destroyAndView}" value="#{bundle.ViewLeadDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewLeadEditLink}"/>
+                <br />
+                <h:commandLink action="#{leadController.prepareCreate}" value="#{bundle.ViewLeadCreateLink}" />
+                <br />
+                <h:commandLink action="#{leadController.prepareList}" value="#{bundle.ViewLeadShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewLeadIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

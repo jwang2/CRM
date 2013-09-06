@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateAddressTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{addressController.selected.id}" title="#{bundle.CreateAddressTitle_id}" required="true" requiredMessage="#{bundle.CreateAddressRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_type}" for="type" />
+                    <h:inputText id="type" value="#{addressController.selected.type}" title="#{bundle.CreateAddressTitle_type}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_address1}" for="address1" />
+                    <h:inputText id="address1" value="#{addressController.selected.address1}" title="#{bundle.CreateAddressTitle_address1}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_address2}" for="address2" />
+                    <h:inputText id="address2" value="#{addressController.selected.address2}" title="#{bundle.CreateAddressTitle_address2}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_city}" for="city" />
+                    <h:inputText id="city" value="#{addressController.selected.city}" title="#{bundle.CreateAddressTitle_city}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_county}" for="county" />
+                    <h:inputText id="county" value="#{addressController.selected.county}" title="#{bundle.CreateAddressTitle_county}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_state}" for="state" />
+                    <h:inputText id="state" value="#{addressController.selected.state}" title="#{bundle.CreateAddressTitle_state}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_zipCode}" for="zipCode" />
+                    <h:inputText id="zipCode" value="#{addressController.selected.zipCode}" title="#{bundle.CreateAddressTitle_zipCode}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_country}" for="country" />
+                    <h:inputText id="country" value="#{addressController.selected.country}" title="#{bundle.CreateAddressTitle_country}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_principal}" for="principal" />
+                    <h:inputText id="principal" value="#{addressController.selected.principal}" title="#{bundle.CreateAddressTitle_principal}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{addressController.selected.createUser}" title="#{bundle.CreateAddressTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{addressController.selected.dateCreated}" title="#{bundle.CreateAddressTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{addressController.selected.updateUser}" title="#{bundle.CreateAddressTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{addressController.selected.lastUpdated}" title="#{bundle.CreateAddressTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateAddressLabel_customerId}" for="customerId" />
+                    <h:selectOneMenu id="customerId" value="#{addressController.selected.customerId}" title="#{bundle.CreateAddressTitle_customerId}" >
+                        <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{addressController.create}" value="#{bundle.CreateAddressSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{addressController.prepareList}" value="#{bundle.CreateAddressShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateAddressIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListCampaignCustomerTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListCampaignCustomerEmpty}" rendered="#{campaignCustomerController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{campaignCustomerController.items.rowCount > 0}">
+                    <h:outputText value="#{campaignCustomerController.pagination.pageFirstItem + 1}..#{campaignCustomerController.pagination.pageLastItem + 1}/#{campaignCustomerController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{campaignCustomerController.previous}" value="#{bundle.Previous} #{campaignCustomerController.pagination.pageSize}" rendered="#{campaignCustomerController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{campaignCustomerController.next}" value="#{bundle.Next} #{campaignCustomerController.pagination.pageSize}" rendered="#{campaignCustomerController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{campaignCustomerController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCampaignCustomerTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCampaignCustomerTitle_startDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.startDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCampaignCustomerTitle_completedDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.completedDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCampaignCustomerTitle_note}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.note}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCampaignCustomerTitle_customerId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.customerId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCampaignCustomerTitle_campaignId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.campaignId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{campaignCustomerController.prepareView}" value="#{bundle.ListCampaignCustomerViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{campaignCustomerController.prepareEdit}" value="#{bundle.ListCampaignCustomerEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{campaignCustomerController.destroy}" value="#{bundle.ListCampaignCustomerDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{campaignCustomerController.prepareCreate}" value="#{bundle.ListCampaignCustomerCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListCampaignCustomerIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

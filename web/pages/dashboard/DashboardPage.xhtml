@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich">
+
+    <ui:composition template="/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Welcome #{loginBean.user.firstName} #{loginBean.user.lastName}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="dashboardForm" styleClass="jsfcrud_list_form">
+                <h:panelGroup id="dashboardMessagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputLabel value="Welcome #{loginBean.user.firstName} #{loginBean.user.lastName}" style="color: #591f00; font-family: Arial, Verdana, sans-serif; font-weight:bold; font-size: 2em"/>
+                <br/>
+                <br/>
+                <h:outputLabel value="Today's Date:" style="color: #9ea374; font-family: Arial, Verdana, sans-serif; font-weight:bold; font-size: 1.5em"/>
+                <h:outputLabel value="#{dashboardBean.todayDate}" style="color: #9ea374; font-family: Arial, Verdana, sans-serif; font-size: 1.5em"/>
+                <br/>
+                <br/>
+
+                <rich:collapsiblePanel header="Active Campaigns For You:">
+                    <h:outputLabel value="Total:  #{dashboardBean.getActiveCampaigns(loginBean.userName).size()}"/>
+                    <h:commandLink value="Refresh" action="#{dashboardBean.refreshActiveCampaigns(loginBean.userName)}" style="float: right"/>
+                    <br/>
+                    <br/>
+                    <h:panelGroup>
+                        <h:outputText style="color: #591f00; font-family: Arial, Verdana, sans-serif;" rendered="#{dashboardBean.getActiveCampaigns(loginBean.userName).size()==0}" value="There is no active campaigns for you currently. You always can click on 'Refresh' link to check campaigns assigned to you."/>
+                        <rich:dataTable rendered="#{dashboardBean.getActiveCampaigns(loginBean.userName).size()>0}" value="#{dashboardBean.getActiveCampaigns(loginBean.userName)}" 
+                                        styleClass="table" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width:100%">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Id"/>
+                                </f:facet>
+                                <h:commandLink value="#{item.id}" action="#{campaignSearchBean.prepareDetails(item)}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Created Date"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateCreated}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Created By"/>
+                                </f:facet>
+                                <h:outputText value="#{item.createUser}"/>
+                            </h:column>
+                        </rich:dataTable>
+                    </h:panelGroup>
+                </rich:collapsiblePanel>
+                <br/>
+                <br/>
+                <br/>
+                <rich:collapsiblePanel header="Scheduled Tasks For You:">
+                    <h:outputLabel value="Total:  #{dashboardBean.getActiveSchedules(loginBean.userName).size()}"/>
+                    <h:commandLink value="Refresh" action="#{dashboardBean.refreshActiveSchedules(loginBean.userName)}" style="float: right"/>
+                    <br/>
+                    <br/>
+                    <h:panelGroup>
+                        <h:outputText style="color: #9ea374; font-family: Arial, Verdana, sans-serif;" rendered="#{dashboardBean.getActiveSchedules(loginBean.userName).size()==0}" value="There is no tasks for you currently. You always can click on 'Refresh' link to check tasks assigned to you."/>
+                        <rich:dataTable rendered="#{dashboardBean.getActiveSchedules(loginBean.userName).size()>0}" styleClass="table" value="#{dashboardBean.getActiveSchedules(loginBean.userName)}" 
+                                        var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Id"/>
+                                </f:facet>
+                                <h:commandLink value="#{item.id}" action="#{customerDetailBean.prepareDetail(item)}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Scheduled Time"/>
+                                </f:facet>
+                                <h:outputText value="#{item.scheduledDatetime}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Status"/>
+                                </f:facet>
+                                <h:outputText value="#{item.status}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Created Date"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateCreated}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Created By"/>
+                                </f:facet>
+                                <h:outputText value="#{item.createUser}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Task"/>
+                                </f:facet>
+                                <ui:repeat value="#{item.taskCollection}" var="task">
+                                    <div>#{task.name}</div>
+                                </ui:repeat>
+                            </h:column>
+                        </rich:dataTable>
+                    </h:panelGroup>
+                </rich:collapsiblePanel>
+            </h:form>
+        </ui:define>
+
+    </ui:composition>
+</html>

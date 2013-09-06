@@ -1,0 +1,59 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich">
+    <h:panelGroup>
+        <h:panelGroup id="campaignOverviewMessagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h:panelGroup>
+            <h:panelGrid columns="2">
+                <h:outputLabel value="Id:"/>
+                <h:outputText value="#{campaignSearchBean.selected.id}" title="Id"/>
+
+                <h:outputLabel value="Name:"/>
+                <h:inputText size="55" value="#{campaignSearchBean.selected.name}" title="Name" disabled="#{!campaignSearchBean.allowEditCampaign}"/>
+                
+                <h:outputLabel value="Assigned To:"/>
+                <rich:autocomplete value="#{campaignSearchBean.selected.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" styleClass="inputSearch" style="border: none; background: transparent; vertical-align: middle" disabled="#{!campaignSearchBean.allowEditCampaign}"/>
+                
+                <h:outputLabel value="Status:"/>
+                <h:selectOneMenu value="#{campaignSearchBean.selected.active}" title="Status" disabled="#{!campaignSearchBean.allowEditCampaign}">
+                    <f:selectItems value="#{campaignSearchBean.campaignStatusList}" var="status" itemLabel="#{status}" itemValue="#{status.value}"/>
+                </h:selectOneMenu>
+
+                <h:outputLabel value="Type:"/>
+                <h:selectOneMenu value="#{campaignSearchBean.selected.type}" title="Type" disabled="#{!campaignSearchBean.allowEditCampaign}">
+                    <f:selectItems value="#{campaignSearchBean.campaignTypeList}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
+                </h:selectOneMenu>
+
+                <h:outputLabel value="Start Date:"/>
+                <rich:calendar value="#{campaignSearchBean.selected.startDate}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true" disabled="#{!campaignSearchBean.allowEditCampaign}"/>
+
+                <h:outputLabel value="Complete Date:"/>
+                <rich:calendar value="#{campaignSearchBean.selected.completedDate}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true" disabled="#{!campaignSearchBean.allowEditCampaign}"/>
+
+                <h:outputLabel value="Criterias:"/>
+                <h:inputTextarea rows="4" cols="40" value="#{campaignSearchBean.campaignCriteriasStr}" title="Criterias" disabled ="true"/>
+
+                <h:outputLabel value="Created By:"/>
+                <h:outputText value="#{campaignSearchBean.selected.createUser}" title="Createby"/>
+
+                <h:outputLabel value="Last Updated:"/>
+                <h:outputText value="#{campaignSearchBean.selected.lastUpdated}" title="LastUpdated"/>
+
+                <h:outputLabel value=""/>
+                <h:outputLabel value=""/>
+
+                <h:outputLabel value=""/>
+                <h:panelGroup>
+                    <h:commandButton value="Cancel" action="#{campaignSearchBean.cancelCampaignEditAction()}" rendered="#{campaignSearchBean.allowEditCampaign}"/>
+                    <h:commandButton value="#{campaignSearchBean.campaignEditButtonName}" action="#{campaignSearchBean.performCampaignEdit(loginBean.userName)}"/>
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:panelGroup>
+    </h:panelGroup>
+
+</ui:composition>
+

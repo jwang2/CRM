@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListLeadTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListLeadEmpty}" rendered="#{leadController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{leadController.items.rowCount > 0}">
+                    <h:outputText value="#{leadController.pagination.pageFirstItem + 1}..#{leadController.pagination.pageLastItem + 1}/#{leadController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{leadController.previous}" value="#{bundle.Previous} #{leadController.pagination.pageSize}" rendered="#{leadController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{leadController.next}" value="#{bundle.Next} #{leadController.pagination.pageSize}" rendered="#{leadController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{leadController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalFinanced}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalFinanced}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalFinancedPct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalFinancedPct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalLoan}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalLoan}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalLoanPct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalLoanPct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_newLoan}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.newLoan}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_newLoanPct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.newLoanPct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_usedLoan}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usedLoan}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_usedLoanPct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usedLoanPct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalLease}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalLease}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalLeasePct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalLeasePct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_newLease}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.newLease}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_newLeasePct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.newLeasePct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_usedLease}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usedLease}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_usedLeasePct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usedLeasePct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalNoLender}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalNoLender}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_totalNoLenderPct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.totalNoLenderPct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_newNoLender}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.newNoLender}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_newNoLenderPct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.newNoLenderPct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_usedNoLender}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usedNoLender}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_usedNoLenderPct}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usedNoLenderPct}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_fileDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fileDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_createUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.createUser}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_dateCreated}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dateCreated}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_updateUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.updateUser}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_lastUpdated}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.lastUpdated}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_financeCompanyId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.financeCompanyId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLeadTitle_dealerId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dealerId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{leadController.prepareView}" value="#{bundle.ListLeadViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{leadController.prepareEdit}" value="#{bundle.ListLeadEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{leadController.destroy}" value="#{bundle.ListLeadDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{leadController.prepareCreate}" value="#{bundle.ListLeadCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListLeadIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

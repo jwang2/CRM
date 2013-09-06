@@ -1,0 +1,20 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+    <rich:popupPanel id="uploadPopup" header="Upload Confirmation" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:outputLabel value="#{fileUploadBean.sameMonthUploadMessage}" />
+        <br/>
+        <br/>
+        <h:panelGroup>
+            <a4j:commandButton value="Cancel" onclick="#{rich:component('uploadPopup')}.hide(event);
+                    return false;"/>
+            <a4j:commandButton render="messagePanelUpload, fileuploadpanel, uploadedFilesPanel" value="Upload" action="#{fileUploadBean.loadDataFromFile(loginBean.userName, false)}" oncomplete="#{rich:component('uploadPopup')}.hide(event);return false;"/>
+        </h:panelGroup>
+
+    </rich:popupPanel>
+
+</ui:composition>
+

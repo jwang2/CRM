@@ -1,0 +1,102 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <h:panelGroup>
+        <h:panelGroup id="messagePanelSchedule" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h:panelGrid columns="3" id="scheduleMain">
+            <h:panelGroup>
+                <h:outputText value="Schedules" style="font-weight:bold;"/>
+                <h:panelGroup rendered="#{customerDetailBean.customerSchedules.size()==0}">
+                    <br/>
+                    <h:outputLabel value="No Schedules Found." styleClass="no-result-found"/>
+                    <h:outputText  value="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;" />
+                </h:panelGroup>
+                <rich:dataTable styleClass="table" rendered="true" value="#{customerDetailBean.customerSchedules}" 
+                                var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Assigned To"/>
+                        </f:facet>
+                        <h:outputText value="#{item.assignedUser}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Scheduled Time"/>
+                        </f:facet>
+                        <h:outputText value="#{item.scheduledDatetime}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Status"/><br/>
+                            <h:selectOneMenu value="#{customerDetailBean.currentScheduleFilter}" onchange="this.form.submit()">
+                                <f:selectItems value="#{customerDetailBean.schedulesStatusFilters}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+                            </h:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{item.status}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Task"/>
+                        </f:facet>
+                        <ui:repeat value="#{item.taskCollection}" var="task">
+                            <div>#{task.name}</div>
+                        </ui:repeat>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value=""/>
+                        </f:facet>
+                        <div><h:commandLink action="#{customerDetailBean.prepareScheduleDetail(item)}" value="Detail"/></div>
+                        <!--<div><h:commandLink action="" value="Add New Task"/></div>-->
+                    </h:column>
+                </rich:dataTable>
+            </h:panelGroup>
+            <h:outputText  value="&#160;&#160;&#160;&#160;&#160;&#160;" />
+            <h:panelGroup>
+                <h:panelGroup>
+                    <h:outputText value="Schedule Detail" style="font-weight:bold;"/>
+                    <h:commandButton style="float: right" value="New Schedule" action="#{customerDetailBean.performNewSchedule()}" rendered="#{(!customerDetailBean.shownScheduleButton) and loginBean.superUser}"/>
+                    <h:commandButton style="float: right" value="Delete Schedule" rendered="#{(customerDetailBean.allowDeleteSchedule) and loginBean.superUser}">
+                        <rich:componentControl event="click" operation="show" target="scheduleDelete"/>
+                    </h:commandButton>
+                    <ui:include src="/pages/customer/ScheduleDeletePopup.xhtml"/>
+                </h:panelGroup>
+                <h:panelGrid columns="2" rendered="true">
+                    <h:outputLabel value="Assign To:"/>
+                    <rich:autocomplete value="#{customerDetailBean.currentSchedule.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" style="border: none; background: transparent" disabled="#{!customerDetailBean.allowEditSchedule}">
+                        <f:validateRequired/>
+                    </rich:autocomplete>
+
+                    <h:outputLabel value="Task:"/>
+                    <h:inputText label="Task" size="27" value="#{customerDetailBean.currentTask.name}" disabled="#{!customerDetailBean.allowEditSchedule}">
+                        <f:validateRequired/>
+                    </h:inputText>
+                    <h:outputLabel value="Task Type:"/>
+                    <h:selectOneMenu value="#{customerDetailBean.currentTask.type}" disabled="#{!customerDetailBean.allowEditSchedule}">
+                        <f:selectItems value="#{customerDetailBean.taskTypes}" var="tasktype" itemLabel="#{tasktype}" itemValue="#{tasktype}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="Scheduled Time:"/>
+                    <rich:calendar id="ScheduledTime" value="#{customerDetailBean.currentSchedule.scheduledDatetime}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true" disabled="#{!customerDetailBean.allowEditSchedule}">
+                        <f:validateRequired/>
+                    </rich:calendar>
+                    <h:outputLabel value="Status:"/>
+                    <h:selectOneMenu value="#{customerDetailBean.currentSchedule.status}" disabled="#{!customerDetailBean.allowEditSchedule}">
+                        <f:selectItems value="#{customerDetailBean.scheduleStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+                    </h:selectOneMenu>
+                    <h:outputText value="Note:"/>
+                    <h:inputTextarea rows="4" cols="40" value="#{customerDetailBean.currentSchedule.note}" disabled="#{!customerDetailBean.allowEditSchedule}"/>
+                </h:panelGrid>
+                <br/>
+                <h:panelGroup>
+                    <h:commandButton value="Cancel" immediate="true" action="#{customerDetailBean.cancelScheduleAction()}" rendered="#{customerDetailBean.shownScheduleButton}"/>
+                    <h:commandButton value="#{customerDetailBean.scheduleButtonText}" action="#{customerDetailBean.performScheduleAction(loginBean.userName)}" rendered="#{customerDetailBean.shownScheduleButton and loginBean.superUser}"/>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:panelGroup>
+</ui:composition>
+

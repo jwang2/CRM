@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+    <div>
+
+        <div id="logo">
+            <h:graphicImage value="/images/autopay.png"/>
+        </div>
+
+        <h:form>
+            <nav id="top-right-nav">
+               
+                <table align="right">
+                    <tr>
+                        <td>
+                            <h:panelGroup rendered="#{loginBean.loggedIn}">
+                                <h:commandLink action="#{companyController.prepareCompany}" disabled="true" >
+                                    <h:graphicImage value="/images/nav-icon1.gif" width="25" height="27" alt="My Profile"/>
+                                </h:commandLink>
+                                <br/>
+                                <h:commandLink action="#{companyController.prepareCompany}" value="My Profile"/>
+                            </h:panelGroup>
+                        </td>
+                        <td>    
+                            <h:panelGroup>
+                                <h:commandLink action="/public/contact.xhtml">
+                                    <h:graphicImage value="/images/nav-icon2.gif" width="14" height="27" alt="Contact"/>
+                                </h:commandLink>
+                                <br/>
+                                <h:commandLink action="/public/contact.xhtml" value="Contact"/>
+                            </h:panelGroup>
+                        </td>
+                        <td>
+                            <h:panelGroup rendered="#{loginBean.loggedIn}">
+                                <h:commandLink action="#{loginBean.logout()}" >
+                                    <h:graphicImage value="/images/nav-icon3.gif" width="19" height="27" alt="Login"/>
+                                </h:commandLink>
+                                <br/>
+                                <h:commandLink action="#{loginBean.logout()}" value="Logout"/>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{!loginBean.loggedIn}">
+                                <h:link outcome="/public/welcome.xhtml">
+                                    <h:graphicImage value="/images/nav-icon3.gif" width="19" height="27" alt="Login"/>
+                                </h:link>
+                                <br/>
+                                <h:link outcome="/public/welcome.xhtml" value="LOGIN"/>
+
+                            </h:panelGroup>
+                        </td>
+                    </tr>
+                </table>
+               
+            </nav>
+        </h:form>
+    </div>
+</ui:composition>      

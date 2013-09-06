@@ -1,0 +1,35 @@
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="body">
+        <h:outputText value="Customer Detail: #{customerDetailBean.selected.name}" style="font-weight:bold; font-size: 1.5em"/>
+        <br/>
+        <br/>
+        <h:form>
+            <rich:tabPanel switchType="ajax" id="tabPanel1" activeItem="#{customerDetailBean.currentTab}">
+                <rich:tab header="Overview" id="tabOverview" name="overview">
+                    <ui:include src="CustomerOverview.xhtml"/>
+                </rich:tab>
+                <rich:tab header="Contacts" id="tabContacts" name="contacts">
+                    <ui:include src="CustomerContacts.xhtml"/>
+                </rich:tab>
+                <rich:tab header="Finance Companies" id="tabFicos" name="fico">
+                    <ui:include src="CustomerFicos.xhtml"/>
+                </rich:tab>
+                <rich:tab header="Deals" id="tabDeals" name="deals">
+                    <ui:include src="CustomerDeals.xhtml"/>
+                </rich:tab>
+                <rich:tab header="Notes" id="tabNotes" name="notes">
+                    <ui:include src="CustomerNotes.xhtml"/>
+                </rich:tab>
+                <rich:tab header="Schedules" id="tabSchedules" name="schedules">
+                    <ui:include src="CustomerSchedules.xhtml"/>
+                </rich:tab>
+            </rich:tabPanel>
+            
+        </h:form>
+    </ui:define>
+</ui:composition>
+

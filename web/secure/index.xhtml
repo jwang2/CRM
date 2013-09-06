@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:rich="http://richfaces.org/rich">
+
+    <ui:composition template="/template.xhtml">
+
+
+
+        <ui:define name="body">    
+            <h:form>
+                <br/>
+
+                <hr/>
+                <div id="pageHeadLine">
+                    <h1>
+                        Welcome to AC Autopay
+                    </h1>
+                    <h2>
+                        Your Auto Finance Partner
+                    </h2>
+                </div>
+                <br/>
+                <hr/>
+                <br/>
+
+                
+                <h:commandButton id="iAppsButton" action="#{loanApplicationController.prepareList}" 
+                                 value="List of your Loan Applications" 
+                                 rendered="#{loginBean.loggedIn and (request.isUserInRole('DEALER_LOAN') or loginBean.write)}" 
+                                 styleClass="buttonSubmit"
+                                 onmouseover=""/> 
+                
+                <h:commandButton id="bulkListButton" action="#{portfolioController.prepareList}" value="List of your Portfolio Deals"
+                                 rendered="#{loginBean.loggedIn and (request.isUserInRole('DEALER_BULK') or loginBean.write)}" 
+                                 onmouseover="" styleClass="buttonSubmit positionRight"/>
+                <br/>
+                <br/>
+                <br/>  
+                <br/>
+                <h:commandButton id="listAppsButton" action="#{loanApplicationController.prepareCreate()}" value="Create New Loan Application" 
+                                 styleClass="buttonSubmit"
+                                 rendered="#{loginBean.loggedIn and (request.isUserInRole('DEALER_LOAN') or loginBean.write)}" 
+                                 onmouseover=""/>
+                <h:commandButton id="createBulkButton" action="#{fileUploadBean.prepareCreate()}" value="Create New Bulk Portfolio"
+                                 rendered="#{loginBean.loggedIn and (request.isUserInRole('DEALER_BULK') or loginBean.write)}" 
+                                 onmouseover="" styleClass="buttonSubmit positionRight"/>
+                <br/>
+                <br/>
+                <br/>
+                <hr/>
+<!--
+                <h:panelGrid columns="2" width="100%" >
+                    <h:panelGroup>
+                        <p style="color: rgb(89,31,0); font-size: 100%; line-height: 20px;">
+                            AC AUTOPAY, a loan acquisition and servicing company, offers the market's most 
+                            flexible capital solutions meeting the needs of auto dealers, dealer finance 
+                            companies and financial institutions, across the country.
+                        </p>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <p style="color: rgb(89,31,0); font-size: 100%; line-height: 20px;">
+                            AC AUTOPAY products are supported by a state of the art servicing platform, 
+                            servicing center and online portal&mdash;all geared at making it easy for 
+                            consumers to make payments and build credit while allowing loan originators 
+                            to easily submit and track performance on point of sale and bulk loan portfolios.
+                        </p>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+                <br/>
+                <hr/>
+
+                <h:panelGroup rendered="">
+                    <div class="borderBin">
+                        <h:outputText value="Call to sign up" styleClass="signup"/>
+                        <h:outputText value="303-615-7237" styleClass="phoneBin"/>
+
+                    </div>
+                </h:panelGroup>
+-->
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
+

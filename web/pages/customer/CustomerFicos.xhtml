@@ -1,0 +1,74 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich">
+    <h:panelGroup>
+        <h:panelGroup id="messagePanel2" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>
+        <h:panelGrid columns="3" cellpadding="10">
+            <h:panelGroup rendered="true">
+                <h:outputText value="Related Finance Companies" style="font-weight:bold;"/>
+                <h:panelGroup rendered="#{customerDetailBean.currentRelatedFicos.size()==0}">
+                    <br/>
+                    <h:outputLabel value="No Related Finance Companies Found." styleClass="no-result-found"/>
+                </h:panelGroup>
+                <rich:dataTable styleClass="table" rendered="#{customerDetailBean.currentRelatedFicos.size()>0}" value="#{customerDetailBean.currentRelatedFicos}" 
+                             var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle.ListCustomerTitle_id}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle.ListCustomerTitle_name}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                        </f:facet>
+                        <h:commandLink  rendered="#{customerDetailBean.showUnRelatedLink(item)}" action="#{customerDetailBean.unRelatedFico(item)}" value="Un-Relate"/>
+                    </h:column>
+                </rich:dataTable>
+            </h:panelGroup>
+            <h:outputText  value="&#160;&#160;&#160;&#160;&#160;&#160;" />
+            <h:panelGroup rendered="true">
+                <h:outputText value="Non Related Finance Companies" style="font-weight:bold;"/>
+                <h:panelGroup rendered="#{customerDetailBean.currentNonRelatedFicos.size()==0}">
+                    <br/>
+                    <h:outputLabel value="No Non-Related Finance Companies Found." styleClass="no-result-found"/>
+                </h:panelGroup>
+                <rich:dataTable styleClass="table" rendered="#{customerDetailBean.currentNonRelatedFicos.size()>0}" value="#{customerDetailBean.currentNonRelatedFicos}" 
+                             var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle.ListCustomerTitle_id}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle.ListCustomerTitle_name}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText  value="&#160;&#160;&#160;" />
+                        </f:facet>
+                        <h:commandLink action="#{customerDetailBean.markFicoRelated(item)}" value="Mark Related"/>
+                    </h:column>
+                </rich:dataTable>
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:panelGroup>
+
+</ui:composition>
+
+
+

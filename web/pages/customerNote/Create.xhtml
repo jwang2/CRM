@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateCustomerNoteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateCustomerNoteLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{customerNoteController.selected.id}" title="#{bundle.CreateCustomerNoteTitle_id}" required="true" requiredMessage="#{bundle.CreateCustomerNoteRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateCustomerNoteLabel_note}" for="note" />
+                    <h:inputTextarea rows="4" cols="30" id="note" value="#{customerNoteController.selected.note}" title="#{bundle.CreateCustomerNoteTitle_note}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerNoteLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{customerNoteController.selected.createUser}" title="#{bundle.CreateCustomerNoteTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerNoteLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{customerNoteController.selected.dateCreated}" title="#{bundle.CreateCustomerNoteTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCustomerNoteLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{customerNoteController.selected.updateUser}" title="#{bundle.CreateCustomerNoteTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.CreateCustomerNoteLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{customerNoteController.selected.lastUpdated}" title="#{bundle.CreateCustomerNoteTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateCustomerNoteLabel_customerId}" for="customerId" />
+                    <h:selectOneMenu id="customerId" value="#{customerNoteController.selected.customerId}" title="#{bundle.CreateCustomerNoteTitle_customerId}" required="true" requiredMessage="#{bundle.CreateCustomerNoteRequiredMessage_customerId}">
+                        <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{customerNoteController.create}" value="#{bundle.CreateCustomerNoteSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{customerNoteController.prepareList}" value="#{bundle.CreateCustomerNoteShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateCustomerNoteIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
