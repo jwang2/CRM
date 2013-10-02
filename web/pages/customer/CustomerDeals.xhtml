@@ -26,18 +26,19 @@
                 <br/>
                 <h:outputLabel value="No Deals Found." styleClass="no-result-found"/>
             </h:panelGroup>
-            <h:panelGroup id="dealsPanel">
-                <rich:dataTable value="#{customerDetailBean.currentDeals}" var="item" styleClass="table">
-                    <rich:column>
+            <h:panelGroup id="dealsPanel" rendered="#{customerDetailBean.currentDeals.size()>0}">
+                <rich:dataTable id="dealstable" value="#{customerDetailBean.currentDeals}" 
+                                        var="item" styleClass="table" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                    <rich:column sortBy="#{item.customerName}" sortOrder="#{customerDealsSortingBean.nameOrder}" >
                         <f:facet name="header">
-                            <h:outputText value="Name"/>
+                            <a4j:commandLink value="Name" render="dealstable" action="#{customerDealsSortingBean.sortByName()}"/>
                         </f:facet>
                         <h:outputText value="#{item.customerName}"/>
                     </rich:column>
-                    <c:forEach items="#{customerDetailBean.customerDealsShowRange}" var="col">
-                        <rich:column>
+                    <c:forEach items="#{customerDetailBean.customerDealsShowRange}" var="col" varStatus='status'>
+                        <rich:column sortBy="#{item.getDetailsByIndex(status.index)}" sortOrder="#{customerDealsSortingBean.getColumnOrder(status.index, customerDetailBean.getCustomerDealsColTotal())}">
                             <f:facet name="header">
-                                <h:outputText value="#{col}"/>
+                                <a4j:commandLink value="#{col}" render="dealstable" action="#{customerDealsSortingBean.sortByColumn(status.index)}"/>
                             </f:facet>
                             <h:outputText value="#{item.getDealValue(customerDetailBean.getDealColumnIndex(col))}"/>
                         </rich:column>
@@ -49,6 +50,7 @@
                         <h:outputText value="#{item.avgLoan}"/>
                     </rich:column>
                 </rich:dataTable>
+                
             </h:panelGroup>
         </h:panelGroup>
     </h:panelGroup>

@@ -25,6 +25,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -124,14 +125,16 @@ public class Customer implements Serializable {
     @JoinColumn(name = "parent_customer_id", referencedColumnName = "id")
     @ManyToOne
     private ParentCustomer parentCustomerId;
-
+    @Transient
+    private int totalDeals;
+    
     public Customer() {
     }
 
     public Customer(Long id) {
         this.id = id;
     }
-
+  
     public Long getId() {
         return id;
     }
@@ -358,6 +361,14 @@ public class Customer implements Serializable {
 
     public void setDba(String dba) {
         this.dba = dba;
+    }
+
+    public int getTotalDeals() {
+        return totalDeals;
+    }
+
+    public void setTotalDeals(int totalDeals) {
+        this.totalDeals = totalDeals;
     }
     
 }

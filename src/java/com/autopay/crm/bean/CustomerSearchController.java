@@ -2,13 +2,16 @@ package com.autopay.crm.bean;
 
 import com.autopay.crm.bean.util.JsfUtil;
 import com.autopay.crm.bean.util.PaginationHelper;
+import com.autopay.crm.model.Address;
 import com.autopay.crm.model.Campaign;
 import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.Customer;
+import com.autopay.crm.model.Lead;
 import com.autopay.crm.model.search.CustomerSearchCriteria;
 import com.autopay.crm.session.CustomerFacade;
 import com.autopay.crm.util.CrmConstants;
 import com.autopay.crm.util.CrmConstants.ActiveStatusType;
+import com.autopay.crm.util.CrmConstants.CustomerSortBy;
 import com.autopay.crm.util.CrmConstants.CustomerStatus;
 import com.autopay.crm.util.CrmConstants.CustomerType;
 import com.autopay.crm.util.CrmUtils;
@@ -37,8 +40,10 @@ public class CustomerSearchController implements Serializable {
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private List<Customer> searchResult;
+    private List<Customer> searchResult_backup;
     private int rowsPerPage = CrmConstants.DEFAULT_ITEMS_PER_PAGE;
     private boolean noCustomerFound = false;
+    private String searchByName = null;
     //campaign related
     private String campaignName;
     private String campaignDesc;
@@ -86,6 +91,14 @@ public class CustomerSearchController implements Serializable {
         return this.searchResult;
     }
 
+    public String getSearchByName() {
+        return searchByName;
+    }
+
+    public void setSearchByName(String searchByName) {
+        this.searchByName = searchByName;
+    }
+
     public String reset() {
         customerSearchCriteria = new CustomerSearchCriteria();
         searchResult = null;
@@ -104,6 +117,7 @@ public class CustomerSearchController implements Serializable {
             recreateModel();
             pagination = null;
             searchResult = getFacade().getCustomersBySearchCriterias(customerSearchCriteria);
+            searchResult_backup = new ArrayList<Customer>(searchResult);
             if (searchResult == null || searchResult.isEmpty()) {
                 setNoCustomerFound(true);
             } else {
@@ -112,6 +126,26 @@ public class CustomerSearchController implements Serializable {
         } catch (Exception e) {
             JsfUtil.addErrorMessage("Exception is thrown during searching customers.");
             log.error(e);
+        }
+        return "CustomerSearch";
+    }
+    
+    public String searchAgain() {
+        System.out.println("======== searchAgain: " + searchByName);
+        if (searchByName != null && searchResult != null) {
+            recreateModel();
+            pagination = null;
+            if (searchByName.trim().length() == 0) {
+                searchResult = new ArrayList<Customer>(searchResult_backup);
+            } else {
+                List<Customer> result = new ArrayList<Customer>();
+                for (Customer c : searchResult) {
+                    if (c.getName().toLowerCase().startsWith(searchByName.toLowerCase())) {
+                        result.add(c);
+                    }
+                }
+                searchResult = result;
+            }
         }
         return "CustomerSearch";
     }
@@ -206,6 +240,14 @@ public class CustomerSearchController implements Serializable {
         }
         return result;
     }
+    
+    public List<String> getCustomerSortByList() {
+        List<String> result = new ArrayList<String>();
+        for (CustomerSortBy sortBy : CustomerSortBy.values()) {
+            result.add(sortBy.name());
+        }
+        return result;
+    }
 
     public List<String> getCustomerStatusesForSearch() {
         List<String> result = new ArrayList<String>();
@@ -235,6 +277,43 @@ public class CustomerSearchController implements Serializable {
         List<String> result = getFacade().getCustomerNamesByName(prefix);
         Collections.sort(result);
         return result;
+    }
+    
+    public String getCustomerTypeAbbr(final String type) {
+        return CrmUtils.getCustomerTypeAbbr(type);
+    }
+    
+    public String getCustomerState(final Customer customer) {
+        String result = "";
+        if (customer.getAddressCollection() != null && customer.getAddressCollection().size() > 0) {
+            for (Address a : customer.getAddressCollection()) {
+                result = a.getState();
+                break;
+            }
+        }
+        return result;
+    }
+    
+    public int getCustomerTotalFinanced(final Customer customer) {
+        int result = 0;
+        List<Long> idList = new ArrayList<Long>();
+        for (Lead lead : customer.getLeadCollection()) {
+            if (!idList.contains(lead.getId())) {
+                result = result + lead.getTotalFinanced();
+                idList.add(lead.getId());
+            }
+        }
+//        for (Lead lead : customer.getLeadCollection1()) {
+//            if (!idList.contains(lead.getId())) {
+//                result = result + lead.getTotalFinanced();
+//                idList.add(lead.getId());
+//            }
+//        }
+        return result;
+    }
+    
+    public String backToCustomerSearchPage() {
+        return "/pages/customer/CustomerSearch";
     }
 
     /**

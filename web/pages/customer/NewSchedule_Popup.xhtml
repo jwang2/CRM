@@ -1,0 +1,43 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <rich:popupPanel id="newschedule" header="Create A Schedule" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:form>
+            <h:panelGrid columns="2" rendered="true">
+                <h:outputLabel value="Assign To:"/>
+                <rich:autocomplete value="#{customerDetailBean.currentSchedule.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" styleClass="inputSearch2" style="border: none; background: transparent; vertical-align: middle">
+                    <f:validateRequired/>
+                </rich:autocomplete>
+
+                <h:outputLabel value="Task:"/>
+                <h:inputText label="Task" size="27" value="#{customerDetailBean.currentTask.name}">
+                    <f:validateRequired/>
+                </h:inputText>
+                <h:outputLabel value="Task Type:"/>
+                <h:selectOneMenu value="#{customerDetailBean.currentTask.type}">
+                    <f:selectItems value="#{customerDetailBean.taskTypes}" var="tasktype" itemLabel="#{tasktype}" itemValue="#{tasktype}"/>
+                </h:selectOneMenu>
+                <h:outputLabel value="Scheduled Time:"/>
+                <rich:calendar id="ScheduledTime" value="#{customerDetailBean.currentSchedule.scheduledDatetime}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true">
+                    <f:validateRequired/>
+                </rich:calendar>
+                <h:outputLabel value="Status:"/>
+                <h:selectOneMenu value="#{customerDetailBean.currentSchedule.status}">
+                    <f:selectItems value="#{customerDetailBean.scheduleStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Note:"/>
+                <h:inputTextarea rows="4" cols="40" value="#{customerDetailBean.currentSchedule.note}"/>
+            </h:panelGrid>
+            <h:panelGroup>
+                <a4j:commandButton value="Cancel" onclick="#{rich:component('newschedule')}.hide(event);
+                        return false;"/>
+                <a4j:commandButton execute="newschedule" render="scheduleMain" value="Create" action="#{customerDetailBean.performScheduleAction(loginBean.userName, true)}" oncomplete="#{rich:component('newschedule')}.hide(event);return false;"/>
+
+            </h:panelGroup>
+        </h:form>
+    </rich:popupPanel>
+
+</ui:composition>

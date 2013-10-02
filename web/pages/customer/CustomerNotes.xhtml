@@ -2,21 +2,22 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:rich="http://richfaces.org/rich">
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
     <h:panelGroup>
         <h:panelGroup id="messagePanelNote" layout="block">
             <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
         </h:panelGroup>
-        <h:panelGrid columns="1" cellpadding="10">
-            <h:panelGroup rendered="true">
-                <h:outputText value="Notes" style="font-weight:bold;"/>
-                <h:panelGroup rendered="#{customerDetailBean.selected.customerNoteCollection.size()==0}">
-                    <br/>
-                    <h:outputLabel value="No Notes Found." styleClass="no-result-found"/>
-                </h:panelGroup>
-                <h:panelGroup>
+
+        <h:panelGroup id="notemain" rendered="true">
+            <h:outputText value="Notes" style="font-weight:bold;"/>
+            <h:panelGroup rendered="#{customerDetailBean.selected.customerNoteCollection.size()==0}">
+                <br/>
+                <h:outputLabel value="No Notes Found." styleClass="no-result-found"/>
+            </h:panelGroup>
+            <h:panelGroup>
                 <rich:dataTable  styleClass="table" rendered="#{customerDetailBean.selected.customerNoteCollection.size()>0}" value="#{customerDetailBean.selected.customerNoteCollection}" 
-                              var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                                 var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Note Content"/>
@@ -36,16 +37,12 @@
                         <h:outputText value="#{item.dateCreated}"/>
                     </h:column>
                 </rich:dataTable>
-                </h:panelGroup>
             </h:panelGroup>
-            <br/>
-            <br/>
-            <h:panelGroup rendered="true">
-                <h:inputTextarea rows="5" cols="50" value="#{customerDetailBean.newNoteContent}"/>
-                <br/>
-                <h:commandButton value="#{bundleCrm.NewNoteButton}" action="#{customerDetailBean.addNewNote(loginBean.userName)}"/>
-            </h:panelGroup>
-        </h:panelGrid>
+        </h:panelGroup>
+        <br/>
+        <br/>
+        <a4j:commandButton execute="@this" render="newnote" value="#{bundleCrm.NewNoteButton}" oncomplete="#{rich:component('newnote')}.show();return false;"/>
+        <ui:include src="/pages/customer/NewNote_Popup.xhtml"/>
     </h:panelGroup>
 </ui:composition>
 

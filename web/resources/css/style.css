@@ -87,6 +87,11 @@ input {
     height: 16px;
 }
 
+.inputSearch2.rf-au-inp {
+    width:250px;
+    height: 16px;
+}
+
 /* Header
 -----------------------------------------------------------------------------*/
 
@@ -162,6 +167,12 @@ header, section, article, footer, nav, form {
     font-family: Arial, Verdana, sans-serif;
 }
 
+#content input:disabled {
+  border:none;
+  background-color: transparent;
+  color: #888;
+  background-image: none;
+}
 
 /* Navigation
 -------------*/
@@ -1427,4 +1438,18 @@ div.rf-ulst-itm, div.rf-olst-itm {
     color: #591f00; 
     font-family: Arial, Verdana, sans-serif;
 }
+/*
+.rf-edt-tbl {
+    border-spacing: 0px;
+    border-collapse: collapse;
+    width: 100%;
+}*/
 
+.rf-tab-cnt {
+    border: 1px solid rgb(182, 173, 132);
+    font-family: Arial,Verdana,sans-serif;
+    font-size: 11px;
+    padding: 10px;
+    background: none repeat scroll 0% 0% rgb(237, 234, 221);
+    overflow-x: auto;
+}

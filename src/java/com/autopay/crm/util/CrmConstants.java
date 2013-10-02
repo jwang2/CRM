@@ -42,6 +42,10 @@ public class CrmConstants {
         REGULAR, POBOX
     }
     
+    public enum CustomerSortBy {
+        Id, Name, Type, Status
+    }
+    
     public enum DealerDetailsFileColumn {
 
         DELEAR_NAME("Dealer Name"),

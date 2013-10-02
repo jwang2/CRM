@@ -1,0 +1,21 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <rich:popupPanel id="contactDelete" header="Delete A Contact" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <br/>
+        <h:outputLabel value="Are you sure you want to delete contact '#{customerDetailBean.currentContact.firstName} #{customerDetailBean.currentContact.lastName}' ?" />
+        <br/>
+        <br/>
+        <h:panelGroup>
+            <a4j:commandButton value="Cancel" onclick="#{rich:component('contactDelete')}.hide(event);
+                    return false;"/>
+                <a4j:commandButton execute="contactDelete" value="Delete" render="contactmain" action="#{customerDetailBean.performDeleteContact()}" oncomplete="#{rich:component('contactDelete')}.hide(event);return false;"/>
+        </h:panelGroup>
+
+    </rich:popupPanel>
+
+</ui:composition>
+
+

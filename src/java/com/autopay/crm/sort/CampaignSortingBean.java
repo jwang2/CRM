@@ -16,11 +16,15 @@ public class CampaignSortingBean implements Serializable {
     private SortOrder statusOrder = SortOrder.unsorted;
     private SortOrder ownerOrder = SortOrder.unsorted;
     private SortOrder typeOrder = SortOrder.unsorted;
+    private SortOrder startDateOrder = SortOrder.unsorted;
+    private SortOrder endDateOrder = SortOrder.unsorted;
 
     public void sortByName() {
         statusOrder = SortOrder.unsorted;
         ownerOrder = SortOrder.unsorted;
         typeOrder = SortOrder.unsorted;
+        startDateOrder = SortOrder.unsorted;
+        endDateOrder = SortOrder.unsorted;
 
         if (nameOrder.equals(SortOrder.ascending)) {
             setNameOrder(SortOrder.descending);
@@ -33,6 +37,8 @@ public class CampaignSortingBean implements Serializable {
         nameOrder = SortOrder.unsorted;
         ownerOrder = SortOrder.unsorted;
         typeOrder = SortOrder.unsorted;
+        startDateOrder = SortOrder.unsorted;
+        endDateOrder = SortOrder.unsorted;
 
         if (statusOrder.equals(SortOrder.ascending)) {
             setStatusOrder(SortOrder.descending);
@@ -45,6 +51,8 @@ public class CampaignSortingBean implements Serializable {
         nameOrder = SortOrder.unsorted;
         statusOrder = SortOrder.unsorted;
         typeOrder = SortOrder.unsorted;
+        startDateOrder = SortOrder.unsorted;
+        endDateOrder = SortOrder.unsorted;
 
         if (ownerOrder.equals(SortOrder.ascending)) {
             setOwnerOrder(SortOrder.descending);
@@ -57,11 +65,41 @@ public class CampaignSortingBean implements Serializable {
         nameOrder = SortOrder.unsorted;
         statusOrder = SortOrder.unsorted;
         ownerOrder = SortOrder.unsorted;
+        startDateOrder = SortOrder.unsorted;
+        endDateOrder = SortOrder.unsorted;
 
         if (typeOrder.equals(SortOrder.ascending)) {
             setTypeOrder(SortOrder.descending);
         } else {
             setTypeOrder(SortOrder.ascending);
+        }
+    }
+    
+    public void sortByStartDate() {
+        nameOrder = SortOrder.unsorted;
+        statusOrder = SortOrder.unsorted;
+        ownerOrder = SortOrder.unsorted;
+        typeOrder = SortOrder.unsorted;
+        endDateOrder = SortOrder.unsorted;
+
+        if (startDateOrder.equals(SortOrder.ascending)) {
+            setStartDateOrder(SortOrder.descending);
+        } else {
+            setStartDateOrder(SortOrder.ascending);
+        }
+    }
+    
+    public void sortByEndDate() {
+        nameOrder = SortOrder.unsorted;
+        statusOrder = SortOrder.unsorted;
+        ownerOrder = SortOrder.unsorted;
+        typeOrder = SortOrder.unsorted;
+        startDateOrder = SortOrder.unsorted;
+
+        if (endDateOrder.equals(SortOrder.ascending)) {
+            setEndDateOrder(SortOrder.descending);
+        } else {
+            setEndDateOrder(SortOrder.ascending);
         }
     }
     
@@ -95,6 +133,22 @@ public class CampaignSortingBean implements Serializable {
 
     public void setTypeOrder(SortOrder typeOrder) {
         this.typeOrder = typeOrder;
+    }
+
+    public SortOrder getStartDateOrder() {
+        return startDateOrder;
+    }
+
+    public void setStartDateOrder(SortOrder startDateOrder) {
+        this.startDateOrder = startDateOrder;
+    }
+
+    public SortOrder getEndDateOrder() {
+        return endDateOrder;
+    }
+
+    public void setEndDateOrder(SortOrder endDateOrder) {
+        this.endDateOrder = endDateOrder;
     }
     
 }

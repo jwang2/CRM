@@ -10,6 +10,7 @@ import com.autopay.crm.util.CrmConstants;
 import com.autopay.crm.util.CrmConstants.ActiveStatusType;
 import com.autopay.crm.util.CrmConstants.CampaignType;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -164,6 +165,22 @@ public class CampaignSearchController implements Serializable {
         rowsPerPage = CrmConstants.DEFAULT_ITEMS_PER_PAGE;
         return "CampaignSearch";
     }
+    
+    private boolean isSearchCriteriaEmpty() {
+        boolean result = true;
+        if (campaignSearchCriteria != null && !campaignSearchCriteria.equals(new CampaignSearchCriteria())) {
+            result = false;
+        }
+        return result;
+    }
+    
+    public boolean isShownYourActiveCampaigns() {
+        if (isSearchCriteriaEmpty() && searchResult != null && searchResult.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public String search() {
         try {
@@ -183,9 +200,21 @@ public class CampaignSearchController implements Serializable {
 
     }
 
-    public int getResultCount() {
+    public int getResultCount(final String currentUser, final boolean superUser) {
         if (searchResult == null) {
-            return 0;
+            if (isSearchCriteriaEmpty()) {
+                if (superUser) {
+                    CampaignSearchCriteria csc = new CampaignSearchCriteria();
+                    csc.setActiveStatus(ActiveStatusType.Active.name());
+                    searchResult = ejbCampaign.getCampaignsBySearchCriterias(csc);
+                    return searchResult.size();
+                } else {
+                    searchResult = ejbCampaign.getUserActiveCampaigns(currentUser);
+                    return searchResult.size();
+                }
+            } else {
+                return 0;
+            }
         } else {
             return searchResult.size();
         }
@@ -229,6 +258,10 @@ public class CampaignSearchController implements Serializable {
         return "/pages/campaign/CampaignDetail";
     }
     
+    public String backToCampaignSearchPage() {
+        return "/pages/campaign/CampaignSearch";
+    }
+    
     public String getCampaignCriteriasStr() {
         String result = "";
         if (current != null) {
@@ -252,6 +285,21 @@ public class CampaignSearchController implements Serializable {
 
     public void setNoCampaignFound(boolean noCampaignFound) {
         this.noCampaignFound = noCampaignFound;
+    }
+    
+    public String getCampaignCompletedPercentValue(final Campaign campaign) {
+        String result = "";
+        int totalRecords = campaign.getCampaignCustomerCollection().size();
+        int completedRecords = 0;
+        for (CampaignCustomer cc : campaign.getCampaignCustomerCollection()) {
+            if (cc.getCompletedDate() != null && cc.getCompletedDate().before(new Date())) {
+                completedRecords++;
+            }
+        }
+        float rate = completedRecords/totalRecords;
+        result = new DecimalFormat("0.0").format(100 * rate);
+
+        return result + "% (" + totalRecords + " records in campaign)";
     }
 
     /**

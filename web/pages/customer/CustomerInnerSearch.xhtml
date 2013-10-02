@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <rich:toolbar height="15px" id="tb">
+        <rich:toolbarGroup location="left">
+            <c:forEach items="#{customerDetailBean.customers_viewrecently}" var="item">
+                <h:commandLink value="#{item.name}" action="#{customerDetailBean.prepareDetail(item)}" style="font-size: 0.8em"/>
+            </c:forEach>
+        </rich:toolbarGroup>
+        <rich:toolbarGroup location="right">
+
+            <h:inputText value="#{customerSearchBean.searchByName}"
+                         validatorMessage="Enter 2 characters">
+                <rich:placeholder value="Enter Dealer first 2 letters"/>
+            </h:inputText>
+            <h:commandButton id="searchButton" value="search" styleClass="nestedButton" action="#{customerSearchBean.searchAgain()}"/>
+
+        </rich:toolbarGroup>
+    </rich:toolbar>
+
+</ui:composition>

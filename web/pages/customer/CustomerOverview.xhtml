@@ -33,11 +33,13 @@
 
             <h:outputText value="#{bundle.ViewCustomerLabel_website}"/>
             <h:inputText size="80" value="#{customerDetailBean.selected.website}" title="#{bundle.ViewCustomerTitle_website}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
-            <a onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" href="" style="cursor: pointer">google</a>
+            <h:link onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" style="cursor: pointer" rendered="#{customerDetailBean.allowEditCustomer}">google</h:link>
+            <h:outputLabel value="" rendered="#{!customerDetailBean.allowEditCustomer}"/>
 
             <h:outputText value="#{bundle.ViewCustomerLabel_phone}"/>
             <h:inputText size="80" value="#{customerDetailBean.selected.phone}" title="#{bundle.ViewCustomerTitle_phone}" disabled="#{!customerDetailBean.allowEditCustomer}"/>
-            <a onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" href="" style="cursor: pointer">google</a>
+            <h:link onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" style="cursor: pointer"  rendered="#{customerDetailBean.allowEditCustomer}">google</h:link>
+            <h:outputLabel value="" rendered="#{!customerDetailBean.allowEditCustomer}"/>
 
             <h:outputText value="Address:"/>
             <h:inputText size="80" value="#{customerDetailBean.selectedMainAddress.address1}" title="main address" disabled="#{!customerDetailBean.allowEditCustomer}"/>

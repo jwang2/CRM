@@ -15,7 +15,7 @@
                     <f:facet name="header">
                         <a4j:commandLink value="#{bundle.ListCustomerTitle_id}" render="campaignCustomerResultTable" action="#{customerSortingBean.sortById()}"/>
                     </f:facet>
-                    <h:outputText value="#{item.id}"/>
+                    <h:commandLink action="#{customerDetailBean.prepareDetail(item)}" value="#{item.id}"/>
                 </rich:column>
                 <rich:column sortBy="#{item.name}" sortOrder="#{customerSortingBean.nameOrder}">
                     <f:facet name="header">
@@ -34,12 +34,6 @@
                         <a4j:commandLink value="#{bundle.ListCustomerTitle_type}" render="campaignCustomerResultTable" action="#{customerSortingBean.sortByType()}"/>
                     </f:facet>
                     <h:outputText value="#{item.type}"/>
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        <h:outputText  value="&#160;&#160;&#160;" />
-                    </f:facet>
-                    <h:commandLink action="#{customerDetailBean.prepareDetail(item)}" value="Detail"/>
                 </rich:column>
             </rich:dataTable>
         </h:panelGroup>

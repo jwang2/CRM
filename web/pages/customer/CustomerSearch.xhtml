@@ -88,6 +88,12 @@
                             </h:inputText>
                         </h:panelGroup>
                         
+                        <h:outputLabel value="Sort By:" style="font-weight:bold; font-size: 1.5em"/>
+                        <h:selectOneMenu id ="sortby" value="#{customerSearchBean.customerSearchCriteria.sortBy}">
+                            <f:selectItems value="#{customerSearchBean.customerSortByList}" var="sortby" itemLabel="#{sortby}" itemValue="#{sortby}"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel value=""/>
+                        <h:outputLabel value=""/>
 
                     </h:panelGrid>
                     <br/>
@@ -102,6 +108,7 @@
                         <h:outputLabel value="No Customer Found." styleClass="no-search-result-found"/>
                     </h:panelGroup>
                     <h:panelGroup id="customersearchresult" rendered="#{customerSearchBean.resultCount > 0}">
+                        <ui:include src="/pages/customer/CustomerInnerSearch.xhtml"/>
                         <ui:include src="/pages/campaign/Create_Popup.xhtml"/>
                         <br/>
                         <h:outputText value="#{customerSearchBean.pagination.pageFirstItem + 1}..#{customerSearchBean.pagination.pageLastItem + 1}/#{customerSearchBean.pagination.itemsCount}"/><h:outputText  value="&#160;&#160;&#160;" />
@@ -112,37 +119,58 @@
                             <a4j:ajax event="valueChange" render="customersearchresult" listener="#{customerSearchBean.rowsPerPageChanged()}" />
                             <f:selectItems value="#{customerSearchBean.rowsPerPageList}" var="rowsPerPage" itemLabel="#{rowsPerPage}" itemValue="#{rowsPerPage}"/>
                         </h:selectOneMenu>
+                        
                         <rich:dataTable id="customerResultTable" styleClass="table" value="#{customerSearchBean.items}" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
                             <rich:column sortBy="#{item.id}" sortOrder="#{customerSortingBean.idOrder}">
                                 <f:facet name="header">
-                                    <a4j:commandLink value="#{bundle.ListCustomerTitle_id}" render="customerResultTable" action="#{customerSortingBean.sortById()}"/>
+                                    <a4j:commandLink value="#{bundleCrm.CustomerIdLabel}" render="customerResultTable" action="#{customerSortingBean.sortById()}"/>
                                 </f:facet>
-                                <h:outputText value="#{item.id}"/>
+                                <h:commandLink action="#{customerDetailBean.prepareDetail(item)}" value="#{item.id}"/>
                             </rich:column>
                             <rich:column sortBy="#{item.name}" sortOrder="#{customerSortingBean.nameOrder}">
                                 <f:facet name="header">
-                                    <a4j:commandLink value="#{bundle.ListCustomerTitle_name}" render="customerResultTable" action="#{customerSortingBean.sortByName()}"/>
+                                    <a4j:commandLink value="#{bundleCrm.CustomerNameLabel}" render="customerResultTable" action="#{customerSortingBean.sortByName()}"/>
                                 </f:facet>
                                 <h:outputText value="#{item.name}"/>
                             </rich:column>
+                            <rich:column sortBy="#{item.type}" sortOrder="#{customerSortingBean.typeOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerTypeLabel}" render="customerResultTable" action="#{customerSortingBean.sortByType()}"/>
+                                </f:facet>
+                                <h:outputText value="#{customerSearchBean.getCustomerTypeAbbr(item.type)}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.totalDeals}" sortOrder="#{customerSortingBean.dealsOrder}" >
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerDealsLabel}" render="customerResultTable" action="#{customerSortingBean.sortByDeals()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.totalDeals}"/>
+                            </rich:column>
+                            <rich:column >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundleCrm.CustomerPhoneLabel}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.phone}"/>
+                            </rich:column>
+                            <rich:column >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundleCrm.CustomerWebsitLabel}"/>
+                                </f:facet>
+                                <h:link onclick="window.open('#{customerDetailBean.getCustomerGoogleSearchResultPage(item)}');" style="cursor: pointer">#{customerDetailBean.getCustomerWebsiteValue(item)}</h:link>
+            
+                            </rich:column>
+                            <rich:column sortBy="#{customerSearchBean.getCustomerState(item)}" sortOrder="#{customerSortingBean.stateOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerStateLabel}" render="customerResultTable" action="#{customerSortingBean.sortByState()}"/>
+                                </f:facet>
+                                <h:outputText value="#{customerSearchBean.getCustomerState(item)}"/>
+                            </rich:column>
                             <rich:column sortBy="#{item.status}" sortOrder="#{customerSortingBean.statusOrder}">
                                 <f:facet name="header">
-                                    <a4j:commandLink value="#{bundle.ListCustomerTitle_status}" render="customerResultTable" action="#{customerSortingBean.sortByStatus()}"/>
+                                    <a4j:commandLink value="#{bundleCrm.CustomerStatusLabel}" render="customerResultTable" action="#{customerSortingBean.sortByStatus()}"/>
                                 </f:facet>
                                 <h:outputText value="#{item.status}"/>
                             </rich:column>
-                            <rich:column sortBy="#{item.type}" sortOrder="#{customerSortingBean.typeOrder}">
-                                <f:facet name="header">
-                                    <a4j:commandLink value="#{bundle.ListCustomerTitle_type}" render="customerResultTable" action="#{customerSortingBean.sortByType()}"/>
-                                </f:facet>
-                                <h:outputText value="#{item.type}"/>
-                            </rich:column>
-                            <rich:column>
-                                <f:facet name="header">
-                                    <h:outputText  value="&#160;&#160;&#160;" />
-                                </f:facet>
-                                <h:commandLink action="#{customerDetailBean.prepareDetail(item)}" value="Detail"/>
-                            </rich:column>
+                            
                         </rich:dataTable>
                     </h:panelGroup>
                 </h:panelGroup>

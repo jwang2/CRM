@@ -13,8 +13,11 @@ import com.autopay.crm.model.search.CustomerSearchCriteria;
 import com.autopay.crm.upload.ExcelRowDataModel;
 import com.autopay.crm.util.CrmConstants;
 import com.autopay.crm.util.CrmUtils;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -81,7 +84,7 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         }
         //String queryStr = "select c.* from customer c, address a where c.compare_name = '" + compareName + "' and a.customer_id = c.id and a.address1 = '" + address + "' and a.zip_code = '" + dataModel.getDealerZipCode() + "'";
 
-        
+
         String queryStr = "select c.* from customer c inner join address a on c.compare_name = '" + compareName + "' and a.customer_id = c.id and a.address1 = '" + address1 + "' and a.zip_code = '" + zipCode + "'";
         try {
             Customer result = (Customer) em.createNativeQuery(queryStr, Customer.class).getSingleResult();
@@ -146,7 +149,7 @@ public class CustomerFacade extends AbstractFacade<Customer> {
     }
 
     public List<Customer> getCustomersBySearchCriterias(final CustomerSearchCriteria customerSearchCriteria) {
-        String queryStr = "";
+        String queryStr;
         boolean joinAddress = false;
         boolean joinLead = false;
         if ((customerSearchCriteria.getCity() != null && customerSearchCriteria.getCity().trim().length() > 0)
@@ -156,111 +159,31 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             joinAddress = true;
         }
         if ((customerSearchCriteria.getTotalFinanced() != null && customerSearchCriteria.getTotalFinancedOperator() != null)
-                || (customerSearchCriteria.getTotalLoan() != null && customerSearchCriteria.getTotalLoanOperator() != null)) {
+                || (customerSearchCriteria.getTotalLoan() != null && customerSearchCriteria.getTotalLoanOperator() != null)
+                || (customerSearchCriteria.getStartDate() != null)
+                || (customerSearchCriteria.getEndDate() != null)) {
             joinLead = true;
         }
-        if (customerSearchCriteria.getName() != null && customerSearchCriteria.getName().trim().length() > 0) {
-            if (joinAddress || joinLead) {
-                if (joinAddress && joinLead) {
-                    queryStr = "select distinct c.* from customer c, address a, lead l where c.name like '%" + customerSearchCriteria.getName().trim() + "%'";
-                } else if (joinAddress) {
-                    queryStr = "select distinct c.* from customer c, address a where c.name like '%" + customerSearchCriteria.getName().trim() + "%'";
-                } else {
-                    queryStr = "select distinct c.* from customer c, lead l where c.name like '%" + customerSearchCriteria.getName().trim() + "%'";
-                }
-            } else {
-                queryStr = "select distinct c.* from customer c where c.name like '%" + customerSearchCriteria.getName().trim() + "%'";
-            }
-        }
-        if (customerSearchCriteria.getType() != null && customerSearchCriteria.getType().trim().length() > 0) {
-            if (queryStr.length() == 0) {
-                if (joinAddress || joinLead) {
-                    if (joinAddress && joinLead) {
-                        queryStr = "select distinct c.* from customer c, address a, lead l where c.type = '" + customerSearchCriteria.getType().toUpperCase() + "'";
-                    } else if (joinAddress) {
-                        queryStr = "select distinct c.* from customer c, address a where c.type = '" + customerSearchCriteria.getType().toUpperCase() + "'";
-                    } else {
-                        queryStr = "select distinct c.* from customer c, lead l where c.type = '" + customerSearchCriteria.getType().toUpperCase() + "'";
-                    }
-                } else {
-                    queryStr = "select distinct c.* from customer c where c.type = '" + customerSearchCriteria.getType().toUpperCase() + "'";
-                }
-            } else {
-                queryStr = queryStr + " and c.type = '" + customerSearchCriteria.getType().toUpperCase() + "'";
-            }
-        }
-        if (customerSearchCriteria.getStatus() != null && customerSearchCriteria.getStatus().trim().length() > 0 && customerSearchCriteria.getStatusOperator() != null) {
-            if (queryStr.length() == 0) {
-                if (joinAddress || joinLead) {
-                    if (joinAddress && joinLead) {
-                        queryStr = "select distinct c.* from customer c, address a, lead l where c.status " + customerSearchCriteria.getStatusOperator() + " '" + customerSearchCriteria.getStatus().toUpperCase() + "'";
-                    } else if (joinAddress) {
-                        queryStr = "select distinct c.* from customer c, address a where c.status " + customerSearchCriteria.getStatusOperator() + " '" + customerSearchCriteria.getStatus().toUpperCase() + "'";
-                    } else {
-                        queryStr = "select distinct c.* from customer c, lead l where c.status " + customerSearchCriteria.getStatusOperator() + " '" + customerSearchCriteria.getStatus().toUpperCase() + "'";
-                    }
-                } else {
-                    queryStr = "select distinct c.* from customer c where c.status " + customerSearchCriteria.getStatusOperator() + " '" + customerSearchCriteria.getStatus().toUpperCase() + "'";
-                }
-            } else {
-                queryStr = queryStr + " and c.status " + customerSearchCriteria.getStatusOperator() + " '" + customerSearchCriteria.getStatus().toUpperCase() + "'";
-            }
-        }
-        if (customerSearchCriteria.getPhone() != null && customerSearchCriteria.getPhone().trim().length() > 0) {
-            if (queryStr.length() == 0) {
-                if (joinAddress || joinLead) {
-                    if (joinAddress && joinLead) {
-                        queryStr = "select distinct c.* from customer c, address a, lead l where c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
-                    } else if (joinAddress) {
-                        queryStr = "select distinct c.* from customer c, address a where c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
-                    } else {
-                        queryStr = "select distinct c.* from customer c, lead l where c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
-                    }
-                } else {
-                    queryStr = "select distinct c.* from customer c where c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
-                }
-            } else {
-                queryStr = queryStr + " and c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
-            }
-        }
+        String aStr = "";
         if (joinAddress) {
-            if (queryStr.length() == 0) {
-                if (joinLead) {
-                    queryStr = "select distinct c.* from customer c, address a, lead l where c.id = a.customer_id";
-                } else {
-                    queryStr = "select distinct c.* from customer c, address a where c.id = a.customer_id";
-                }
-            } else {
-                queryStr = queryStr + " and c.id = a.customer_id";
-            }
-
+            aStr = " inner join address a on c.id = a.customer_id ";
             if (customerSearchCriteria.getCity() != null && customerSearchCriteria.getCity().trim().length() > 0) {
-                queryStr = queryStr + " and a.city = '" + customerSearchCriteria.getCity().trim().toUpperCase() + "'";
+                aStr = aStr + " and a.city = '" + customerSearchCriteria.getCity().trim().toUpperCase() + "'";
             }
             if (customerSearchCriteria.getCounty() != null && customerSearchCriteria.getCounty().trim().length() > 0) {
-                queryStr = queryStr + " and a.county = '" + customerSearchCriteria.getCounty().trim().toUpperCase() + "'";
+                aStr = aStr + " and a.county = '" + customerSearchCriteria.getCounty().trim().toUpperCase() + "'";
             }
             if (customerSearchCriteria.getState() != null && customerSearchCriteria.getState().trim().length() > 0) {
-                queryStr = queryStr + " and a.state = '" + customerSearchCriteria.getState().trim().toUpperCase() + "'";
+                aStr = aStr + " and a.state = '" + customerSearchCriteria.getState().trim().toUpperCase() + "'";
             }
             if (customerSearchCriteria.getZipcode() != null && customerSearchCriteria.getZipcode().trim().length() > 0) {
-                queryStr = queryStr + " and a.zip_code = '" + customerSearchCriteria.getZipcode().trim().toUpperCase() + "'";
+                aStr = aStr + " and a.zip_code = '" + customerSearchCriteria.getZipcode().trim().toUpperCase() + "'";
             }
         }
+        String lStr = "";
+        Date startDate = null;
+        Date endDate = null;
         if (joinLead) {
-            if (queryStr.length() == 0) {
-                queryStr = "select distinct c.* from customer c, lead l where c.id = l.dealer_id";
-            } else {
-                if (customerSearchCriteria.getType() != null && customerSearchCriteria.getType().equals(CrmConstants.CustomerType.DEALER.name())) {
-                    queryStr = queryStr + " and c.id = l.dealer_id";
-                } else if (customerSearchCriteria.getType() != null && customerSearchCriteria.getType().equals(CrmConstants.CustomerType.FINANCE_COMPANY.name())) {
-                    queryStr = queryStr + " and c.id = l.finance_company_id";
-                } else {
-                    queryStr = queryStr + " and (c.id = l.dealer_id or c.id = l.finance_company_id)";
-                }
-            }
-            Date startDate;
-            Date endDate;
             if (customerSearchCriteria.getStartDate() == null || customerSearchCriteria.getEndDate() == null) {
                 Date latestDate = getLatestDataInLeadRecords();
                 if (latestDate != null) {
@@ -274,17 +197,70 @@ public class CustomerFacade extends AbstractFacade<Customer> {
                 startDate = customerSearchCriteria.getStartDate();
                 endDate = customerSearchCriteria.getEndDate();
             }
+            boolean hasTotalFinanced = false;
+            boolean hasTotalLoan = false;
             if (customerSearchCriteria.getTotalFinanced() != null && customerSearchCriteria.getTotalFinancedOperator() != null) {
-                queryStr = queryStr + " and l.total_financed " + customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString() + " and l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '" + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "'";
+                hasTotalFinanced = true;
             }
+
             if (customerSearchCriteria.getTotalLoan() != null && customerSearchCriteria.getTotalLoanOperator() != null) {
-                queryStr = queryStr + " and l.total_loan " + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString() + " and l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '" + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "'";
+                hasTotalLoan = true;
             }
+            String whereStr;
+            if (customerSearchCriteria.getType() != null && customerSearchCriteria.getType().equals(CrmConstants.CustomerType.DEALER.name())) {
+                whereStr = " where c.id = x.ld";
+            } else if (customerSearchCriteria.getType() != null && customerSearchCriteria.getType().equals(CrmConstants.CustomerType.FINANCE_COMPANY.name())) {
+                whereStr = " where c.id = x.lfc";
+            } else {
+                whereStr = " where (c.id = x.ld or c.id = x.lfc)";
+            }
+            if (hasTotalFinanced && hasTotalLoan) {
+                lStr = " inner join (select y.ld as ld, y.lfc as lfc, sum(y.tf) as total, sum(y.tl) as total2 from (select l.dealer_id as ld, l.finance_company_id as lfc, l.total_financed as tf, l.total_loan as tl from lead l where l.file_date >= '"
+                        + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
+                        + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld having total " + customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString()
+                        + " and total2 " + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString() + ") x " + whereStr;
+            } else {
+                if (hasTotalFinanced) {
+                    lStr = " inner join (select y.ld as ld, y.lfc as lfc, sum(y.tf) as total from (select l.dealer_id as ld, l.finance_company_id as lfc, l.total_financed as tf from lead l where l.file_date >= '"
+                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld having total " + customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString()
+                            + ") x " + whereStr;
+                } else if (hasTotalLoan) {
+                    lStr = " inner join (select y.ld as ld, y.lfc as lfc, sum(y.tl) as total2 from (select l.dealer_id as ld, l.finance_company_id as lfc, l.total_loan as tl from lead l where l.file_date >= '"
+                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld having total2 " + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString() + ") x " + whereStr;
+                } else {
+                    lStr = " inner join (select y.ld as ld, y.lfc as lfc from (select l.dealer_id as ld, l.finance_company_id as lfc from lead l where l.file_date >= '"
+                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld) x " + whereStr;
+                }
+            }
+        }
+
+        String cWhere = "";
+        if (customerSearchCriteria.getName() != null && customerSearchCriteria.getName().trim().length() > 0) {
+            cWhere = cWhere + " and c.name like '%" + customerSearchCriteria.getName().trim() + "%'";
+        }
+        if (customerSearchCriteria.getType() != null && customerSearchCriteria.getType().trim().length() > 0) {
+            cWhere = cWhere + " and c.type = '" + customerSearchCriteria.getType().toUpperCase() + "'";
+        }
+        if (customerSearchCriteria.getStatus() != null && customerSearchCriteria.getStatus().trim().length() > 0 && customerSearchCriteria.getStatusOperator() != null) {
+            cWhere = cWhere + " and c.status " + customerSearchCriteria.getStatusOperator() + " '" + customerSearchCriteria.getStatus().toUpperCase() + "'";
+        }
+        if (customerSearchCriteria.getPhone() != null && customerSearchCriteria.getPhone().trim().length() > 0) {
+            cWhere = cWhere + " and c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
+        }
+
+        queryStr = "select distinct c.* from customer c" + (aStr.length() == 0 ? "" : aStr) + (lStr.length() == 0 ? "" : lStr) + (cWhere.length() == 0 ? "" : cWhere);
+
+        if (customerSearchCriteria.getSortBy() != null) {
+            queryStr = queryStr + " order by c." + customerSearchCriteria.getSortBy().toLowerCase();
         }
         try {
             if (queryStr.trim().length() > 0) {
                 System.out.println("============================ search sql: \n" + queryStr);
                 List<Customer> result = (List<Customer>) em.createNativeQuery(queryStr, Customer.class).getResultList();
+                getCustomerTotalFinanced(result, startDate, endDate);
                 return result;
             } else {
                 return null;
@@ -294,11 +270,11 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             return null;
         }
     }
-    
+
     private Date getLatestDataInLeadRecords() {
         String queryStr = "select max(file_date) from lead";
         try {
-            Date result = (Date)em.createNativeQuery(queryStr).getSingleResult();
+            Date result = (Date) em.createNativeQuery(queryStr).getSingleResult();
             return result;
         } catch (Exception e) {
             log.error(e);
@@ -307,9 +283,9 @@ public class CustomerFacade extends AbstractFacade<Customer> {
     }
 
     public List<Customer> getRelatedFinanceCompanies(final long customerID, final boolean hasParentCustomerID) {
-        String queryStr = "select distinct c.* from customer c, lead l where l.dealer_id = " + customerID + " and l.dealer_id = l.finance_company_id and c.id = l.finance_company_id";
+        String queryStr = "select distinct c.* from customer c, lead l where l.dealer_id = " + customerID + " and l.dealer_id = l.finance_company_id and c.id = l.finance_company_id order by c.name";
         if (hasParentCustomerID) {
-            queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id = " + customerID + " and l.finance_company_id = c1.id and c2.id = " + customerID + " and c2.parent_customer_id = c1.parent_customer_id";
+            queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id = " + customerID + " and l.finance_company_id = c1.id and c2.id = " + customerID + " and c2.parent_customer_id = c1.parent_customer_id order by c1.name";
         }
         try {
             List<Customer> result = (List<Customer>) em.createNativeQuery(queryStr, Customer.class).getResultList();
@@ -321,10 +297,10 @@ public class CustomerFacade extends AbstractFacade<Customer> {
     }
 
     public List<Customer> getNonRelatedFinanceCompanies(final long customerID, final boolean hasParentCustomerID) {
-        String queryStr = "select distinct c.* from customer c, lead l where l.dealer_id = " + customerID + " and l.dealer_id != l.finance_company_id and c.id = l.finance_company_id";
+        String queryStr = "select distinct c.* from customer c, lead l where l.dealer_id = " + customerID + " and l.dealer_id != l.finance_company_id and c.id = l.finance_company_id order by c.name";
         try {
             if (hasParentCustomerID) {
-                queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id = " + customerID + " and l.finance_company_id = c1.id and c2.id = " + customerID + " and (c1.parent_customer_id is null or c2.parent_customer_id != c1.parent_customer_id)";
+                queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id = " + customerID + " and l.finance_company_id = c1.id and c2.id = " + customerID + " and (c1.parent_customer_id is null or c2.parent_customer_id != c1.parent_customer_id) order by c1.name";
             }
             List<Customer> result = (List<Customer>) em.createNativeQuery(queryStr, Customer.class).getResultList();
             return result;
@@ -342,6 +318,58 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         } catch (Exception e) {
             log.error(e);
             return null;
+        }
+    }
+
+    public void getCustomerTotalFinanced(final List<Customer> customers, final Date startDate, final Date endDate) {
+        String customerIDs = "";
+        for (Customer customer : customers) {
+            if (customerIDs.length() == 0) {
+                customerIDs = customer.getId() + "";
+            } else {
+                customerIDs = customerIDs + ", " + customer.getId();
+            }
+        }
+        if (customerIDs.length() > 0) {
+            String queryStr;
+            if (startDate == null && endDate == null) {
+                queryStr = "select * from lead where dealer_id in (" + customerIDs + ")";
+            } else {
+                if (startDate == null) {
+                    queryStr = "select * from lead where dealer_id in (" + customerIDs + ") and file_date <= '"
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "'";
+                } else if (endDate == null) {
+                    queryStr = "select * from lead where dealer_id in (" + customerIDs + ") and file_date >= '"
+                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "'";
+                } else {
+                    queryStr = "select * from lead where dealer_id in (" + customerIDs + ") and file_date >= '"
+                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and file_date <= '"
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "'";
+                }
+            }
+
+            try {
+                List<Lead> result = (List<Lead>) em.createNativeQuery(queryStr, Lead.class).getResultList();
+                if (result != null) {
+                    Map<Long, Integer> values = new HashMap<Long, Integer>();
+                    for (Lead l : result) {
+                        Integer value = values.get(l.getDealerId().getId());
+                        if (value == null) {
+                            value = 0;
+                        }
+                        value = value + l.getTotalFinanced().intValue();
+                        values.put(l.getDealerId().getId(), value);
+                    }
+                    for (Customer customer : customers) {
+                        if (values.containsKey(customer.getId())) {
+                            customer.setTotalDeals(values.get(customer.getId()));
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
     }
 

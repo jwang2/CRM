@@ -23,6 +23,7 @@ public final class CustomerSearchCriteria implements Serializable{
     private String statusOperator;
     private Date startDate;
     private Date endDate;
+    private String sortBy;
     
     public CustomerSearchCriteria() {
         
@@ -173,6 +174,14 @@ public final class CustomerSearchCriteria implements Serializable{
         this.endDate = endDate;
     }
 
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -191,6 +200,7 @@ public final class CustomerSearchCriteria implements Serializable{
         hash = 67 * hash + (this.statusOperator != null ? this.statusOperator.hashCode() : 0);
         hash = 67 * hash + (this.startDate != null ? this.startDate.hashCode() : 0);
         hash = 67 * hash + (this.endDate != null ? this.endDate.hashCode() : 0);
+        hash = 67 * hash + (this.sortBy != null ? this.sortBy.hashCode() : 0);
         return hash;
     }
 
@@ -248,12 +258,15 @@ public final class CustomerSearchCriteria implements Serializable{
         if (this.endDate != other.endDate && (this.endDate == null || !this.endDate.equals(other.endDate))) {
             return false;
         }
+        if ((this.sortBy == null) ? (other.sortBy != null) : !this.sortBy.equals(other.sortBy)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "CustomerSearchCriteria{" + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", startDate=" + startDate + ", endDate=" + endDate + '}';
+        return "CustomerSearchCriteria{" + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", startDate=" + startDate + ", endDate=" + endDate + ", sortBy=" + sortBy + '}';
     }
 
 }

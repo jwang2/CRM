@@ -7,7 +7,7 @@
         <h:outputText value="Customer Detail: #{customerDetailBean.selected.name}" style="font-weight:bold; font-size: 1.5em"/>
         <br/>
         <br/>
-        <h:form>
+        <h:form id='customerdetailform'>
             <rich:tabPanel switchType="ajax" id="tabPanel1" activeItem="#{customerDetailBean.currentTab}">
                 <rich:tab header="Overview" id="tabOverview" name="overview">
                     <ui:include src="CustomerOverview.xhtml"/>
@@ -28,7 +28,9 @@
                     <ui:include src="CustomerSchedules.xhtml"/>
                 </rich:tab>
             </rich:tabPanel>
-            
+            <br/>
+            <br/>
+            <h:commandLink value="Back to Customer Search" action="#{customerSearchBean.backToCustomerSearchPage()}" style="color: #591f00; font-family: Arial, Verdana, sans-serif; font-weight:bold; font-size: 1em"/>
         </h:form>
     </ui:define>
 </ui:composition>

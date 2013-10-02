@@ -1,0 +1,46 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+    <rich:popupPanel id="updatecontact" header="Update Contact" autosized="true" modal="false" 
+                     moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:form>
+        <h:panelGrid columns="2">
+            <h:outputLabel value="First Name:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.firstName}"/>
+            <h:outputLabel value="Last Name:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.lastName}"/>
+            <h:outputLabel value="Primary Phone:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.primaryPhone}"/>
+            <h:outputLabel value="Secondary Phone:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.secondaryPhone}"/>
+            <h:outputLabel value="Fax:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.fax}"/>
+            <h:outputLabel value="Primary Email:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.primaryEmail}"/>
+            <h:outputLabel value="Secondary Email:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.secondaryEmail}"/>
+            <h:outputLabel value="Address1:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.address1}"/>
+            <h:outputLabel value="Address2:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.address2}"/>
+            <h:outputLabel value="City:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.city}"/>
+            <h:outputLabel value="County"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.county}"/>
+            <h:outputLabel value="State:"/>
+            <h:selectOneMenu value="#{customerDetailBean.currentContact.addressId.state}">
+                <f:selectItems value="#{customerDetailBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value="Zip Code:"/>
+            <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.zipCode}"/>
+        </h:panelGrid>
+        <h:panelGroup>
+            <a4j:commandButton value="Cancel" oncomplete="#{rich:component('updatecontact')}.hide(event);return false;"/>
+            <a4j:commandButton execute="updatecontact" render="contactmain" value="Update" action="#{customerDetailBean.performContactAction(loginBean.userName, false)}" oncomplete="#{rich:component('updatecontact')}.hide(event);return false;"/>
+        </h:panelGroup>
+        </h:form>
+    </rich:popupPanel>
+</ui:composition>
+

@@ -1,0 +1,23 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <rich:popupPanel id="newnote" header="Create A Note" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:form>
+            <h:panelGroup>
+                <h:inputTextarea rows="5" cols="50" value="#{customerDetailBean.newNoteContent}"/>
+            </h:panelGroup>
+            <br/>
+            <h:panelGroup>
+                <a4j:commandButton value="Cancel" onclick="#{rich:component('newnote')}.hide(event);
+                        return false;"/>
+                <a4j:commandButton execute="newnote" render="notemain" value="Create" action="#{customerDetailBean.addNewNote(loginBean.userName)}" oncomplete="#{rich:component('newnote')}.hide(event);return false;"/>
+            </h:panelGroup>
+        </h:form>
+    </rich:popupPanel>
+
+</ui:composition>
+

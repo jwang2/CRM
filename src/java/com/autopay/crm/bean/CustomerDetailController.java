@@ -43,8 +43,6 @@ public class CustomerDetailController implements Serializable {
     private boolean allowEditCustomer = false;
     private Customer customer_orig;
     //contact related
-    private String contactButtonText = "";
-    private boolean allowEditContact = false;
     private CustomerContact currentContact;
     //fico related
     private List<Customer> currentRelatedFicos;
@@ -57,12 +55,11 @@ public class CustomerDetailController implements Serializable {
     private String newNoteContent;
     //schedule related
     private Task currentTask;
-    private String scheduleButtonText = "";
-    private boolean allowEditSchedule = false;
-    private boolean allowDeleteSchedule = false;
     private Schedules currentSchedule;
     private String currentScheduleFilter;
     private String currentTab = null;
+    private List<Customer> customers_viewrecently;
+    
     //EJB
     @EJB
     private com.autopay.crm.session.CustomerFacade ejbCustomer;
@@ -91,6 +88,7 @@ public class CustomerDetailController implements Serializable {
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
+        addToViewRecently(customer);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
     }
@@ -100,15 +98,17 @@ public class CustomerDetailController implements Serializable {
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
+        addToViewRecently(current);
         setCurrentTab("schedules");
         return "/pages/customer/CustomerDetail";
     }
-    
+
     public String prepareDetail(LeadSearchResult leadSearchResult) {
         current = leadSearchResult.getDealer();
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
+        addToViewRecently(current);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
     }
@@ -151,6 +151,30 @@ public class CustomerDetailController implements Serializable {
         this.currentTab = currentTab;
     }
 
+    public List<Customer> getCustomers_viewrecently() {
+        if (customers_viewrecently == null) {
+            customers_viewrecently = new ArrayList<Customer>();
+        }
+        return customers_viewrecently;
+    }
+
+    public void setCustomers_viewrecently(List<Customer> customers_viewrecently) {
+        this.customers_viewrecently = customers_viewrecently;
+    }
+
+    private void addToViewRecently(final Customer customer) {
+        if (customers_viewrecently == null) {
+            customers_viewrecently = new ArrayList<Customer>();
+        }
+        if (customers_viewrecently.contains(customer)) {
+            customers_viewrecently.remove(customer);
+        }
+        if (customers_viewrecently.size() == 4) {
+            customers_viewrecently.remove(0);
+        }
+        customers_viewrecently.add(customer);
+    }
+    
     /**
      * ***************************************************
      * Customer Overview Section
@@ -165,13 +189,19 @@ public class CustomerDetailController implements Serializable {
 
     public Address getSelectedMainAddress() {
         Customer customer = getSelected();
-        return getCustomerMainAddress(customer);
+        Address address = getCustomerMainAddress(customer);
+        if (address == null) {
+            address = new Address();
+        } 
+        return address;
     }
 
     private Address getCustomerMainAddress(final Customer customer) {
-        for (Address address : customer.getAddressCollection()) {
-            if (address.getPrincipal()) {
-                return address;
+        if (customer != null && customer.getAddressCollection() != null) {
+            for (Address address : customer.getAddressCollection()) {
+                if (address.getPrincipal()) {
+                    return address;
+                }
             }
         }
         return null;
@@ -179,18 +209,38 @@ public class CustomerDetailController implements Serializable {
 
     public String getCustomerGoogleSearchResultPage() {
         String customerName = current.getName();
+        Address address = getCustomerMainAddress(current);
+        return getCustomerGoogleSearchResultPage(customerName, address);
+    }
+    
+    private String getCustomerGoogleSearchResultPage(String customerName, final Address address) {
         customerName = customerName.replaceAll("'", "");
         customerName = customerName.replaceAll(" ", "+");
 
-        Address address = getSelectedMainAddress();
         String customerAddress = "";
         if (address != null) {
             customerAddress = address.getAddress1() + " " + address.getCity() + " " + address.getState() + " " + address.getZipCode();
         }
         customerAddress = customerAddress.replaceAll("'", "");
         customerAddress = customerAddress.replaceAll(" ", "+");
-        String url = "https://www.google.com/search?hl=en&safe=off&q=" + customerName + "+" + customerAddress;
+        String url = customerAddress.trim().length() > 0 ? ("https://www.google.com/search?hl=en&safe=off&q=" + customerName + "+" + customerAddress) : ("https://www.google.com/search?hl=en&safe=off&q=" + customerName);
         return url;
+    }
+    
+    public String getCustomerGoogleSearchResultPage(final Customer customer) {
+        if (customer.getWebsite() != null && customer.getWebsite().trim().length() > 0) {
+            return customer.getWebsite();
+        } else {
+            return getCustomerGoogleSearchResultPage(customer.getName(), getCustomerMainAddress(customer));
+        }
+    }
+    
+    public String getCustomerWebsiteValue(final Customer customer) {
+        if (customer.getWebsite() != null && customer.getWebsite().trim().length() > 0) {
+            return customer.getWebsite();
+        } else {
+            return "google";
+        }
     }
 
     public boolean isAllowEditCustomer() {
@@ -203,7 +253,7 @@ public class CustomerDetailController implements Serializable {
 
     public String getCustomerEditButtonName() {
         if (allowEditCustomer) {
-            return "Commit Changes";
+            return "Save";
         } else {
             return "Edit Customer";
         }
@@ -225,9 +275,11 @@ public class CustomerDetailController implements Serializable {
                 current.setUpdateUser(userName);
                 ejbCustomer.edit(current);
                 Address address = getSelectedMainAddress();
-                address.setUpdateUser(userName);
-                address.setLastUpdated(new Date());
-                ejbAddress.edit(address);
+                if (address != null) {
+                    address.setUpdateUser(userName);
+                    address.setLastUpdated(new Date());
+                    ejbAddress.edit(address);
+                }
             } catch (Exception e) {
                 log.error("Unable to update customer.", e);
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -267,55 +319,43 @@ public class CustomerDetailController implements Serializable {
      * Customer Contact Section
      * ***************************************************
      */
+    
     public CustomerContact getCurrentContact() {
+        if (currentContact != null && currentContact.getAddressId() == null) {
+            currentContact.setAddressId(new Address());
+        }
         return currentContact;
     }
 
     public void setCurrentContact(final CustomerContact contact) {
         this.currentContact = contact;
-    }
-
-    public String getContactButtonText() {
-        return contactButtonText;
-    }
-
-    public void setContactButtonText(String contactButtonText) {
-        this.contactButtonText = contactButtonText;
-    }
-
-    public boolean isAllowEditContact() {
-        return allowEditContact;
-    }
-
-    public void setAllowEditContact(boolean allowEditContact) {
-        this.allowEditContact = allowEditContact;
-    }
-
-    public void prepareContactDetail(final CustomerContact contact) {
-        setCurrentContact(contact);
-        allowEditContact = false;
-        contactButtonText = "Edit Contact";
-    }
-
-    public boolean isShownContactButton() {
-        if (allowEditContact || !contactButtonText.equals("")) {
-            return true;
-        } else {
-            return false;
+        if (currentContact != null && currentContact.getAddressId() == null) {
+            currentContact.setAddressId(new Address());
         }
     }
 
-    public void performNewContact() {
-        contactButtonText = "Commit";
-        allowEditContact = true;
+    public void prepareContactDetail(CustomerContact contact) {
+        setCurrentContact(contact);
+    }
+
+    public void prepareNewContact() {
+        System.out.println("========= prepareNewContact");
         currentContact = new CustomerContact();
         currentContact.setAddressId(new Address());
     }
 
-    public void performContactAction(final String userName) {
-        if (contactButtonText.equals("Commit")) {
-            contactButtonText = "";
-            allowEditContact = false;
+    public void performDeleteContact() {
+        if (currentContact != null) {
+            ejbContact.deleteCustomerContact(currentContact);
+            current.getCustomerContactCollection().remove(currentContact);
+            setCurrentContact(null);
+        }
+    }
+    
+    public void performContactAction(final String userName, final boolean newContact) {
+        System.out.println("============ performContactAction: " + userName + ", " + newContact);
+        if (newContact) {
+            System.out.println("=========== address: " + currentContact.getAddressId());
             if (!isAddressEmpty(currentContact.getAddressId())) {
                 //check if address already exist
                 final Address existAddress = ejbAddress.getAddress(currentContact.getAddressId().getAddress1(), currentContact.getAddressId().getZipCode());
@@ -336,6 +376,8 @@ public class CustomerDetailController implements Serializable {
                 } else {
                     currentContact.setAddressId(existAddress);
                 }
+            } else {
+                currentContact.setAddressId(null);
             }
             currentContact.setCustomerId(current);
             if (!hasPrimaryContact()) {
@@ -349,13 +391,8 @@ public class CustomerDetailController implements Serializable {
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             }
             current.getCustomerContactCollection().add(currentContact);
-            currentContact = null;
-        } else if (contactButtonText.equals("Edit Contact")) {
-            contactButtonText = "Update";
-            allowEditContact = true;
-        } else if (contactButtonText.equals("Update")) {
-            contactButtonText = "";
-            allowEditContact = false;
+        } else {
+
             //update
             try {
                 currentContact.setUpdateUser(userName);
@@ -364,19 +401,13 @@ public class CustomerDetailController implements Serializable {
                 log.error("Unable to update contact.", e);
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             }
-            currentContact = null;
         }
     }
 
-    public String cancelContactAction() {
-        contactButtonText = "";
-        allowEditContact = false;
-        currentContact = null;
-        return "";
-    }
-
     private boolean isAddressEmpty(Address address) {
-        if (address.getAddress1().trim().length() == 0 && address.getCity().trim().length() == 0 && address.getZipCode().trim().length() == 0) {
+        if ((address.getAddress1() != null && address.getAddress1().trim().length() == 0) && 
+                (address.getCity() != null && address.getCity().trim().length() == 0) && 
+                (address.getZipCode() != null && address.getZipCode().trim().length() == 0)) {
             return true;
         } else {
             return false;
@@ -395,10 +426,19 @@ public class CustomerDetailController implements Serializable {
         }
         return false;
     }
+    
+    public String getContactAddressStr(final Address address) {
+        String result = "";
+        if (address != null && !isAddressEmpty(address)) {
+            result = address.getAddress1() + "," + address.getCity() + "," + address.getState() + " " + address.getZipCode();
+        }
+        return result;
+    }
 
     /**
      * ***************************************************
-     * Customer Fico Section ***************************************************
+     * Customer Fico Section
+     * ***************************************************
      */
     public List<Customer> getCurrentNonRelatedFicos() {
         if (currentNonRelatedFicos == null) {
@@ -590,6 +630,14 @@ public class CustomerDetailController implements Serializable {
         return dealColumnsNames;
     }
 
+    public int getCustomerDealsColTotal() {
+        int result = 0;
+        if (dealColumnsNames != null) {
+            result = dealColumnsNames.size();
+        }
+        return result;
+    }
+    
     public int getDealColumnIndex(String colName) {
         return dealColumnsNames.indexOf(colName);
     }
@@ -615,23 +663,10 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
-    public boolean isAllowEditSchedule() {
-        return allowEditSchedule;
-    }
-
-    public void setAllowEditSchedule(boolean allowEditSchedule) {
-        this.allowEditSchedule = allowEditSchedule;
-    }
-
-    public boolean isAllowDeleteSchedule() {
-        return allowDeleteSchedule;
-    }
-
-    public void setAllowDeleteSchedule(boolean allowDeleteSchedule) {
-        this.allowDeleteSchedule = allowDeleteSchedule;
-    }
-
     public Schedules getCurrentSchedule() {
+        if (currentSchedule == null) {
+            currentSchedule = new Schedules();
+        }
         return currentSchedule;
     }
 
@@ -639,15 +674,10 @@ public class CustomerDetailController implements Serializable {
         this.currentSchedule = currentSchedule;
     }
 
-    public String getScheduleButtonText() {
-        return scheduleButtonText;
-    }
-
-    public void setScheduleButtonText(String scheduleButtonText) {
-        this.scheduleButtonText = scheduleButtonText;
-    }
-
     public Task getCurrentTask() {
+        if (currentTask == null) {
+            currentTask = new Task();
+        }
         return currentTask;
     }
 
@@ -672,23 +702,9 @@ public class CustomerDetailController implements Serializable {
             setCurrentTask(task);
             break;
         }
-        allowEditSchedule = false;
-        allowDeleteSchedule = true;
-        scheduleButtonText = "Edit Schedule";
     }
 
-    public boolean isShownScheduleButton() {
-        if (allowEditSchedule || !scheduleButtonText.equals("")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void performNewSchedule() {
-        scheduleButtonText = "Commit";
-        allowEditSchedule = true;
-        allowDeleteSchedule = false;
+    public void prepareNewSchedule() {
         setCurrentSchedule(new Schedules());
         setCurrentTask(new Task());
     }
@@ -697,18 +713,12 @@ public class CustomerDetailController implements Serializable {
         ejbSchedule.remove(currentSchedule);
         current.getSchedulesCollection().remove(currentSchedule);
         sendEmailNotificationForDeletedSchedule(currentSchedule, currentTask);
-        allowEditSchedule = false;
-        allowDeleteSchedule = false;
-        scheduleButtonText = "";
         setCurrentSchedule(null);
         setCurrentTask(null);
     }
 
-    public void performScheduleAction(final String userName) {
-        if (scheduleButtonText.equals("Commit")) {
-            scheduleButtonText = "";
-            allowEditSchedule = false;
-            allowDeleteSchedule = false;
+    public void performScheduleAction(final String userName, final boolean newSchedule) {
+        if (newSchedule) {
             currentSchedule.setCustomerId(current);
             currentTask.setSchedulesId(currentSchedule);
             List<Task> taskList = new ArrayList<Task>();
@@ -731,14 +741,7 @@ public class CustomerDetailController implements Serializable {
             }
             setCurrentSchedule(null);
             setCurrentTask(null);
-        } else if (scheduleButtonText.equals("Edit Schedule")) {
-            scheduleButtonText = "Update";
-            allowEditSchedule = true;
-            allowDeleteSchedule = true;
-        } else if (scheduleButtonText.equals("Update")) {
-            scheduleButtonText = "";
-            allowEditSchedule = false;
-            allowDeleteSchedule = false;
+        } else  {
             //update
             currentSchedule.setUpdateUser(userName);
             currentSchedule.setLastUpdated(new Date());
@@ -789,7 +792,7 @@ public class CustomerDetailController implements Serializable {
             ejbNotification.sendCalendarMail(assignToUser.getEmail(), subject, body, content);
         }
     }
-    
+
     private void sendEmailNotificationForDeletedSchedule(final Schedules schedule, final Task task) {
         final String subject = "Task schedule cancellation";
         User assignToUser = ejbUser.findUser(schedule.getAssignedUser());
@@ -810,22 +813,13 @@ public class CustomerDetailController implements Serializable {
             long start = schedule.getDateCreated().getTime();
             long end = schedule.getLastUpdated().getTime();
             long diff = (end - start) / 1000;
-            String content = createScheduleCalendar(schedule.getId(), diff+1, schedule.getScheduledDatetime(), createUser == null ? "" : createUser.getEmail(), assignToUser.getEmail(), task.getName(), desc, true);
+            String content = createScheduleCalendar(schedule.getId(), diff + 1, schedule.getScheduledDatetime(), createUser == null ? "" : createUser.getEmail(), assignToUser.getEmail(), task.getName(), desc, true);
             ejbNotification.sendCalendarMail(assignToUser.getEmail(), subject, body, content);
         }
     }
 
     public String createScheduleCalendar(final long id, final long sequence, final Date scheduledDate, final String organizerEmail, final String attendeeEmail, final String taskName, final String taskDesc, final boolean cancelled) {
         return CrmUtils.getTaskCalendarContent(id, sequence, scheduledDate, organizerEmail, attendeeEmail, taskName, taskDesc, cancelled);
-    }
-
-    public String cancelScheduleAction() {
-        allowEditSchedule = false;
-        allowDeleteSchedule = false;
-        scheduleButtonText = "";
-        currentSchedule = null;
-        currentTask = null;
-        return "";
     }
 
     public List<String> getTaskTypes() {
@@ -860,7 +854,7 @@ public class CustomerDetailController implements Serializable {
      * ***************************************************
      * Inner Class Section ***************************************************
      */
-    public final class CustomerDealDetail extends Object implements Serializable {
+    public final class CustomerDealDetail extends Object implements Serializable, Comparable<CustomerDealDetail> {
 
         private String monthStr;
         private Integer totalFinanced;
@@ -885,6 +879,38 @@ public class CustomerDetailController implements Serializable {
         public void setTotalFinanced(Integer totalFinanced) {
             this.totalFinanced = totalFinanced;
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 23 * hash + (this.monthStr != null ? this.monthStr.hashCode() : 0);
+            hash = 23 * hash + (this.totalFinanced != null ? this.totalFinanced.hashCode() : 0);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final CustomerDealDetail other = (CustomerDealDetail) obj;
+            if ((this.monthStr == null) ? (other.monthStr != null) : !this.monthStr.equals(other.monthStr)) {
+                return false;
+            }
+            if (this.totalFinanced != other.totalFinanced && (this.totalFinanced == null || !this.totalFinanced.equals(other.totalFinanced))) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int compareTo(CustomerDealDetail t) {
+            return this.totalFinanced.compareTo(t.getTotalFinanced());
+        }
+        
     }
 
     public final class CustomerDeal extends Object implements Serializable {
@@ -906,6 +932,10 @@ public class CustomerDetailController implements Serializable {
             }
         }
 
+        public CustomerDealDetail getDetailsByIndex(int index) {
+            return details.get(index);
+        }
+        
         public String getCustomerName() {
             return customerName;
         }

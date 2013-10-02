@@ -4,6 +4,7 @@
  */
 package com.autopay.crm.util;
 
+import com.autopay.crm.util.CrmConstants.CustomerType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -419,5 +420,17 @@ public class CrmUtils {
                     + "END:VCALENDAR";
         
         return calendarContent;
+    }
+    
+    public static String getCustomerTypeAbbr(final String type) {
+        if (type.equalsIgnoreCase(CustomerType.DEALER.name())) {
+            return "D";
+        } else if (type.equalsIgnoreCase(CustomerType.FINANCE_COMPANY.name())) {
+            return "F";
+        } else if (type.equalsIgnoreCase(CustomerType.BOTH.name())) {
+            return "B";
+        } else {
+            return type;
+        }
     }
 }
