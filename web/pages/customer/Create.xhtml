@@ -1,67 +1,200 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/template.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <!--<ui:define name="title">
+        <h:outputText value="Create Customer"></h:outputText>
+    </ui:define>-->
+    <ui:define name="body">
+        <!--<h:panelGroup id="messagePanel" layout="block">
+            <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+        </h:panelGroup>-->
+        <h:form id="customerEnrollment">
+            <rich:panel header="Customer Information">
+                <h:panelGrid columns="6" width="100%" styleClass="panelgrid-middle">
+                    <h:panelGroup>
+                        <h:outputLabel value="Customer Name" for="customerName" />
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:inputText id="customerName" value="#{customerDetailBean.selected.name}" title="custumerName" required="true" requiredMessage="The customer name field is required.">
+                            <f:validateLength minimum="1"/>
+                            <f:validateRequired/>
+                        </h:inputText>
+                        <rich:message for="customerName"/>
+                    </h:panelGroup>
 
-    <ui:composition template="/template.xhtml">
-        <ui:define name="title">
-            <h:outputText value="#{bundle.CreateCustomerTitle}"></h:outputText>
-        </ui:define>
-        <ui:define name="body">
-            <h:panelGroup id="messagePanel" layout="block">
-                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
-            </h:panelGroup>
-            <h:form>
-                <h:panelGrid columns="2">
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_id}" for="id" />
-                    <h:inputText id="id" value="#{customerController.selected.id}" title="#{bundle.CreateCustomerTitle_id}" required="true" requiredMessage="#{bundle.CreateCustomerRequiredMessage_id}"/>
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_name}" for="name" />
-                    <h:inputText id="name" value="#{customerController.selected.name}" title="#{bundle.CreateCustomerTitle_name}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_compareName}" for="compareName" />
-                    <h:inputText id="compareName" value="#{customerController.selected.compareName}" title="#{bundle.CreateCustomerTitle_compareName}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_type}" for="type" />
-                    <h:inputText id="type" value="#{customerController.selected.type}" title="#{bundle.CreateCustomerTitle_type}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_status}" for="status" />
-                    <h:inputText id="status" value="#{customerController.selected.status}" title="#{bundle.CreateCustomerTitle_status}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_accountEmail}" for="accountEmail" />
-                    <h:inputText id="accountEmail" value="#{customerController.selected.accountEmail}" title="#{bundle.CreateCustomerTitle_accountEmail}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_website}" for="website" />
-                    <h:inputText id="website" value="#{customerController.selected.website}" title="#{bundle.CreateCustomerTitle_website}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_phone}" for="phone" />
-                    <h:inputText id="phone" value="#{customerController.selected.phone}" title="#{bundle.CreateCustomerTitle_phone}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_fileDate}" for="fileDate" />
-                    <h:inputText id="fileDate" value="#{customerController.selected.fileDate}" title="#{bundle.CreateCustomerTitle_fileDate}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy" />
-                    </h:inputText>
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_createUser}" for="createUser" />
-                    <h:inputText id="createUser" value="#{customerController.selected.createUser}" title="#{bundle.CreateCustomerTitle_createUser}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_dateCreated}" for="dateCreated" />
-                    <h:inputText id="dateCreated" value="#{customerController.selected.dateCreated}" title="#{bundle.CreateCustomerTitle_dateCreated}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                    </h:inputText>
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_updateUser}" for="updateUser" />
-                    <h:inputText id="updateUser" value="#{customerController.selected.updateUser}" title="#{bundle.CreateCustomerTitle_updateUser}" />
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_lastUpdated}" for="lastUpdated" />
-                    <h:inputText id="lastUpdated" value="#{customerController.selected.lastUpdated}" title="#{bundle.CreateCustomerTitle_lastUpdated}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                    </h:inputText>
-                    <h:outputLabel value="#{bundle.CreateCustomerLabel_parentCustomerId}" for="parentCustomerId" />
-                    <h:selectOneMenu id="parentCustomerId" value="#{customerController.selected.parentCustomerId}" title="#{bundle.CreateCustomerTitle_parentCustomerId}" >
-                        <f:selectItems value="#{parentCustomerController.itemsAvailableSelectOne}"/>
+                    <h:outputLabel value="DBA Name" for="dbaName" />
+                    <h:inputText id="dbaName" value="#{customerDetailBean.selected.dba}" 
+                                 title="DBA Name"/>
+
+                    <h:outputText value="#{bundle.ViewCustomerLabel_type}"/>
+                    <h:selectOneMenu value="#{customerDetailBean.selected.type}" title="#{bundle.ViewCustomerTitle_type}">
+                        <f:selectItems value="#{customerDetailBean.customerTypes}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
                     </h:selectOneMenu>
-                </h:panelGrid>
-                <br />
-                <h:commandLink action="#{customerController.create}" value="#{bundle.CreateCustomerSaveLink}" />
-                <br />
-                <br />
-                <h:commandLink action="#{customerController.prepareList}" value="#{bundle.CreateCustomerShowAllLink}" immediate="true"/>
-                <br />
-                <br />
-                <h:link outcome="/index" value="#{bundle.CreateCustomerIndexLink}"/>
-            </h:form>
-        </ui:define>
-    </ui:composition>
 
-</html>
+                    <h:outputText value="#{bundle.ViewCustomerLabel_status}"/>
+                    <h:selectOneMenu  value="#{customerDetailBean.selected.status}" title="#{bundle.ViewCustomerTitle_status}" >
+                        <f:selectItems value="#{customerDetailBean.customerStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+                    </h:selectOneMenu>
+                    <h:outputText value="#{bundle.ViewCustomerLabel_accountEmail}"/>
+                    <h:inputText value="#{customerDetailBean.selected.accountEmail}" title="#{bundle.ViewCustomerTitle_accountEmail}"/>
+                    <h:outputText value="#{bundle.ViewCustomerLabel_website}"/>
+                    <h:inputText value="#{customerDetailBean.selected.website}" title="#{bundle.ViewCustomerTitle_website}"/>
+                    <h:outputText value="#{bundle.ViewCustomerLabel_phone}"/>
+                    <h:inputText value="#{customerDetailBean.selected.phone}" title="#{bundle.ViewCustomerTitle_phone}"/>
+
+                </h:panelGrid>
+            </rich:panel>
+
+            <rich:panel header="Contact">
+
+                <h:panelGrid columns="6" width="100%" id="dealerSales" styleClass="panelgrid-middle">
+
+                    <h:panelGroup>
+                        <h:outputLabel value="First Name" for="sfirstName" />
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:inputText id="sfirstName" value="#{customerDetailBean.currentContact.firstName}" 
+                                     validatorMessage="First Name is Required For Customer contact" 
+                                     required="true" requiredMessage="First name field is required.">
+                            <f:validateLength minimum="1"/>
+                            <f:validateRequired/>
+                        </h:inputText>
+                        <rich:message for="sfirstName"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:outputLabel value="Last Name" for="slastName" />
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:inputText id="slastName" value="#{customerDetailBean.currentContact.lastName}" 
+                                     required="true" requiredMessage="Last name field is required."
+                                     validatorMessage="Last Name is required for Customer contact">
+                            <f:validateLength minimum="1"/>
+                            <f:validateRequired/>
+                        </h:inputText>
+                        <rich:message for="slastName"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:outputLabel value="Primary Phone" for="sphoneNumber" />
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:inputText id="sphoneNumber" value="#{customerDetailBean.currentContact.primaryPhone}" 
+                                     onkeyup="formatPhone(#{rich:element('sphoneNumber')}, event)" required="true" 
+                                     requiredMessage="Primary phone number is required for Customer contact."
+                                     validatorMessage="Valid Phone Format: 303 444 5555">
+                            <f:validateRegex pattern="^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$"/>
+                            <rich:placeholder value="303-444-5555" />
+                        </h:inputText>
+                        <rich:message for="sphoneNumber"/>
+                    </h:panelGroup>
+
+                    <h:outputLabel value="Secondary Phone:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.secondaryPhone}"/>
+                    <h:outputLabel value="Fax:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.fax}"/>
+                    <h:outputLabel value="Primary Email:"/>
+                    <h:panelGroup>
+                        <h:inputText id="semail" value="#{customerDetailBean.currentContact.primaryEmail}"
+                                     validatorMessage="Valid Email is: email@autopay.com">
+                            <rich:placeholder value="joe@company.com" />
+                            <f:validateRegex pattern="^((([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*)?$"/>
+
+                        </h:inputText>
+                        <rich:message for="semail"/>
+                    </h:panelGroup>
+                    <h:outputLabel value="Secondary Email:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.secondaryEmail}"/>
+                    <h:outputLabel value="Address1:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.address1}"/>
+                    <h:outputLabel value="Address2:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.address2}"/>
+                    <h:outputLabel value="City:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.city}"/>
+                    <h:outputLabel value="County"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.county}"/>
+                    <h:outputLabel value="State:"/>
+                    <h:selectOneMenu value="#{customerDetailBean.currentContact.addressId.state}">
+                        <f:selectItems value="#{customerDetailBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="Zip Code:"/>
+                    <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.zipCode}"/>
+
+                </h:panelGrid>
+            </rich:panel>
+
+            <rich:panel header="Customer Address" rendered="#{!loginBean.dealer}">
+                <h:panelGrid columns="6" id="customerAddressGrid" width="100%" styleClass="panelgrid-middle">
+                    <h:panelGroup>
+                        <h:outputLabel value="Address1:" for="address1" />
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:inputText id="address1" value="#{customerDetailBean.selectedMainAddress.address1}" 
+                                     validatorMessage="Address 1 is required for Customer Address" 
+                                     required="true" requiredMessage="Address 1 is required for Customer Address.">
+                            <f:validateLength minimum="1"/>
+                            <f:validateRequired/>
+                        </h:inputText>
+                        <rich:message for="address1"/>
+                    </h:panelGroup>
+                    <h:outputLabel value="Address2:" for="address2" />
+                    <h:inputText id="address2" value="#{customerDetailBean.selectedMainAddress.address2}" 
+                                 title="Address2" />
+
+                    <h:panelGroup>
+                        <h:outputLabel value="City:" for="city" />
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:inputText id="city" value="#{customerDetailBean.selectedMainAddress.city}" 
+                                     validatorMessage="City is required in Customer Address" 
+                                     required="true" requiredMessage="City is required in Customer Address.">
+                            <f:validateLength minimum="1"/>
+                            <f:validateRequired/>
+                        </h:inputText>
+                        <rich:message for="city"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:outputLabel value="State:" for="state" />
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:selectOneMenu id="state" value="#{customerDetailBean.selectedMainAddress.state}" 
+                                         title="State"
+                                         required="true" requiredMessage="State is required in Customer Address.">
+                            <f:selectItem itemValue="" itemLabel="Select"/>
+                            <f:selectItems value="#{customerDetailBean.stateList}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+                            <f:validateLength minimum="1"/>
+                            <f:validateRequired/>
+                        </h:selectOneMenu>
+                        <rich:message for="state"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:outputLabel value="Zip Code:" for="zipCode" />  
+                        <h:outputText value="*" styleClass="mandatory"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:inputText id="zipCode" value="#{customerDetailBean.selectedMainAddress.zipCode}" 
+                                     title="Zip Code" 
+                                     required="true" requiredMessage="Zip code is required in Customer Address."
+                                     validatorMessage="Zip Code format is 80204">
+                            <f:validateRegex pattern="^[0-9]{5}$"/>
+                        </h:inputText>
+                        <rich:message for="zipCode"/>
+                    </h:panelGroup>
+
+                </h:panelGrid>
+            </rich:panel>
+
+            <h:commandButton value="Save" action="#{customerDetailBean.performAddNewCustomer(loginBean.userName)}"/>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

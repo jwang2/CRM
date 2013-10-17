@@ -15,13 +15,16 @@
                 <h:panelGroup id="messagePanelSearch" layout="block">
                     <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
                 </h:panelGroup>
+                <h:panelGroup>
+                    <h:commandButton action="#{customerDetailBean.prepareCreate}" value="#{bundleCrm.CreateCustomerButton}"/>
+                </h:panelGroup>
                 <rich:collapsiblePanel header="Search Customer">
                     <h:panelGrid columns="4" width="100%">
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByName}" for="name" />
                         <rich:autocomplete id="name" value="#{customerSearchBean.customerSearchCriteria.name}" mode="cachedAjax" minChars="2" autocompleteMethod="#{customerSearchBean.autocomplete}" autofill="false" styleClass="inputSearch" style="border: none; background: transparent"/>
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByCity}" for="city" />
                         <h:inputText id="city" value="#{customerSearchBean.customerSearchCriteria.city}" />
-                        
+
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByType}" for="type"/>
                         <h:selectOneMenu id ="type" value="#{customerSearchBean.customerSearchCriteria.type}">
                             <f:selectItems value="#{customerSearchBean.customerTypesForSearch}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
@@ -42,12 +45,12 @@
                         <h:selectOneMenu id="state" value="#{customerSearchBean.customerSearchCriteria.state}">
                             <f:selectItems value="#{customerSearchBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
                         </h:selectOneMenu>
-                        
+
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByPhone}" for="phone" />
                         <h:inputText id="phone" value="#{customerSearchBean.customerSearchCriteria.phone}" />
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByZipCode}" for="zipcode" />
                         <h:inputText id="zipcode" value="#{customerSearchBean.customerSearchCriteria.zipcode}" />
-                        
+
                         <h:outputLabel value="Date Range:"/>
                         <h:panelGroup >
                             <h:outputLabel value="From"/>
@@ -65,7 +68,7 @@
                         </h:panelGroup>
                         <h:outputLabel value=""/>
                         <h:outputLabel value=""/>
-                        
+
                         <h:outputLabel value="#{bundleCrm.SearchLeadByTotalFianced}" for="totalFinanced" />
                         <h:panelGroup>
                             <h:selectOneMenu id="totalFiancedOp" value="#{customerSearchBean.customerSearchCriteria.totalFinancedOperator}">
@@ -76,7 +79,7 @@
                                 <f:validateLongRange minimum="1"/>
                             </h:inputText>
                         </h:panelGroup>
-                        
+
                         <h:outputLabel value="#{bundleCrm.SearchLeadByTotalLoan}" for="totalLoan" />
                         <h:panelGroup>
                             <h:selectOneMenu id="totalLoanOp" value="#{customerSearchBean.customerSearchCriteria.totalLoanOperator}">
@@ -87,7 +90,7 @@
                                 <f:validateLongRange minimum="1"/>
                             </h:inputText>
                         </h:panelGroup>
-                        
+
                         <h:outputLabel value="Sort By:" style="font-weight:bold; font-size: 1.5em"/>
                         <h:selectOneMenu id ="sortby" value="#{customerSearchBean.customerSearchCriteria.sortBy}">
                             <f:selectItems value="#{customerSearchBean.customerSortByList}" var="sortby" itemLabel="#{sortby}" itemValue="#{sortby}"/>
@@ -119,7 +122,7 @@
                             <a4j:ajax event="valueChange" render="customersearchresult" listener="#{customerSearchBean.rowsPerPageChanged()}" />
                             <f:selectItems value="#{customerSearchBean.rowsPerPageList}" var="rowsPerPage" itemLabel="#{rowsPerPage}" itemValue="#{rowsPerPage}"/>
                         </h:selectOneMenu>
-                        
+
                         <rich:dataTable id="customerResultTable" styleClass="table" value="#{customerSearchBean.items}" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
                             <rich:column sortBy="#{item.id}" sortOrder="#{customerSortingBean.idOrder}">
                                 <f:facet name="header">
@@ -147,6 +150,12 @@
                             </rich:column>
                             <rich:column >
                                 <f:facet name="header">
+                                    <h:outputText value="#{bundleCrm.CustomerCampaignLabel}"/>
+                                </f:facet>
+                                <h:commandLink action="#{campaignSearchBean.prepareDetails(item)}" value="#{item.campaignID}"/>
+                            </rich:column>
+                            <rich:column >
+                                <f:facet name="header">
                                     <h:outputText value="#{bundleCrm.CustomerPhoneLabel}"/>
                                 </f:facet>
                                 <h:outputText value="#{item.phone}"/>
@@ -156,7 +165,7 @@
                                     <h:outputText value="#{bundleCrm.CustomerWebsitLabel}"/>
                                 </f:facet>
                                 <h:link onclick="window.open('#{customerDetailBean.getCustomerGoogleSearchResultPage(item)}');" style="cursor: pointer">#{customerDetailBean.getCustomerWebsiteValue(item)}</h:link>
-            
+
                             </rich:column>
                             <rich:column sortBy="#{customerSearchBean.getCustomerState(item)}" sortOrder="#{customerSortingBean.stateOrder}">
                                 <f:facet name="header">
@@ -170,7 +179,7 @@
                                 </f:facet>
                                 <h:outputText value="#{item.status}"/>
                             </rich:column>
-                            
+
                         </rich:dataTable>
                     </h:panelGroup>
                 </h:panelGroup>

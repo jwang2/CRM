@@ -127,6 +127,8 @@ public class Customer implements Serializable {
     private ParentCustomer parentCustomerId;
     @Transient
     private int totalDeals;
+    @Transient
+    private Long campaignID;
     
     public Customer() {
     }
@@ -369,6 +371,14 @@ public class Customer implements Serializable {
 
     public void setTotalDeals(int totalDeals) {
         this.totalDeals = totalDeals;
+    }
+
+    public Long getCampaignID() {
+        return campaignID;
+    }
+
+    public void setCampaignID(Long campaignID) {
+        this.campaignID = campaignID;
     }
     
 }

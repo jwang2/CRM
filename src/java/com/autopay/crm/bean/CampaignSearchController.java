@@ -258,6 +258,11 @@ public class CampaignSearchController implements Serializable {
         return "/pages/campaign/CampaignDetail";
     }
     
+    public String prepareDetails(final Customer customer) {
+        current = ejbCampaign.find(customer.getCampaignID());
+        return "/pages/campaign/CampaignDetail";
+    }
+    
     public String backToCampaignSearchPage() {
         return "/pages/campaign/CampaignSearch";
     }

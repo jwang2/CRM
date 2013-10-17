@@ -114,6 +114,7 @@ public class CustomerSearchController implements Serializable {
 
     public String search() {
         try {
+            System.out.println(customerSearchCriteria.toString());
             recreateModel();
             pagination = null;
             searchResult = getFacade().getCustomersBySearchCriterias(customerSearchCriteria);
@@ -407,10 +408,12 @@ public class CustomerSearchController implements Serializable {
             newCampaign.setType(campaignType);
             List<CampaignCustomer> campaignCustomers = new ArrayList<CampaignCustomer>();
             for (Customer customer : searchResult) {
-                CampaignCustomer cc = new CampaignCustomer();
-                cc.setCampaignId(newCampaign);
-                cc.setCustomerId(customer);
-                campaignCustomers.add(cc);
+                if (customer.getCampaignID() == null) {
+                    CampaignCustomer cc = new CampaignCustomer();
+                    cc.setCampaignId(newCampaign);
+                    cc.setCustomerId(customer);
+                    campaignCustomers.add(cc);
+                }
             }
             newCampaign.setCampaignCustomerCollection(campaignCustomers);
             try {

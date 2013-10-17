@@ -75,7 +75,7 @@ public class CustomerController implements Serializable {
     public String prepareCreate() {
         current = new Customer();
         selectedItemIndex = -1;
-        return "Create";
+        return "/pages/customer/Create";
     }
 
     public String create() {

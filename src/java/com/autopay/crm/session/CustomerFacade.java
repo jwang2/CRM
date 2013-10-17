@@ -5,6 +5,7 @@
 package com.autopay.crm.session;
 
 import com.autopay.crm.model.Address;
+import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.Customer;
 import com.autopay.crm.model.Lead;
 import com.autopay.crm.model.Schedules;
@@ -150,6 +151,7 @@ public class CustomerFacade extends AbstractFacade<Customer> {
 
     public List<Customer> getCustomersBySearchCriterias(final CustomerSearchCriteria customerSearchCriteria) {
         String queryStr;
+        String queryStr2 = null;
         boolean joinAddress = false;
         boolean joinLead = false;
         if ((customerSearchCriteria.getCity() != null && customerSearchCriteria.getCity().trim().length() > 0)
@@ -199,11 +201,11 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             }
             boolean hasTotalFinanced = false;
             boolean hasTotalLoan = false;
-            if (customerSearchCriteria.getTotalFinanced() != null && customerSearchCriteria.getTotalFinancedOperator() != null) {
+            if (customerSearchCriteria.getTotalFinanced() != null && customerSearchCriteria.getTotalFinanced() > 0 && customerSearchCriteria.getTotalFinancedOperator() != null) {
                 hasTotalFinanced = true;
             }
 
-            if (customerSearchCriteria.getTotalLoan() != null && customerSearchCriteria.getTotalLoanOperator() != null) {
+            if (customerSearchCriteria.getTotalLoan() != null && customerSearchCriteria.getTotalLoan() > 0 && customerSearchCriteria.getTotalLoanOperator() != null) {
                 hasTotalLoan = true;
             }
             String whereStr;
@@ -214,25 +216,35 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             } else {
                 whereStr = " where (c.id = x.ld or c.id = x.lfc)";
             }
+            String notExistStr = "";
+            if (customerSearchCriteria.getTotalFinancedOperator().equals("<") || 
+                    customerSearchCriteria.getTotalFinancedOperator().equals("<=") ||
+                    (customerSearchCriteria.getTotalFinancedOperator().equals("=") && customerSearchCriteria.getTotalFinanced() == 0)) {
+                notExistStr = "(Not Exists (select * from lead as lll where lll.dealer_id = c.id)) or ";
+            }
+            
             if (hasTotalFinanced && hasTotalLoan) {
-                lStr = " inner join (select y.ld as ld, y.lfc as lfc, sum(y.tf) as total, sum(y.tl) as total2 from (select l.dealer_id as ld, l.finance_company_id as lfc, l.total_financed as tf, l.total_loan as tl from lead l where l.file_date >= '"
-                        + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
-                        + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld having total " + customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString()
-                        + " and total2 " + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString() + ") x " + whereStr;
+                lStr = " left join (select l.dealer_id as ld, l.finance_company_id as lfc, sum(l.total_financed) as total, sum(l.total_loan) as total2 from lead l where "
+                        + " l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
+                        + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' group by l.dealer_id) x on c.id = x.ld where " + notExistStr + "x.total " +
+                        customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString() + 
+                        " and x.total2 " + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString();
             } else {
                 if (hasTotalFinanced) {
-                    lStr = " inner join (select y.ld as ld, y.lfc as lfc, sum(y.tf) as total from (select l.dealer_id as ld, l.finance_company_id as lfc, l.total_financed as tf from lead l where l.file_date >= '"
-                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
-                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld having total " + customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString()
-                            + ") x " + whereStr;
+                    lStr = " left join (select l.dealer_id as ld, l.finance_company_id as lfc, sum(l.total_financed) as total from lead l where "
+                        + " l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
+                        + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' group by l.dealer_id) x on c.id = x.ld where " + notExistStr + "x.total " +
+                        customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString();
+                    
                 } else if (hasTotalLoan) {
-                    lStr = " inner join (select y.ld as ld, y.lfc as lfc, sum(y.tl) as total2 from (select l.dealer_id as ld, l.finance_company_id as lfc, l.total_loan as tl from lead l where l.file_date >= '"
-                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
-                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld having total2 " + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString() + ") x " + whereStr;
+                    lStr = " left join (select l.dealer_id as ld, l.finance_company_id as lfc, sum(l.total_loan) as total2 from lead l where "
+                        + " l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
+                        + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' group by l.dealer_id) x on c.id = x.ld where " + notExistStr + "x.total2 " + 
+                            customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString();
                 } else {
-                    lStr = " inner join (select y.ld as ld, y.lfc as lfc from (select l.dealer_id as ld, l.finance_company_id as lfc from lead l where l.file_date >= '"
+                    lStr = " inner join (select l.dealer_id as ld, l.finance_company_id as lfc from lead l where l.file_date >= '"
                             + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
-                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "') y group by y.ld) x " + whereStr;
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' group by l.dealer_id) x " + whereStr;
                 }
             }
         }
@@ -250,6 +262,10 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         if (customerSearchCriteria.getPhone() != null && customerSearchCriteria.getPhone().trim().length() > 0) {
             cWhere = cWhere + " and c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
         }
+        if (aStr.length() == 0 && lStr.length() == 0 && cWhere.length() > 0 && cWhere.startsWith(" and")) {
+            cWhere = cWhere.substring(4);
+            cWhere = " where " + cWhere;
+        }
 
         queryStr = "select distinct c.* from customer c" + (aStr.length() == 0 ? "" : aStr) + (lStr.length() == 0 ? "" : lStr) + (cWhere.length() == 0 ? "" : cWhere);
 
@@ -259,8 +275,9 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         try {
             if (queryStr.trim().length() > 0) {
                 System.out.println("============================ search sql: \n" + queryStr);
-                List<Customer> result = (List<Customer>) em.createNativeQuery(queryStr, Customer.class).getResultList();
+                List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
                 getCustomerTotalFinanced(result, startDate, endDate);
+                getCustomerCampaignInfo(result);
                 return result;
             } else {
                 return null;
@@ -318,6 +335,30 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         } catch (Exception e) {
             log.error(e);
             return null;
+        }
+    }
+
+    public void getCustomerCampaignInfo(final List<Customer> customers) {
+        String customerIDs = "";
+        for (Customer customer : customers) {
+            if (customerIDs.length() == 0) {
+                customerIDs = customer.getId() + "";
+            } else {
+                customerIDs = customerIDs + ", " + customer.getId();
+            }
+        }
+        if (customerIDs.length() > 0) {
+            String queryStr = "select cc.* from campaign c, campaign_customer cc where c.active = 1 and c.id = cc.campaign_id and cc.customer_id in (" + customerIDs + ")";
+            List<CampaignCustomer> result = (List<CampaignCustomer>) em.createNativeQuery(queryStr, CampaignCustomer.class).getResultList();
+            Map<Long, Long> values = new HashMap<Long, Long>();
+            for (CampaignCustomer l : result) {
+                values.put(l.getCustomerId().getId(), l.getCampaignId().getId());
+            }
+            for (Customer customer : customers) {
+                if (values.containsKey(customer.getId())) {
+                    customer.setCampaignID(values.get(customer.getId()));
+                }
+            }
         }
     }
 
