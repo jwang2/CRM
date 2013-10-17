@@ -119,7 +119,11 @@ public final class CustomerSearchCriteria implements Serializable{
     }
 
     public void setTotalFinanced(Integer totalFinanced) {
-        this.totalFinanced = totalFinanced;
+        if (totalFinanced != null && totalFinanced.intValue() > 0) {
+            this.totalFinanced = totalFinanced;
+        } else {
+            this.totalFinanced = null;
+        }
     }
 
     public Integer getTotalLoan() {
@@ -127,7 +131,11 @@ public final class CustomerSearchCriteria implements Serializable{
     }
 
     public void setTotalLoan(Integer totalLoan) {
-        this.totalLoan = totalLoan;
+        if (totalLoan != null && totalLoan.intValue() > 0) {
+            this.totalLoan = totalLoan;
+        } else {
+            this.totalLoan = null;
+        }
     }
 
     public String getTotalFinancedOperator() {
