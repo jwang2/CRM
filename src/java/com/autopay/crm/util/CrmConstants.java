@@ -14,6 +14,10 @@ public class CrmConstants {
     
     public static String[] SPECIAL_CHARACTERS = new String[] {".", ",", "!", "@", "#", "$", "%", "^", "&", "*", "'", "\\", "?", "-", "+", "_"};
     
+    public enum ContactTitle {
+        GM, OWNER, OFFICE, GSM, SALES
+    }
+    
     public enum CampaignType {
         PHONE, EMAIL, MAIL
     }

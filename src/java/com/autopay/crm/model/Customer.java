@@ -5,6 +5,7 @@
 package com.autopay.crm.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -55,6 +56,51 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Customer.findByUpdateUser", query = "SELECT c FROM Customer c WHERE c.updateUser = :updateUser"),
     @NamedQuery(name = "Customer.findByLastUpdated", query = "SELECT c FROM Customer c WHERE c.lastUpdated = :lastUpdated")})
 public class Customer implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
+    private Collection<Users> usersCollection;
+    @Size(max = 255)
+    @Column(name = "ein", length = 255)
+    private String ein;
+    @Size(max = 255)
+    @Column(name = "license_number", length = 255)
+    private String licenseNumber;
+    @Column(name = "aul_id")
+    private Integer aulId;
+    @Column(name = "bulk")
+    private Boolean bulk;
+    @Column(name = "pos")
+    private Boolean pos;
+    @Size(max = 255)
+    @Column(name = "dms", length = 255)
+    private String dms;
+    @Size(max = 255)
+    @Column(name = "source", length = 255)
+    private String source;
+    @Column(name = "business_length")
+    private Integer businessLength;
+    @Column(name = "portfolio_size")
+    private Integer portfolioSize;
+    @Size(max = 255)
+    @Column(name = "sold_before", length = 255)
+    private String soldBefore;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "soldprice", precision = 20, scale = 2)
+    private BigDecimal soldprice;
+    @Column(name = "use_gps")
+    private Boolean useGps;
+    @Size(max = 255)
+    @Column(name = "calculation_method", length = 255)
+    private String calculationMethod;
+    @Column(name = "agreement_signed_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date agreementSignedDate;
+    @Column(name = "expiration_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expirationDate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
+    private Collection<DealerScore> dealerScoreCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
+    private Collection<IrrScore> irrScoreCollection;
     @Size(max = 255)
     @Column(name = "dba", length = 255)
     private String dba;
@@ -379,6 +425,153 @@ public class Customer implements Serializable {
 
     public void setCampaignID(Long campaignID) {
         this.campaignID = campaignID;
+    }
+
+    public String getEin() {
+        return ein;
+    }
+
+    public void setEin(String ein) {
+        this.ein = ein;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+
+    public Integer getAulId() {
+        return aulId;
+    }
+
+    public void setAulId(Integer aulId) {
+        this.aulId = aulId;
+    }
+
+    public Boolean getBulk() {
+        return bulk;
+    }
+
+    public void setBulk(Boolean bulk) {
+        this.bulk = bulk;
+    }
+
+    public Boolean getPos() {
+        return pos;
+    }
+
+    public void setPos(Boolean pos) {
+        this.pos = pos;
+    }
+
+    public String getDms() {
+        return dms;
+    }
+
+    public void setDms(String dms) {
+        this.dms = dms;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public Integer getBusinessLength() {
+        return businessLength;
+    }
+
+    public void setBusinessLength(Integer businessLength) {
+        this.businessLength = businessLength;
+    }
+
+    public Integer getPortfolioSize() {
+        return portfolioSize;
+    }
+
+    public void setPortfolioSize(Integer portfolioSize) {
+        this.portfolioSize = portfolioSize;
+    }
+
+    public String getSoldBefore() {
+        return soldBefore;
+    }
+
+    public void setSoldBefore(String soldBefore) {
+        this.soldBefore = soldBefore;
+    }
+
+    public BigDecimal getSoldprice() {
+        return soldprice;
+    }
+
+    public void setSoldprice(BigDecimal soldprice) {
+        this.soldprice = soldprice;
+    }
+
+    public Boolean getUseGps() {
+        return useGps;
+    }
+
+    public void setUseGps(Boolean useGps) {
+        this.useGps = useGps;
+    }
+
+    public String getCalculationMethod() {
+        return calculationMethod;
+    }
+
+    public void setCalculationMethod(String calculationMethod) {
+        this.calculationMethod = calculationMethod;
+    }
+
+    public Date getAgreementSignedDate() {
+        return agreementSignedDate;
+    }
+
+    public void setAgreementSignedDate(Date agreementSignedDate) {
+        this.agreementSignedDate = agreementSignedDate;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    @XmlTransient
+    public Collection<DealerScore> getDealerScoreCollection() {
+        return dealerScoreCollection;
+    }
+
+    public void setDealerScoreCollection(Collection<DealerScore> dealerScoreCollection) {
+        this.dealerScoreCollection = dealerScoreCollection;
+    }
+
+    @XmlTransient
+    public Collection<IrrScore> getIrrScoreCollection() {
+        return irrScoreCollection;
+    }
+
+    public void setIrrScoreCollection(Collection<IrrScore> irrScoreCollection) {
+        this.irrScoreCollection = irrScoreCollection;
+    }
+
+    @XmlTransient
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
+    }
+
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
     }
     
 }

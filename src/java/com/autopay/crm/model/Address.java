@@ -54,6 +54,16 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Address.findByUpdateUser", query = "SELECT a FROM Address a WHERE a.updateUser = :updateUser"),
     @NamedQuery(name = "Address.findByLastUpdated", query = "SELECT a FROM Address a WHERE a.lastUpdated = :lastUpdated")})
 public class Address implements Serializable {
+    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    @Size(max = 255)
+    @Column(name = "phone")
+    private String phone;
+    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    @Size(max = 255)
+    @Column(name = "fax")
+    private String fax;
+    @OneToMany(mappedBy = "addressId")
+    private Collection<Broker> brokerCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -275,6 +285,31 @@ public class Address implements Serializable {
     @Override
     public String toString() {
         return "com.autopay.crm.model.Address[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Broker> getBrokerCollection() {
+        return brokerCollection;
+    }
+
+    public void setBrokerCollection(Collection<Broker> brokerCollection) {
+        this.brokerCollection = brokerCollection;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
     }
     
 }

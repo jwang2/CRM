@@ -48,6 +48,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CustomerContact.findByUpdateUser", query = "SELECT c FROM CustomerContact c WHERE c.updateUser = :updateUser"),
     @NamedQuery(name = "CustomerContact.findByLastUpdated", query = "SELECT c FROM CustomerContact c WHERE c.lastUpdated = :lastUpdated")})
 public class CustomerContact implements Serializable {
+    @Size(max = 45)
+    @Column(name = "title", length = 45)
+    private String title;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
     @Size(max = 255)
     @Column(name = "fax", length = 255)
@@ -258,6 +261,14 @@ public class CustomerContact implements Serializable {
 
     public void setFax(String fax) {
         this.fax = fax;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
     
 }
