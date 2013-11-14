@@ -42,6 +42,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Users.findByUpdateUser", query = "SELECT u FROM Users u WHERE u.updateUser = :updateUser"),
     @NamedQuery(name = "Users.findByLastUpdated", query = "SELECT u FROM Users u WHERE u.lastUpdated = :lastUpdated")})
 public class Users implements Serializable {
+    @Size(max = 255)
+    @Column(name = "password_hash", length = 255)
+    private String passwordHash;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -210,6 +213,14 @@ public class Users implements Serializable {
     @Override
     public String toString() {
         return "com.autopay.crm.model.Users[ username=" + username + " ]";
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
     
 }

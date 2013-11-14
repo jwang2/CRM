@@ -187,7 +187,7 @@ public class CustomerService {
         if (customer.getUsers() != null) {
             for (UserObj user : customer.getUsers()) {
                 try {
-                    addUser(result, user);
+                    addCustomerUser(result, user);
                 } catch (Exception e) {
                     if (!errorMsgs.contains(e.getMessage())) {
                         errorMsgs.add(e.getMessage());
@@ -333,7 +333,7 @@ public class CustomerService {
         if (customer.getUsers() != null) {
             try {
                 for (UserObj user : customer.getUsers()) {
-                    addUser(customer.getId(), user);
+                    addCustomerUser(customer.getId(), user);
                 }
             } catch (Exception e) {
                 if (!errorMsgs.contains(e.getMessage())) {
@@ -461,8 +461,7 @@ public class CustomerService {
     }
 
     @WebMethod(operationName = "addBroker")
-    public Long addBroker(@WebParam(name = "username") String username, @WebParam(name = "broker") BrokerObj broker) throws Exception {
-        Users users = usersFacade.findUser(username);
+    public Long addBroker(@WebParam(name = "broker") BrokerObj broker) throws Exception {
         Broker newBroker = new Broker();
         newBroker.setCompanyName(broker.getCompanyName());
         newBroker.setFirstName(broker.getFirstName());
@@ -475,8 +474,26 @@ public class CustomerService {
         newBroker.setRoutingNumber(broker.getRoutingNumber());
         newBroker.setAccountNumber(broker.getAccountNumber());
         brokerFacade.create(newBroker);
-        users.setBrokerId(newBroker);
-        usersFacade.edit(users);
+
+        if (broker.getAddress() != null) {
+            addBrokerAddress(newBroker.getId(), broker.getAddress());
+        }
+        if (broker.getUsers() != null) {
+            for (UserObj user : broker.getUsers()) {
+                Users users = null;
+                if (user != null && user.getUserName() != null) {
+                    users = usersFacade.findUser(user.getUserName());
+                }
+                if (users != null) {
+                    users.setBrokerId(newBroker);
+                    usersFacade.edit(users);
+                } else {
+                    if (user != null && user.getUserName() != null) {
+                        addBrokerUser(newBroker.getId(), user);
+                    }
+                }
+            }
+        }
         return newBroker.getId();
     }
 
@@ -496,6 +513,13 @@ public class CustomerService {
                 existBroker.setRoutingNumber(broker.getRoutingNumber());
                 existBroker.setAccountNumber(broker.getAccountNumber());
                 brokerFacade.edit(existBroker);
+                if (broker.getAddress() != null) {
+                    if (broker.getAddress().getId() != null) {
+                        updateAddress(broker.getAddress());
+                    } else {
+                        addBrokerAddress(existBroker.getId(), broker.getAddress());
+                    }
+                }
             } else {
                 throw new Exception("Broker with id " + broker.getId() + " is not exist.");
             }
@@ -505,11 +529,7 @@ public class CustomerService {
     }
 
     @WebMethod(operationName = "addUser")
-    public void addUser(@WebParam(name = "customerId") Long customerId, @WebParam(name = "user") UserObj user) throws Exception {
-        Customer customer = null;
-        if (customerId != null) {
-            customer = customerFacade.find(customerId);
-        }
+    public void addUser(@WebParam(name = "user") UserObj user) throws Exception {
         Users existUser = usersFacade.findUser(user.getUserName());
         if (existUser == null) {
             Users newUser = new Users();
@@ -518,17 +538,9 @@ public class CustomerService {
             newUser.setLastName(user.getLastName());
             newUser.setEmail(user.getEmail());
             newUser.setStatus(user.getStatus());
-            if (customer != null) {
-                newUser.setCustomerId(customer);
-            }
+            newUser.setPasswordHash(user.getPassword());
             usersFacade.create(newUser);
-        } else {
-            if (customer != null) {
-                existUser.setCustomerId(customer);
-                usersFacade.edit(existUser);
-            }
         }
-
     }
 
     @WebMethod(operationName = "updateUser")
@@ -542,12 +554,67 @@ public class CustomerService {
                 existUser.setLastName(user.getLastName());
                 existUser.setEmail(user.getEmail());
                 existUser.setStatus(user.getStatus());
+                existUser.setPasswordHash(user.getPassword());
                 usersFacade.edit(existUser);
             } else {
                 throw new Exception("User with username '" + user.getUserName() + "' is not exist.");
             }
         } else {
             throw new Exception("missing user login username.");
+        }
+    }
+    
+    @WebMethod(operationName = "addCustomerUser")
+    public void addCustomerUser(@WebParam(name = "customerId") Long customerId, @WebParam(name = "user") UserObj user) throws Exception {
+        Customer customer = null;
+        if (customerId != null) {
+            customer = customerFacade.find(customerId);
+        }
+        Users existUser = usersFacade.findUser(user.getUserName());
+        if (existUser == null) {
+            Users newUser = new Users();
+            newUser.setUsername(user.getUserName());
+            newUser.setFirstName(user.getFirstName());
+            newUser.setLastName(user.getLastName());
+            newUser.setEmail(user.getEmail());
+            newUser.setStatus(user.getStatus());
+            newUser.setPasswordHash(user.getPassword());
+            if (customer != null) {
+                newUser.setCustomerId(customer);
+            }
+            usersFacade.create(newUser);
+        } else {
+            if (customer != null) {
+                existUser.setCustomerId(customer);
+                usersFacade.edit(existUser);
+            }
+        }
+    }
+    
+    @WebMethod(operationName = "addBrokerUser")
+    public void addBrokerUser(@WebParam(name = "brokerId") Long brokerId, @WebParam(name = "user") UserObj user) throws Exception {
+        Broker broker = null;
+        if (brokerId != null) {
+            broker = brokerFacade.find(brokerId);
+        }
+        Users existUser = usersFacade.findUser(user.getUserName());
+        if (existUser == null) {
+            Users newUser = new Users();
+            newUser.setUsername(user.getUserName());
+            newUser.setFirstName(user.getFirstName());
+            newUser.setLastName(user.getLastName());
+            newUser.setEmail(user.getEmail());
+            newUser.setStatus(user.getStatus());
+            newUser.setPasswordHash(user.getPassword());
+            if (broker != null) {
+                newUser.setBrokerId(broker);
+            }
+            usersFacade.create(newUser);
+        } else {
+            if (broker != null) {
+                existUser.setBrokerId(broker);
+                usersFacade.edit(existUser);
+            }
         }
     }
 
@@ -569,6 +636,11 @@ public class CustomerService {
             newAddress.setPhone(address.getPhone());
             newAddress.setFax(address.getFax());
             newAddress.setCustomerId(customer);
+            if (address.getAddress1() != null && address.getAddress1().startsWith("P O BOX")) {
+                newAddress.setType(CrmConstants.AddressType.POBOX.name());
+            } else {
+                newAddress.setType(CrmConstants.AddressType.REGULAR.name());
+            }
             addressFacade.create(newAddress);
             return newAddress.getId();
         } else {
@@ -599,6 +671,11 @@ public class CustomerService {
             newAddress.setCountry("US");
             newAddress.setPhone(address.getPhone());
             newAddress.setFax(address.getFax());
+            if (address.getAddress1() != null && address.getAddress1().startsWith("P O BOX")) {
+                newAddress.setType(CrmConstants.AddressType.POBOX.name());
+            } else {
+                newAddress.setType(CrmConstants.AddressType.REGULAR.name());
+            }
             addressFacade.create(newAddress);
             broker.setAddressId(newAddress);
             brokerFacade.edit(broker);

@@ -1,6 +1,7 @@
 package com.autopay.crm.services.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -18,6 +19,8 @@ public final class BrokerObj implements Serializable{
     private String financialInstitution;
     private String routingNumber;
     private String accountNumber;
+    private List<UserObj> users;
+    private AddressObj address;
 
     public Long getId() {
         return id;
@@ -105,6 +108,22 @@ public final class BrokerObj implements Serializable{
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+    public List<UserObj> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserObj> users) {
+        this.users = users;
+    }
+
+    public AddressObj getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressObj address) {
+        this.address = address;
     }
 
     @Override

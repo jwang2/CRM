@@ -12,6 +12,7 @@ public final class UserObj implements Serializable{
     private String lastName;
     private String email;
     private String status;
+    private String password;
 
     public String getUserName() {
         return userName;
@@ -53,9 +54,17 @@ public final class UserObj implements Serializable{
         this.status = status;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
-        return "User{" + "userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", status=" + status + '}';
+        return "UserObj{" + "userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", status=" + status + ", password=" + password + '}';
     }
-    
+
 }
