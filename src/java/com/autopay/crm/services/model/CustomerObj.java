@@ -3,6 +3,7 @@ package com.autopay.crm.services.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -28,6 +29,12 @@ public final class CustomerObj implements Serializable{
     private BigDecimal soldPrice;
     private boolean useGPS;
     private String calculationMethod;
+    private List<CustomerContactObj> contacts;
+    private List<AddressObj> addresses;
+    private List<DealerScoreObj> dealerScores;
+    private List<IrrObj> irrs;
+    private List<CustomerNoteObj> notes;
+    private List<UserObj> users;
 
     public Long getId() {
         return id;
@@ -179,6 +186,54 @@ public final class CustomerObj implements Serializable{
 
     public void setCalculationMethod(String calculationMethod) {
         this.calculationMethod = calculationMethod;
+    }
+
+    public List<CustomerContactObj> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<CustomerContactObj> contacts) {
+        this.contacts = contacts;
+    }
+
+    public List<AddressObj> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressObj> addresses) {
+        this.addresses = addresses;
+    }
+
+    public List<DealerScoreObj> getDealerScores() {
+        return dealerScores;
+    }
+
+    public void setDealerScores(List<DealerScoreObj> dealerScores) {
+        this.dealerScores = dealerScores;
+    }
+
+    public List<IrrObj> getIrrs() {
+        return irrs;
+    }
+
+    public void setIrrs(List<IrrObj> irrs) {
+        this.irrs = irrs;
+    }
+
+    public List<CustomerNoteObj> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<CustomerNoteObj> notes) {
+        this.notes = notes;
+    }
+
+    public List<UserObj> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserObj> users) {
+        this.users = users;
     }
 
     @Override
