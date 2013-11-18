@@ -14,8 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -42,9 +40,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Users.findByUpdateUser", query = "SELECT u FROM Users u WHERE u.updateUser = :updateUser"),
     @NamedQuery(name = "Users.findByLastUpdated", query = "SELECT u FROM Users u WHERE u.lastUpdated = :lastUpdated")})
 public class Users implements Serializable {
-    @Size(max = 255)
-    @Column(name = "password_hash", length = 255)
-    private String passwordHash;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -68,7 +63,7 @@ public class Users implements Serializable {
     @Size(max = 255)
     @Column(name = "create_user", length = 255)
     private String createUser;
-    @Column(name = "date_created", updatable = false)
+    @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Size(max = 255)
@@ -85,10 +80,14 @@ public class Users implements Serializable {
     private Customer customerId;
 
     public Users() {
+        dateCreated = new Date();
+        lastUpdated = new Date();
     }
 
     public Users(String username) {
         this.username = username;
+        dateCreated = new Date();
+        lastUpdated = new Date();
     }
 
     public String getUsername() {
@@ -147,17 +146,6 @@ public class Users implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    @PrePersist
-    private void createDate() {
-        dateCreated = new Date();
-        lastUpdated = new Date();
-    }
-    
-    @PreUpdate
-    private void updateDate() {
-        lastUpdated = new Date();
-    }
-    
     public String getUpdateUser() {
         return updateUser;
     }
@@ -214,13 +202,4 @@ public class Users implements Serializable {
     public String toString() {
         return "com.autopay.crm.model.Users[ username=" + username + " ]";
     }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-    
 }

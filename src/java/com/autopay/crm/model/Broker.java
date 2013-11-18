@@ -19,8 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -100,7 +98,7 @@ public class Broker implements Serializable {
     @Size(max = 255)
     @Column(name = "create_user", length = 255)
     private String createUser;
-    @Column(name = "date_created", updatable = false)
+    @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Size(max = 255)
@@ -114,10 +112,14 @@ public class Broker implements Serializable {
     private Address addressId;
     
     public Broker() {
+        dateCreated = new Date();
+        lastUpdated = new Date();
     }
 
     public Broker(Long id) {
         this.id = id;
+        dateCreated = new Date();
+        lastUpdated = new Date();
     }
 
     public Long getId() {
@@ -232,17 +234,6 @@ public class Broker implements Serializable {
         this.dateCreated = dateCreated;
     }
     
-    @PrePersist
-    private void createDate() {
-        dateCreated = new Date();
-        lastUpdated = new Date();
-    }
-    
-    @PreUpdate
-    private void updateDate() {
-        lastUpdated = new Date();
-    }
-
     public String getUpdateUser() {
         return updateUser;
     }

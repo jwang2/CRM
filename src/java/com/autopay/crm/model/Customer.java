@@ -21,8 +21,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -138,7 +136,7 @@ public class Customer implements Serializable {
     @Size(max = 255)
     @Column(name = "create_user")
     private String createUser;
-    @Column(name = "date_created", updatable = false)
+    @Column(name = "date_created" , updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Size(max = 255)
@@ -177,10 +175,14 @@ public class Customer implements Serializable {
     private Long campaignID;
     
     public Customer() {
+        dateCreated = new Date();
+        lastUpdated = new Date();
     }
 
     public Customer(Long id) {
         this.id = id;
+        dateCreated = new Date();
+        lastUpdated = new Date();
     }
   
     public Long getId() {
@@ -287,17 +289,6 @@ public class Customer implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
-    @PrePersist
-    private void createDate() {
-        dateCreated = new Date();
-        lastUpdated = new Date();
-    }
-    
-    @PreUpdate
-    private void updateDate() {
-        lastUpdated = new Date();
-    }
-    
     @XmlTransient
     public Collection<CustomerNote> getCustomerNoteCollection() {
         return customerNoteCollection;

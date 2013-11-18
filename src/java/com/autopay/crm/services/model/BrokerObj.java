@@ -1,6 +1,7 @@
 package com.autopay.crm.services.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +22,10 @@ public final class BrokerObj implements Serializable{
     private String accountNumber;
     private List<UserObj> users;
     private AddressObj address;
+    private String createdBy;
+    private Date createdDate;
+    private String updatedBy;
+    private Date lastUpdated;
 
     public Long getId() {
         return id;
@@ -126,9 +131,40 @@ public final class BrokerObj implements Serializable{
         this.address = address;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     @Override
     public String toString() {
-        return "Broker{" + "id=" + id + ", companyName=" + companyName + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", fax=" + fax + ", phone=" + phone + ", ein=" + ein + ", financialInstitution=" + financialInstitution + ", routingNumber=" + routingNumber + ", accountNumber=" + accountNumber + '}';
+        return "BrokerObj{" + "id=" + id + ", companyName=" + companyName + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", fax=" + fax + ", phone=" + phone + ", ein=" + ein + ", financialInstitution=" + financialInstitution + ", routingNumber=" + routingNumber + ", accountNumber=" + accountNumber + ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", updatedBy=" + updatedBy + ", lastUpdated=" + lastUpdated + '}';
     }
-    
 }

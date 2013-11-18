@@ -119,6 +119,10 @@ public class CustomerService {
             newCustomer.setSoldprice(customer.getSoldPrice());
             newCustomer.setUseGps(customer.isUseGPS());
             newCustomer.setCalculationMethod(customer.getCalculationMethod());
+            newCustomer.setCreateUser(customer.getCreatedBy());
+            newCustomer.setDateCreated(customer.getCreatedDate());
+            newCustomer.setUpdateUser(customer.getUpdatedBy());
+            newCustomer.setLastUpdated(customer.getLastUpdated());
             customerFacade.create(newCustomer);
             result = newCustomer.getId();
         }
@@ -213,25 +217,59 @@ public class CustomerService {
         if (customer.getId() != null) {
             Customer existCustomer = customerFacade.find(customer.getId());
             if (existCustomer != null) {
-                existCustomer.setName(customer.getName());
-                existCustomer.setCompareName(CrmUtils.trimName(customer.getName()));
-                existCustomer.setType(customer.getType());
-                existCustomer.setDba(customer.getDba());
-                existCustomer.setAgreementSignedDate(customer.getAgreementSignedDate());
-                existCustomer.setExpirationDate(customer.getExpirationDate());
-                existCustomer.setEin(customer.getEin());
-                existCustomer.setLicenseNumber(customer.getLicenseNumber());
-                existCustomer.setAulId(customer.getAulId());
+                if (customer.getName() != null && customer.getName().trim().length() > 0) {
+                    existCustomer.setName(customer.getName());
+                    existCustomer.setCompareName(CrmUtils.trimName(customer.getName()));
+                }
+                if (customer.getType() != null && customer.getType().trim().length() > 0) {
+                    existCustomer.setType(customer.getType());
+                }
+                if (customer.getDba() != null && customer.getDba().trim().length() > 0) {
+                    existCustomer.setDba(customer.getDba());
+                }
+                if (customer.getAgreementSignedDate() != null) {
+                    existCustomer.setAgreementSignedDate(customer.getAgreementSignedDate());
+                }
+                if (customer.getExpirationDate() != null) {
+                    existCustomer.setExpirationDate(customer.getExpirationDate());
+                }
+                if (customer.getEin() != null && customer.getEin().trim().length() > 0) {
+                    existCustomer.setEin(customer.getEin());
+                }
+                if (customer.getLicenseNumber() != null && customer.getLicenseNumber().trim().length() > 0) {
+                    existCustomer.setLicenseNumber(customer.getLicenseNumber());
+                }
+                existCustomer.setAulId(customer.getAulId()); //should we check if id is null, maybe need to set it to null???
                 existCustomer.setBulk(customer.isBulk());
                 existCustomer.setPos(customer.isPos());
-                existCustomer.setDms(customer.getDms());
-                existCustomer.setSource(customer.getSource());
-                existCustomer.setBusinessLength(customer.getBusinessLength());
-                existCustomer.setPortfolioSize(customer.getPortfolioSize());
-                existCustomer.setSoldBefore(customer.getSoldBefore());
-                existCustomer.setSoldprice(customer.getSoldPrice());
+                if (existCustomer.getDms() != null && existCustomer.getDms().trim().length() > 0) {
+                    existCustomer.setDms(customer.getDms());
+                }
+                if (existCustomer.getSource() != null && existCustomer.getSource().trim().length() > 0) {
+                    existCustomer.setSource(customer.getSource());
+                }
+                if (customer.getBusinessLength() != null) {
+                    existCustomer.setBusinessLength(customer.getBusinessLength());
+                }
+                if (customer.getPortfolioSize() != null) {
+                    existCustomer.setPortfolioSize(customer.getPortfolioSize());
+                }
+                if (customer.getSoldBefore() != null && customer.getSoldBefore().trim().length() > 0) {
+                    existCustomer.setSoldBefore(customer.getSoldBefore());
+                }
+                if (customer.getSoldPrice() != null) {
+                    existCustomer.setSoldprice(customer.getSoldPrice());
+                }
                 existCustomer.setUseGps(customer.isUseGPS());
-                existCustomer.setCalculationMethod(customer.getCalculationMethod());
+                if (customer.getCalculationMethod() != null && customer.getCalculationMethod().trim().length() > 0) {
+                    existCustomer.setCalculationMethod(customer.getCalculationMethod());
+                }
+                if (customer.getUpdatedBy() != null) {
+                    existCustomer.setUpdateUser(customer.getUpdatedBy());
+                }
+                if (customer.getLastUpdated() != null) {
+                    existCustomer.setLastUpdated(customer.getLastUpdated());
+                }
                 customerFacade.edit(existCustomer);
             } else {
                 throw new Exception("Customer with id " + customer.getId() + " is not existed.");
@@ -473,6 +511,18 @@ public class CustomerService {
         newBroker.setFinancialInstitution(broker.getFinancialInstitution());
         newBroker.setRoutingNumber(broker.getRoutingNumber());
         newBroker.setAccountNumber(broker.getAccountNumber());
+        if (broker.getCreatedBy() != null) {
+            newBroker.setCreateUser(broker.getCreatedBy());
+        }
+        if (broker.getUpdatedBy() != null) {
+            newBroker.setUpdateUser(broker.getUpdatedBy());
+        }
+        if (broker.getCreatedDate() != null) {
+            newBroker.setDateCreated(broker.getCreatedDate());
+        }
+        if (broker.getLastUpdated() != null) {
+            newBroker.setLastUpdated(broker.getLastUpdated());
+        }
         brokerFacade.create(newBroker);
 
         if (broker.getAddress() != null) {
@@ -502,16 +552,48 @@ public class CustomerService {
         if (broker.getId() != null) {
             Broker existBroker = brokerFacade.find(broker.getId());
             if (existBroker != null) {
-                existBroker.setCompanyName(broker.getCompanyName());
-                existBroker.setFirstName(broker.getFirstName());
-                existBroker.setLastName(broker.getLastName());
-                existBroker.setEmail(broker.getEmail());
-                existBroker.setFax(broker.getFax());
-                existBroker.setPhoneNumber(broker.getPhone());
-                existBroker.setEin(broker.getEin());
-                existBroker.setFinancialInstitution(broker.getFinancialInstitution());
-                existBroker.setRoutingNumber(broker.getRoutingNumber());
-                existBroker.setAccountNumber(broker.getAccountNumber());
+                if (broker.getCompanyName() != null && broker.getCompanyName().trim().length() > 0) {
+                    existBroker.setCompanyName(broker.getCompanyName());
+                }
+                if (broker.getFirstName() != null && broker.getFirstName().trim().length() > 0) {
+                    existBroker.setFirstName(broker.getFirstName());
+                }
+                if (broker.getLastName() != null && broker.getLastName().trim().length() > 0) {
+                    existBroker.setLastName(broker.getLastName());
+                }
+                if (broker.getEmail() != null && broker.getEmail().trim().length() > 0) {
+                    existBroker.setEmail(broker.getEmail());
+                }
+                if (broker.getFax() != null && broker.getFax().trim().length() > 0) {
+                    existBroker.setFax(broker.getFax());
+                }
+                if (broker.getPhone() != null && broker.getPhone().trim().length() > 0) {
+                    existBroker.setPhoneNumber(broker.getPhone());
+                }
+                if (broker.getEin() != null && broker.getEin().trim().length() > 0) {
+                    existBroker.setEin(broker.getEin());
+                }
+                if (broker.getFinancialInstitution() != null && broker.getFinancialInstitution().trim().length() > 0) {
+                    existBroker.setFinancialInstitution(broker.getFinancialInstitution());
+                }
+                if (broker.getRoutingNumber() != null && broker.getRoutingNumber().trim().length() > 0) {
+                    existBroker.setRoutingNumber(broker.getRoutingNumber());
+                }
+                if (broker.getAccountNumber() != null && broker.getAccountNumber().trim().length() > 0) {
+                    existBroker.setAccountNumber(broker.getAccountNumber());
+                }
+                if (broker.getCreatedBy() != null) {
+                    existBroker.setCreateUser(broker.getCreatedBy());
+                }
+                if (broker.getUpdatedBy() != null) {
+                    existBroker.setUpdateUser(broker.getUpdatedBy());
+                }
+                if (broker.getCreatedDate() != null) {
+                    existBroker.setDateCreated(broker.getCreatedDate());
+                }
+                if (broker.getLastUpdated() != null) {
+                    existBroker.setLastUpdated(broker.getLastUpdated());
+                }
                 brokerFacade.edit(existBroker);
                 if (broker.getAddress() != null) {
                     if (broker.getAddress().getId() != null) {
@@ -532,13 +614,7 @@ public class CustomerService {
     public void addUser(@WebParam(name = "user") UserObj user) throws Exception {
         Users existUser = usersFacade.findUser(user.getUserName());
         if (existUser == null) {
-            Users newUser = new Users();
-            newUser.setUsername(user.getUserName());
-            newUser.setFirstName(user.getFirstName());
-            newUser.setLastName(user.getLastName());
-            newUser.setEmail(user.getEmail());
-            newUser.setStatus(user.getStatus());
-            newUser.setPasswordHash(user.getPassword());
+            Users newUser = createNewUser(user);
             usersFacade.create(newUser);
         }
     }
@@ -550,11 +626,24 @@ public class CustomerService {
             System.out.println("################ updateUser: " + user.getUserName() + ", " + user.getStatus());
             System.out.println("############ existUser : " + existUser);
             if (existUser != null) {
-                existUser.setFirstName(user.getFirstName());
-                existUser.setLastName(user.getLastName());
-                existUser.setEmail(user.getEmail());
-                existUser.setStatus(user.getStatus());
-                existUser.setPasswordHash(user.getPassword());
+                if (user.getFirstName() != null && user.getFirstName().trim().length() > 0) {
+                    existUser.setFirstName(user.getFirstName());
+                }
+                if (user.getLastName() != null && user.getLastName().trim().length() > 0) {
+                    existUser.setLastName(user.getLastName());
+                }
+                if (user.getEmail() != null && user.getEmail().trim().length() > 0) {
+                    existUser.setEmail(user.getEmail());
+                }
+                if (user.getStatus() != null && user.getStatus().trim().length() > 0) {
+                    existUser.setStatus(user.getStatus());
+                }
+                if (user.getCreatedDate() != null) {
+                    existUser.setDateCreated(user.getCreatedDate());
+                }
+                if (user.getLastUpdated() != null) {
+                    existUser.setLastUpdated(user.getLastUpdated());
+                }
                 usersFacade.edit(existUser);
             } else {
                 throw new Exception("User with username '" + user.getUserName() + "' is not exist.");
@@ -563,7 +652,7 @@ public class CustomerService {
             throw new Exception("missing user login username.");
         }
     }
-    
+
     @WebMethod(operationName = "addCustomerUser")
     public void addCustomerUser(@WebParam(name = "customerId") Long customerId, @WebParam(name = "user") UserObj user) throws Exception {
         Customer customer = null;
@@ -572,13 +661,7 @@ public class CustomerService {
         }
         Users existUser = usersFacade.findUser(user.getUserName());
         if (existUser == null) {
-            Users newUser = new Users();
-            newUser.setUsername(user.getUserName());
-            newUser.setFirstName(user.getFirstName());
-            newUser.setLastName(user.getLastName());
-            newUser.setEmail(user.getEmail());
-            newUser.setStatus(user.getStatus());
-            newUser.setPasswordHash(user.getPassword());
+            Users newUser = createNewUser(user);
             if (customer != null) {
                 newUser.setCustomerId(customer);
             }
@@ -590,7 +673,7 @@ public class CustomerService {
             }
         }
     }
-    
+
     @WebMethod(operationName = "addBrokerUser")
     public void addBrokerUser(@WebParam(name = "brokerId") Long brokerId, @WebParam(name = "user") UserObj user) throws Exception {
         Broker broker = null;
@@ -599,13 +682,7 @@ public class CustomerService {
         }
         Users existUser = usersFacade.findUser(user.getUserName());
         if (existUser == null) {
-            Users newUser = new Users();
-            newUser.setUsername(user.getUserName());
-            newUser.setFirstName(user.getFirstName());
-            newUser.setLastName(user.getLastName());
-            newUser.setEmail(user.getEmail());
-            newUser.setStatus(user.getStatus());
-            newUser.setPasswordHash(user.getPassword());
+            Users newUser = createNewUser(user);
             if (broker != null) {
                 newUser.setBrokerId(broker);
             }
@@ -626,21 +703,8 @@ public class CustomerService {
         }
         final Address existAddress = addressFacade.getAddress(address.getAddress1(), address.getZip());
         if (existAddress == null) {
-            Address newAddress = new Address();
-            newAddress.setAddress1(address.getAddress1());
-            newAddress.setAddress2(address.getAddress2());
-            newAddress.setCity(address.getCity());
-            newAddress.setState(address.getState());
-            newAddress.setZipCode(address.getZip());
-            newAddress.setCountry("US");
-            newAddress.setPhone(address.getPhone());
-            newAddress.setFax(address.getFax());
+            Address newAddress = createNewAddress(address);
             newAddress.setCustomerId(customer);
-            if (address.getAddress1() != null && address.getAddress1().startsWith("P O BOX")) {
-                newAddress.setType(CrmConstants.AddressType.POBOX.name());
-            } else {
-                newAddress.setType(CrmConstants.AddressType.REGULAR.name());
-            }
             addressFacade.create(newAddress);
             return newAddress.getId();
         } else {
@@ -662,20 +726,7 @@ public class CustomerService {
         }
         final Address existAddress = addressFacade.getAddress(address.getAddress1(), address.getZip());
         if (existAddress == null) {
-            Address newAddress = new Address();
-            newAddress.setAddress1(address.getAddress1());
-            newAddress.setAddress2(address.getAddress2());
-            newAddress.setCity(address.getCity());
-            newAddress.setState(address.getState());
-            newAddress.setZipCode(address.getZip());
-            newAddress.setCountry("US");
-            newAddress.setPhone(address.getPhone());
-            newAddress.setFax(address.getFax());
-            if (address.getAddress1() != null && address.getAddress1().startsWith("P O BOX")) {
-                newAddress.setType(CrmConstants.AddressType.POBOX.name());
-            } else {
-                newAddress.setType(CrmConstants.AddressType.REGULAR.name());
-            }
+            Address newAddress = createNewAddress(address);
             addressFacade.create(newAddress);
             broker.setAddressId(newAddress);
             brokerFacade.edit(broker);
@@ -699,6 +750,11 @@ public class CustomerService {
                 existAddress.setZipCode(address.getZip());
                 existAddress.setPhone(address.getPhone());
                 existAddress.setFax(address.getFax());
+                if (address.getAddress1() != null && address.getAddress1().startsWith("P O BOX")) {
+                    existAddress.setType(CrmConstants.AddressType.POBOX.name());
+                } else {
+                    existAddress.setType(CrmConstants.AddressType.REGULAR.name());
+                }
                 addressFacade.edit(existAddress);
             } else {
                 throw new Exception("Address with id " + address.getId() + " is not exist.");
@@ -716,5 +772,39 @@ public class CustomerService {
         newNote.setCustomerId(customer);
         noteFacade.create(newNote);
         return newNote.getId();
+    }
+
+    private Users createNewUser(final UserObj user) {
+        Users newUser = new Users();
+        newUser.setUsername(user.getUserName());
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setEmail(user.getEmail());
+        newUser.setStatus(user.getStatus());
+        if (user.getCreatedDate() != null) {
+            newUser.setDateCreated(user.getCreatedDate());
+        }
+        if (user.getLastUpdated() != null) {
+            newUser.setLastUpdated(user.getLastUpdated());
+        }
+        return newUser;
+    }
+
+    private Address createNewAddress(final AddressObj address) {
+        Address newAddress = new Address();
+        newAddress.setAddress1(address.getAddress1());
+        newAddress.setAddress2(address.getAddress2());
+        newAddress.setCity(address.getCity());
+        newAddress.setState(address.getState());
+        newAddress.setZipCode(address.getZip());
+        newAddress.setCountry("US");
+        newAddress.setPhone(address.getPhone());
+        newAddress.setFax(address.getFax());
+        if (address.getAddress1() != null && address.getAddress1().startsWith("P O BOX")) {
+            newAddress.setType(CrmConstants.AddressType.POBOX.name());
+        } else {
+            newAddress.setType(CrmConstants.AddressType.REGULAR.name());
+        }
+        return newAddress;
     }
 }

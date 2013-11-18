@@ -29,6 +29,10 @@ public final class CustomerObj implements Serializable{
     private BigDecimal soldPrice;
     private boolean useGPS;
     private String calculationMethod;
+    private String createdBy;
+    private Date createdDate;
+    private String updatedBy;
+    private Date lastUpdated;
     private List<CustomerContactObj> contacts;
     private List<AddressObj> addresses;
     private List<DealerScoreObj> dealerScores;
@@ -236,10 +240,40 @@ public final class CustomerObj implements Serializable{
         this.users = users;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     @Override
     public String toString() {
-        return "Customer{" + "id=" + id + ", name=" + name + ", dba=" + dba + ", agreementSignedDate=" + agreementSignedDate + ", expirationDate=" + expirationDate + ", type=" + type + ", ein=" + ein + ", licenseNumber=" + licenseNumber + ", aulId=" + aulId + ", bulk=" + bulk + ", pos=" + pos + ", dms=" + dms + ", source=" + source + ", businessLength=" + businessLength + ", portfolioSize=" + portfolioSize + ", soldBefore=" + soldBefore + ", soldPrice=" + soldPrice + ", useGPS=" + useGPS + ", calculationMethod=" + calculationMethod + '}';
+        return "CustomerObj{" + "id=" + id + ", name=" + name + ", dba=" + dba + ", agreementSignedDate=" + agreementSignedDate + ", expirationDate=" + expirationDate + ", type=" + type + ", ein=" + ein + ", licenseNumber=" + licenseNumber + ", aulId=" + aulId + ", bulk=" + bulk + ", pos=" + pos + ", dms=" + dms + ", source=" + source + ", businessLength=" + businessLength + ", portfolioSize=" + portfolioSize + ", soldBefore=" + soldBefore + ", soldPrice=" + soldPrice + ", useGPS=" + useGPS + ", calculationMethod=" + calculationMethod + ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", updatedBy=" + updatedBy + ", lastUpdated=" + lastUpdated + '}';
     }
-    
-    
 }
