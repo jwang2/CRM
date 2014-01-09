@@ -27,6 +27,9 @@
                 <rich:tab header="Schedules" id="tabSchedules" name="schedules">
                     <ui:include src="CustomerSchedules.xhtml"/>
                 </rich:tab>
+                <rich:tab header="Campaign" id="tabCampaign" name="campaign" rendered="#{customerDetailBean.inCampaign}">
+                    <ui:include src="CustomerCampaign.xhtml"/>
+                </rich:tab>
             </rich:tabPanel>
             <br/>
             <br/>

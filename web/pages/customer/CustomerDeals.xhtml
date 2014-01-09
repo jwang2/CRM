@@ -27,6 +27,8 @@
                 <h:outputLabel value="No Deals Found." styleClass="no-result-found"/>
             </h:panelGroup>
             <h:panelGroup id="dealsPanel" rendered="#{customerDetailBean.currentDeals.size()>0}">
+                <br/>
+                <h:outputLabel value="(Related finance company marked with *)"/>
                 <rich:dataTable id="dealstable" value="#{customerDetailBean.currentDeals}" 
                                         var="item" styleClass="table" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
                     <rich:column sortBy="#{item.customerName}" sortOrder="#{customerDealsSortingBean.nameOrder}" >

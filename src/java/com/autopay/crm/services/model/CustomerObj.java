@@ -19,15 +19,16 @@ public final class CustomerObj implements Serializable{
     private String ein;
     private String licenseNumber;
     private Integer aulId;
-    private boolean bulk;
-    private boolean pos;
+    private Boolean bulk;
+    private Boolean pos;
     private String dms;
     private String source;
     private Integer businessLength;
     private Integer portfolioSize;
     private String soldBefore;
     private BigDecimal soldPrice;
-    private boolean useGPS;
+    private Boolean useGPS;
+    private String gpsVendor;
     private String calculationMethod;
     private String createdBy;
     private Date createdDate;
@@ -112,19 +113,19 @@ public final class CustomerObj implements Serializable{
         this.aulId = aulId;
     }
 
-    public boolean isBulk() {
+    public Boolean getBulk() {
         return bulk;
     }
 
-    public void setBulk(boolean bulk) {
+    public void setBulk(Boolean bulk) {
         this.bulk = bulk;
     }
 
-    public boolean isPos() {
+    public Boolean getPos() {
         return pos;
     }
 
-    public void setPos(boolean pos) {
+    public void setPos(Boolean pos) {
         this.pos = pos;
     }
 
@@ -176,12 +177,20 @@ public final class CustomerObj implements Serializable{
         this.soldPrice = soldPrice;
     }
 
-    public boolean isUseGPS() {
+    public Boolean getUseGPS() {
         return useGPS;
     }
 
-    public void setUseGPS(boolean useGPS) {
+    public void setUseGPS(Boolean useGPS) {
         this.useGPS = useGPS;
+    }
+
+    public String getGpsVendor() {
+        return gpsVendor;
+    }
+
+    public void setGpsVendor(String gpsVendor) {
+        this.gpsVendor = gpsVendor;
     }
 
     public String getCalculationMethod() {
@@ -190,6 +199,38 @@ public final class CustomerObj implements Serializable{
 
     public void setCalculationMethod(String calculationMethod) {
         this.calculationMethod = calculationMethod;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     public List<CustomerContactObj> getContacts() {
@@ -240,40 +281,8 @@ public final class CustomerObj implements Serializable{
         this.users = users;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
     @Override
     public String toString() {
-        return "CustomerObj{" + "id=" + id + ", name=" + name + ", dba=" + dba + ", agreementSignedDate=" + agreementSignedDate + ", expirationDate=" + expirationDate + ", type=" + type + ", ein=" + ein + ", licenseNumber=" + licenseNumber + ", aulId=" + aulId + ", bulk=" + bulk + ", pos=" + pos + ", dms=" + dms + ", source=" + source + ", businessLength=" + businessLength + ", portfolioSize=" + portfolioSize + ", soldBefore=" + soldBefore + ", soldPrice=" + soldPrice + ", useGPS=" + useGPS + ", calculationMethod=" + calculationMethod + ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", updatedBy=" + updatedBy + ", lastUpdated=" + lastUpdated + '}';
+        return "CustomerObj{" + "id=" + id + ", name=" + name + ", dba=" + dba + ", agreementSignedDate=" + agreementSignedDate + ", expirationDate=" + expirationDate + ", type=" + type + ", ein=" + ein + ", licenseNumber=" + licenseNumber + ", aulId=" + aulId + ", bulk=" + bulk + ", pos=" + pos + ", dms=" + dms + ", source=" + source + ", businessLength=" + businessLength + ", portfolioSize=" + portfolioSize + ", soldBefore=" + soldBefore + ", soldPrice=" + soldPrice + ", useGPS=" + useGPS + ", gpsVendor=" + gpsVendor + ", calculationMethod=" + calculationMethod + ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", updatedBy=" + updatedBy + ", lastUpdated=" + lastUpdated + ", contacts=" + contacts + ", addresses=" + addresses + ", dealerScores=" + dealerScores + ", irrs=" + irrs + ", notes=" + notes + ", users=" + users + '}';
     }
 }

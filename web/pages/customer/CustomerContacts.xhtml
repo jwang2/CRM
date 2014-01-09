@@ -26,6 +26,12 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">
+                        <h:outputText value="Title"/>
+                    </f:facet>
+                    <h:outputText value="#{item.title}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
                         <h:outputText value="Primary Phone"/>
                     </f:facet>
                     <h:outputText value="#{item.primaryPhone}"/>

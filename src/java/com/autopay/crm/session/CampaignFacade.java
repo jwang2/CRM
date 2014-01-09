@@ -89,7 +89,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
                 } else {
                     whereStr = whereStr + " and start_date >= '" + CrmUtils.getDateString(campaignSearchCriteria.getStartFromDate(), "yyyy-MM-dd") + "' and start_date <= '" + CrmUtils.getDateString(campaignSearchCriteria.getStartToDate(), "yyyy-MM-dd") + "'";
                 }
-            } else if (campaignSearchCriteria.getCreateFromDate() != null) {
+            } else if (campaignSearchCriteria.getStartFromDate() != null) {
                 if (whereStr.length() == 0) {
                     whereStr = "start_date >= '" + CrmUtils.getDateString(campaignSearchCriteria.getStartFromDate(), "yyyy-MM-dd") + "'";
                 } else {
@@ -110,7 +110,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
                 } else {
                     whereStr = whereStr + " and completed_date >= '" + CrmUtils.getDateString(campaignSearchCriteria.getCompleteFromDate(), "yyyy-MM-dd") + "' and completed_date <= '" + CrmUtils.getDateString(campaignSearchCriteria.getCompleteToDate(), "yyyy-MM-dd") + "'";
                 }
-            } else if (campaignSearchCriteria.getCreateFromDate() != null) {
+            } else if (campaignSearchCriteria.getCompleteFromDate() != null) {
                 if (whereStr.length() == 0) {
                     whereStr = "completed_date >= '" + CrmUtils.getDateString(campaignSearchCriteria.getCompleteFromDate(), "yyyy-MM-dd") + "'";
                 } else {

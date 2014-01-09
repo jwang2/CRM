@@ -8,6 +8,9 @@ public final class CapexDataModel implements java.io.Serializable {
     private String customerName;
     private String customerType;
     private String customerDba;
+    private String customerDms;
+    private boolean customerGps;
+    private String customerGpsVendor;
     private String customerWebsite;
     private String customerEmail;
     private String customerPhoneAreacode;
@@ -46,6 +49,10 @@ public final class CapexDataModel implements java.io.Serializable {
     private String contactCreateDate;
     private String contactUpdateUser;
     private String contactUpdateDate;
+    private String contactAddressCreateUser;
+    private String contactAddressCreateDate;
+    private String contactAddressUpdateUser;
+    private String contactAddressUpdateDate;
     
     public CapexDataModel() {
         
@@ -379,9 +386,65 @@ public final class CapexDataModel implements java.io.Serializable {
         this.contactPrincipalPhone = contactPrincipalPhone;
     }
 
+    public String getCustomerDms() {
+        return customerDms;
+    }
+
+    public void setCustomerDms(String customerDms) {
+        this.customerDms = customerDms;
+    }
+
+    public boolean isCustomerGps() {
+        return customerGps;
+    }
+
+    public void setCustomerGps(boolean customerGps) {
+        this.customerGps = customerGps;
+    }
+
+    public String getCustomerGpsVendor() {
+        return customerGpsVendor;
+    }
+
+    public void setCustomerGpsVendor(String customerGpsVendor) {
+        this.customerGpsVendor = customerGpsVendor;
+    }
+
+    public String getContactAddressCreateUser() {
+        return contactAddressCreateUser;
+    }
+
+    public void setContactAddressCreateUser(String contactAddressCreateUser) {
+        this.contactAddressCreateUser = contactAddressCreateUser;
+    }
+
+    public String getContactAddressCreateDate() {
+        return contactAddressCreateDate;
+    }
+
+    public void setContactAddressCreateDate(String contacttAddressCreateDate) {
+        this.contactAddressCreateDate = contacttAddressCreateDate;
+    }
+
+    public String getContactAddressUpdateUser() {
+        return contactAddressUpdateUser;
+    }
+
+    public void setContactAddressUpdateUser(String contacttAddressUpdateUser) {
+        this.contactAddressUpdateUser = contacttAddressUpdateUser;
+    }
+
+    public String getContactAddressUpdateDate() {
+        return contactAddressUpdateDate;
+    }
+
+    public void setContactAddressUpdateDate(String contacttAddressUpdateDate) {
+        this.contactAddressUpdateDate = contacttAddressUpdateDate;
+    }
+
     @Override
     public String toString() {
-        return "CapexDataModel{" + "customerName=" + customerName + ", customerType=" + customerType + ", customerDba=" + customerDba + ", customerWebsite=" + customerWebsite + ", customerEmail=" + customerEmail + ", customerPhoneAreacode=" + customerPhoneAreacode + ", customerPhonePrefix=" + customerPhonePrefix + ", customerPhoneSuffix=" + customerPhoneSuffix + ", customerCreateUser=" + customerCreateUser + ", customerCreateDate=" + customerCreateDate + ", customerUpdateUser=" + customerUpdateUser + ", customerUpdateDate=" + customerUpdateDate + ", customerAddress1=" + customerAddress1 + ", customerAddress2=" + customerAddress2 + ", customerCity=" + customerCity + ", customerCounty=" + customerCounty + ", customerZipcode=" + customerZipcode + ", customerPrincipalAddress=" + customerPrincipalAddress + ", customerState=" + customerState + ", customerAddressCreateUser=" + customerAddressCreateUser + ", customerAddressCreateDate=" + customerAddressCreateDate + ", customerAddressUpdateUser=" + customerAddressUpdateUser + ", customerAddressUpdateDate=" + customerAddressUpdateDate + ", contactName=" + contactName + ", contactEmail=" + contactEmail + ", contactPhoneAreacode=" + contactPhoneAreacode + ", contactPhonePrefix=" + contactPhonePrefix + ", contactPhoneSuffix=" + contactPhoneSuffix + ", contactPhoneLabel=" + contactPhoneLabel + ", contactPrincipalPhone=" + contactPrincipalPhone + ", contactAddress1=" + contactAddress1 + ", contactAddress2=" + contactAddress2 + ", contactCity=" + contactCity + ", contactCounty=" + contactCounty + ", contactZipcode=" + contactZipcode + ", contactPrincipalAddress=" + contactPrincipalAddress + ", contactState=" + contactState + ", contactCreateUser=" + contactCreateUser + ", contactCreateDate=" + contactCreateDate + ", contactUpdateUser=" + contactUpdateUser + ", contactUpdateDate=" + contactUpdateDate + '}';
+        return "CapexDataModel{" + "customerName=" + customerName + ", customerType=" + customerType + ", customerDba=" + customerDba + ", customerDms=" + customerDms + ", customerGps=" + customerGps + ", customerGpsVendor=" + customerGpsVendor + ", customerWebsite=" + customerWebsite + ", customerEmail=" + customerEmail + ", customerPhoneAreacode=" + customerPhoneAreacode + ", customerPhonePrefix=" + customerPhonePrefix + ", customerPhoneSuffix=" + customerPhoneSuffix + ", customerCreateUser=" + customerCreateUser + ", customerCreateDate=" + customerCreateDate + ", customerUpdateUser=" + customerUpdateUser + ", customerUpdateDate=" + customerUpdateDate + ", customerAddress1=" + customerAddress1 + ", customerAddress2=" + customerAddress2 + ", customerCity=" + customerCity + ", customerCounty=" + customerCounty + ", customerZipcode=" + customerZipcode + ", customerPrincipalAddress=" + customerPrincipalAddress + ", customerState=" + customerState + ", customerAddressCreateUser=" + customerAddressCreateUser + ", customerAddressCreateDate=" + customerAddressCreateDate + ", customerAddressUpdateUser=" + customerAddressUpdateUser + ", customerAddressUpdateDate=" + customerAddressUpdateDate + ", contactName=" + contactName + ", contactEmail=" + contactEmail + ", contactPhoneAreacode=" + contactPhoneAreacode + ", contactPhonePrefix=" + contactPhonePrefix + ", contactPhoneSuffix=" + contactPhoneSuffix + ", contactPhoneLabel=" + contactPhoneLabel + ", contactPrincipalPhone=" + contactPrincipalPhone + ", contactAddress1=" + contactAddress1 + ", contactAddress2=" + contactAddress2 + ", contactCity=" + contactCity + ", contactCounty=" + contactCounty + ", contactZipcode=" + contactZipcode + ", contactPrincipalAddress=" + contactPrincipalAddress + ", contactState=" + contactState + ", contactCreateUser=" + contactCreateUser + ", contactCreateDate=" + contactCreateDate + ", contactUpdateUser=" + contactUpdateUser + ", contactUpdateDate=" + contactUpdateDate + ", contactAddressCreateUser=" + contactAddressCreateUser + ", contacttAddressCreateDate=" + contactAddressCreateDate + ", contacttAddressUpdateUser=" + contactAddressUpdateUser + ", contacttAddressUpdateDate=" + contactAddressUpdateDate + '}';
     }
 
 }

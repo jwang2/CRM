@@ -54,6 +54,9 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Customer.findByUpdateUser", query = "SELECT c FROM Customer c WHERE c.updateUser = :updateUser"),
     @NamedQuery(name = "Customer.findByLastUpdated", query = "SELECT c FROM Customer c WHERE c.lastUpdated = :lastUpdated")})
 public class Customer implements Serializable {
+    @Size(max = 255)
+    @Column(name = "gpsvendor", length = 255)
+    private String gpsvendor;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
     private Collection<Users> usersCollection;
     @Size(max = 255)
@@ -563,6 +566,14 @@ public class Customer implements Serializable {
 
     public void setUsersCollection(Collection<Users> usersCollection) {
         this.usersCollection = usersCollection;
+    }
+
+    public String getGpsvendor() {
+        return gpsvendor;
+    }
+
+    public void setGpsvendor(String gpsvendor) {
+        this.gpsvendor = gpsvendor;
     }
     
 }

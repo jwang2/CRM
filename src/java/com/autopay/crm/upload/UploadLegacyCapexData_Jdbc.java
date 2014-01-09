@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,9 +28,10 @@ import java.util.logging.Logger;
 public class UploadLegacyCapexData_Jdbc {
 
     private static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private static String NULL_VALUE = "NULL"; //"\\N"
 
     public void uploadData() {
-        String filepath = "C:\\Users\\Judy\\Documents\\customer2.csv";
+        String filepath = "C:\\Users\\Judy\\Documents\\sellers.csv";
         File file = new File(filepath);
         uploadData(file, "localhost", "root", "jwang");
     }
@@ -40,14 +42,16 @@ public class UploadLegacyCapexData_Jdbc {
         try {
             reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(file))));
             String lineData = reader.readLine();
-            int index = 0;
+            //skip the first line which is header line
+            lineData = reader.readLine();
             while (lineData != null) {
                 CapexDataModel rowData = new CapexDataModel();
                 List<String> values = getRowData(lineData);
                 populateModel(rowData, values);
-                dataList.add(rowData);
+                if (rowData.getCustomerName() != null) {
+                    dataList.add(rowData);
+                }
                 lineData = reader.readLine();
-                index++;
             }
         } catch (Exception e) {
             // do nothing
@@ -61,7 +65,8 @@ public class UploadLegacyCapexData_Jdbc {
                 }
             }
         }
-        System.out.println("==== size: " + dataList.size());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        System.out.println("[" + dateFormat.format(new java.util.Date()) + "] ==== size: " + dataList.size());
         if (!dataList.isEmpty()) {
             final Connection conn = getDBConnection(host, username, pwd);
             if (conn != null) {
@@ -95,48 +100,55 @@ public class UploadLegacyCapexData_Jdbc {
     }
 
     private void populateModel(final CapexDataModel model, final List<String> data) {
-        if (data.size() == 42 || data.size() == 43) {
-            model.setCustomerName(data.get(0).equals("\\N") ? null : data.get(0));
-            model.setCustomerType(data.get(2).equals("\\N") ? null : data.get(2));
-            model.setCustomerDba(data.get(3).equals("\\N") ? null : data.get(3));
-            model.setCustomerWebsite(data.get(4).equals("\\N") ? null : data.get(4));
-            model.setCustomerEmail(data.get(5).equals("\\N") ? null : data.get(5));
-            model.setCustomerPhoneAreacode(data.get(6).equals("\\N") ? null : data.get(6));
-            model.setCustomerPhonePrefix(data.get(7).equals("\\N") ? null : data.get(7));
-            model.setCustomerPhoneSuffix(data.get(8).equals("\\N") ? null : data.get(8));
-            model.setCustomerCreateUser(data.get(9).equals("\\N") ? null : data.get(9));
-            model.setCustomerCreateDate(data.get(10).equals("\\N") ? null : data.get(10));
-            model.setCustomerUpdateUser(data.get(11).equals("\\N") ? null : data.get(11));
-            model.setCustomerUpdateDate(data.get(12).equals("\\N") ? null : data.get(12));
-            model.setCustomerAddress1(data.get(13).equals("\\N") ? null : data.get(13));
-            model.setCustomerAddress2(data.get(14).equals("\\N") ? null : data.get(14));
-            model.setCustomerCity(data.get(15).equals("\\N") ? null : data.get(15));
-            model.setCustomerCounty(data.get(16).equals("\\N") ? null : data.get(16));
-            model.setCustomerZipcode(data.get(17).equals("\\N") ? null : data.get(17));
-            model.setCustomerPrincipalAddress(data.get(18).equals("1") ? true : false);
-            model.setCustomerState(data.get(19).equals("\\N") ? null : data.get(19));
-            model.setCustomerAddressCreateUser(data.get(20).equals("\\N") ? null : data.get(20));
-            model.setCustomerAddressCreateDate(data.get(21).equals("\\N") ? null : data.get(21));
-            model.setCustomerAddressUpdateUser(data.get(22).equals("\\N") ? null : data.get(22));
-            model.setCustomerAddressUpdateDate(data.get(23).equals("\\N") ? null : data.get(23));
-            model.setContactName(data.get(24).equals("\\N") ? null : data.get(24));
-            model.setContactEmail(data.get(25).equals("\\N") ? null : data.get(25));
-            model.setContactPhoneAreacode(data.get(26).equals("\\N") ? null : data.get(26));
-            model.setContactPhonePrefix(data.get(27).equals("\\N") ? null : data.get(27));
-            model.setContactPhoneSuffix(data.get(28).equals("\\N") ? null : data.get(28));
-            model.setContactPhoneLabel(data.get(29).equals("\\N") ? null : data.get(29));
-            model.setContactPrincipalPhone(data.get(30).equals("1") ? true : false);
-            model.setContactAddress1(data.get(31).equals("\\N") ? null : data.get(31));
-            model.setContactAddress2(data.get(32).equals("\\N") ? null : data.get(32));
-            model.setContactCity(data.get(33).equals("\\N") ? null : data.get(33));
-            model.setContactCounty(data.get(34).equals("\\N") ? null : data.get(34));
-            model.setContactZipcode(data.get(35).equals("\\N") ? null : data.get(35));
-            model.setContactPrincipalAddress(data.get(36).equals("1") ? true : false);
-            model.setContactState(data.get(37).equals("\\N") ? null : data.get(37));
-            model.setContactCreateUser(data.get(38).equals("\\N") ? null : data.get(38));
-            model.setContactCreateDate(data.get(39).equals("\\N") ? null : data.get(39));
-            model.setContactUpdateUser(data.get(40).equals("\\N") ? null : data.get(40));
-            model.setContactUpdateDate(data.get(41).equals("\\N") ? null : data.get(41));
+        if (data.size() == 49 || data.size() == 50) {
+            model.setCustomerName(data.get(0).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(0).trim());
+            model.setCustomerType(data.get(2).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(2).trim());
+            model.setCustomerDba(data.get(3).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(3).trim());
+            model.setCustomerDms(data.get(4).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(4).trim());
+            model.setCustomerGps(data.get(5).trim().equals("1") ? true : false);
+            model.setCustomerGpsVendor(data.get(6).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(6).trim());
+            model.setCustomerWebsite(data.get(7).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(7).trim());
+            model.setCustomerEmail(data.get(8).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(8).trim());
+            model.setCustomerPhoneAreacode(data.get(9).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(9).trim());
+            model.setCustomerPhonePrefix(data.get(10).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(10).trim());
+            model.setCustomerPhoneSuffix(data.get(11).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(11).trim());
+            model.setCustomerCreateUser(data.get(12).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(12).trim());
+            model.setCustomerCreateDate(data.get(13).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(13).trim());
+            model.setCustomerUpdateUser(data.get(14).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(14).trim());
+            model.setCustomerUpdateDate(data.get(15).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(15).trim());
+            model.setCustomerAddress1(data.get(16).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(16).trim());
+            model.setCustomerAddress2(data.get(17).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(17).trim());
+            model.setCustomerCity(data.get(18).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(18).trim());
+            model.setCustomerCounty(data.get(19).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(19).trim());
+            model.setCustomerZipcode(data.get(20).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(20).trim());
+            model.setCustomerPrincipalAddress(data.get(21).trim().equals("1") ? true : false);
+            model.setCustomerState(data.get(22).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(22).trim());
+            model.setCustomerAddressCreateUser(data.get(23).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(23).trim());
+            model.setCustomerAddressCreateDate(data.get(24).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(24).trim());
+            model.setCustomerAddressUpdateUser(data.get(25).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(25).trim());
+            model.setCustomerAddressUpdateDate(data.get(26).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(26).trim());
+            model.setContactName(data.get(27).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(27).trim());
+            model.setContactCreateUser(data.get(28).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(28).trim());
+            model.setContactCreateDate(data.get(29).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(29).trim());
+            model.setContactUpdateUser(data.get(30).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(30).trim());
+            model.setContactUpdateDate(data.get(31).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(31).trim());
+            model.setContactEmail(data.get(32).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(32).trim());
+            model.setContactPhoneAreacode(data.get(33).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(33).trim());
+            model.setContactPhonePrefix(data.get(34).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(34).trim());
+            model.setContactPhoneSuffix(data.get(35).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(35).trim());
+            model.setContactPhoneLabel(data.get(36).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(36).trim());
+            model.setContactPrincipalPhone(data.get(37).trim().equals("1") ? true : false);
+            model.setContactAddress1(data.get(38).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(38).trim());
+            model.setContactAddress2(data.get(39).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(39).trim());
+            model.setContactCity(data.get(40).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(40).trim());
+            model.setContactCounty(data.get(41).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(41).trim());
+            model.setContactZipcode(data.get(42).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(42).trim());
+            model.setContactPrincipalAddress(data.get(43).trim().equals("1") ? true : false);
+            model.setContactState(data.get(44).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(44).trim());
+            model.setContactAddressCreateUser(data.get(45).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(45).trim());
+            model.setContactAddressCreateDate(data.get(46).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(46).trim());
+            model.setContactAddressUpdateUser(data.get(47).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(47).trim());
+            model.setContactAddressUpdateDate(data.get(48).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(48).trim());
 
         } else {
             System.out.println("@@@@@@@@@@@@@@@@@@@@ size: " + data.size());
@@ -162,15 +174,12 @@ public class UploadLegacyCapexData_Jdbc {
                 customerID = insertCustomer(conn, dataModel, customerType.name());
                 if (customerID != null) {
                     if ((dataModel.getCustomerAddress1() != null || dataModel.getCustomerAddress2() != null || dataModel.getCustomerCity() != null || dataModel.getCustomerCounty() != null || dataModel.getCustomerZipcode() != null || dataModel.getCustomerState() != null)) {
-                        Long addressID = getCustomerAddressID(conn, dataModel);
-                        if (addressID == null) {
-                            insertAddress(conn, dataModel, customerID);
-                        }
+                        insertAddress(conn, dataModel, customerID);
                     }
                 }
             } else {
                 if ((dataModel.getCustomerAddress1() != null || dataModel.getCustomerAddress2() != null || dataModel.getCustomerCity() != null || dataModel.getCustomerCounty() != null || dataModel.getCustomerZipcode() != null || dataModel.getCustomerState() != null)) {
-                    Long addressID = getCustomerAddressID(conn, dataModel);
+                    Long addressID = getCustomerAddressID(conn, dataModel, customerID);
                     if (addressID == null) {
                         insertAddress(conn, dataModel, customerID);
                     }
@@ -204,18 +213,32 @@ public class UploadLegacyCapexData_Jdbc {
         }
     }
 
-    private Long getCustomerAddressID(final Connection conn, final CapexDataModel model) {
-        String sql = "select id from address where address1 = ? and city = ? and county = ? and state = ? and zip_code = ? and country = ?";
+    private Long getCustomerAddressID(final Connection conn, final CapexDataModel model, final long customerId) {
+        String address1 = model.getCustomerAddress1();
+        if (address1 != null && address1.indexOf("'") >= 0) {
+            address1 = address1.replaceAll("'", "''");
+        }
+        //get number
+        String realAddress = address1;
+        if (address1 != null) {
+            int pos = address1.indexOf(" ");
+            if (pos > 0) {
+                String numStr = address1.substring(0, pos);
+                try {
+                    new Integer(numStr);
+                    realAddress = numStr.trim() + "%";
+                } catch (Exception e) {
+                }
+            }
+        }
+        String sql = "select id from address where address1 like ? and zip_code = ? and customer_id = ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setString(1, model.getCustomerAddress1());
-            ps.setString(2, model.getCustomerCity());
-            ps.setString(3, model.getCustomerCounty());
-            ps.setString(4, model.getCustomerState());
-            ps.setString(5, model.getCustomerZipcode());
-            ps.setString(6, "US");
+            ps.setString(1, realAddress);
+            ps.setString(2, model.getCustomerZipcode());
+            ps.setLong(3, customerId);
             rs = ps.executeQuery();
             if (rs != null && rs.next()) {
                 return rs.getLong("id");
@@ -247,25 +270,48 @@ public class UploadLegacyCapexData_Jdbc {
         if (address1 != null && address1.indexOf("'") >= 0) {
             address1 = address1.replaceAll("'", "''");
         }
-        String sql = "select c.id from customer c inner join address a on c.compare_name = ? and a.customer_id = c.id and a.address1 = ? and a.city = ? and a.county = ? and a.state = ? and a.zip_code = ?";
+        //get number
+        String realAddress = address1;
+        if (address1 != null) {
+            int pos = address1.indexOf(" ");
+            if (pos > 0) {
+                String numStr = address1.substring(0, pos);
+                try {
+                    new Integer(numStr);
+                    realAddress = numStr.trim() + "%";
+                } catch (Exception e) {
+                }
+            }
+        }
+        String sql = "select c.id, c.website, c.use_gps from customer c inner join address a on c.compare_name = ? and c.type = ? and a.customer_id = c.id and "
+                + (address1 == null ? "a.address1 is ?" : "a.address1 like ?") + " and " + (model.getCustomerZipcode() == null ? "a.zip_code is ?" : "a.zip_code = ?");
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             if (model.getCustomerAddress1() == null && model.getCustomerCity() == null && model.getCustomerCounty() == null && model.getCustomerState() == null && model.getCustomerZipcode() == null) {
-                sql = "select c.id from customer c where c.compare_name = ?";
+                sql = "select c.id, c.website, c.use_gps from customer c where c.compare_name = ? and c.type = ?";
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, compareName);
+                ps.setString(2, type);
             } else {
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, compareName);
-                ps.setString(2, address1);
-                ps.setString(3, model.getCustomerCity());
-                ps.setString(4, model.getCustomerCounty());
-                ps.setString(5, model.getCustomerState());
-                ps.setString(6, model.getCustomerZipcode());
+                ps.setString(2, type);
+                ps.setString(3, realAddress);
+                ps.setString(4, model.getCustomerZipcode());
             }
             rs = ps.executeQuery();
             if (rs != null && rs.next()) {
+                //compare website
+                final String website = rs.getString("website");
+                if (website != null && model.getCustomerWebsite() != null && !website.trim().equalsIgnoreCase(model.getCustomerWebsite().trim())) {
+                    return null;
+                }
+                //compare use gps
+                final boolean gps = rs.getBoolean("use_gps");
+                if (gps != model.isCustomerGps()) {
+                    return null;
+                }
                 return rs.getLong("id");
             }
         } catch (SQLException ex) {
@@ -345,12 +391,20 @@ public class UploadLegacyCapexData_Jdbc {
             ps.setString(7, model.getContactZipcode());
             ps.setString(8, "US");
             ps.setBoolean(9, model.isContactPrincipalAddress());
-            ps.setString(10, model.getContactCreateUser());
-            java.util.Date parsed = dateformat.parse(model.getContactCreateDate());
-            ps.setDate(11, new java.sql.Date(parsed.getTime()));
-            ps.setString(12, model.getContactUpdateUser());
-            parsed = dateformat.parse(model.getContactUpdateDate());
-            ps.setDate(13, new java.sql.Date(parsed.getTime()));
+            ps.setString(10, model.getContactAddressCreateUser());
+            if (model.getContactAddressCreateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getContactAddressCreateDate());
+                ps.setDate(11, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(11, null);
+            }
+            ps.setString(12, model.getContactAddressUpdateUser());
+            if (model.getContactAddressUpdateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getContactAddressUpdateDate());
+                ps.setDate(13, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(13, null);
+            }
             ps.executeUpdate();
             rs = conn.createStatement().executeQuery(sql2);
             if (rs != null && rs.next()) {
@@ -433,9 +487,12 @@ public class UploadLegacyCapexData_Jdbc {
         return false;
     }
 
-    private Long insertContact(final Connection conn, final CapexDataModel model, final long customerID, final long addressID) {
+    private Long insertContact(final Connection conn, final CapexDataModel model, final long customerID, final Long addressID) {
         boolean hasPrincipalContact = getPrincipalContact(conn, customerID);
-        String sql = "insert into customer_contact (first_name, last_name, primary_phone, secondary_phone, fax, primary_email, principal, customer_id, address_id) values(?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into customer_contact (first_name, last_name, primary_phone, secondary_phone, fax, primary_email, principal, create_user, date_created, update_user, last_updated, customer_id, address_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        if (addressID == null) {
+            sql = "insert into customer_contact (first_name, last_name, primary_phone, secondary_phone, fax, primary_email, principal, create_user, date_created, update_user, last_updated, customer_id) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+        }
         String sql2 = "SELECT LAST_INSERT_ID() as lastID;";
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -467,14 +524,32 @@ public class UploadLegacyCapexData_Jdbc {
             }
             ps.setString(6, model.getContactEmail());
             ps.setBoolean(7, hasPrincipalContact ? false : true);
-            ps.setLong(8, customerID);
-            ps.setLong(9, addressID);
+            ps.setString(8, model.getContactCreateUser());
+            if (model.getContactCreateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getContactCreateDate());
+                ps.setDate(9, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(9, null);
+            }
+            ps.setString(10, model.getContactUpdateUser());
+            if (model.getContactUpdateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getContactUpdateDate());
+                ps.setDate(11, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(11, null);
+            }
+            ps.setLong(12, customerID);
+            if (addressID != null) {
+                ps.setLong(13, addressID);
+            }
             ps.executeUpdate();
             rs = conn.createStatement().executeQuery(sql2);
             if (rs != null && rs.next()) {
                 return rs.getLong("lastID");
             }
         } catch (SQLException ex) {
+            Logger.getLogger(UploadLegacyCapexData_Jdbc.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(UploadLegacyCapexData_Jdbc.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (ps != null) {
@@ -496,7 +571,7 @@ public class UploadLegacyCapexData_Jdbc {
     }
 
     private Long insertCustomer(final Connection conn, final CapexDataModel model, final String type) {
-        String sql = "insert into customer (name, compare_name, dba, type, status, account_email, website, phone, create_user, date_created, update_user, last_updated) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into customer (name, compare_name, dba, type, status, account_email, website, phone, create_user, date_created, update_user, last_updated, dms, use_gps, gpsvendor) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         String sql2 = "SELECT LAST_INSERT_ID() as lastID;";
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -508,15 +583,25 @@ public class UploadLegacyCapexData_Jdbc {
             ps.setString(4, type);
             ps.setString(5, CrmConstants.CustomerStatus.Open.name());
             ps.setString(6, model.getCustomerEmail());
-            ps.setString(7, model.getCustomerWebsite());
+            ps.setString(7, (model.getCustomerWebsite() == null || model.getCustomerWebsite().equalsIgnoreCase("none")) ? null : model.getCustomerWebsite());
             ps.setString(8, getPhone(model.getCustomerPhoneAreacode(), model.getCustomerPhonePrefix(), model.getCustomerPhoneSuffix()));
             ps.setString(9, model.getCustomerCreateUser());
-
-            java.util.Date parsed = dateformat.parse(model.getCustomerCreateDate());
-            ps.setDate(10, new java.sql.Date(parsed.getTime()));
+            if (model.getCustomerCreateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getCustomerCreateDate());
+                ps.setDate(10, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(10, null);
+            }
             ps.setString(11, model.getCustomerUpdateUser());
-            parsed = dateformat.parse(model.getCustomerUpdateDate());
-            ps.setDate(12, new java.sql.Date(parsed.getTime()));
+            if (model.getCustomerUpdateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getCustomerUpdateDate());
+                ps.setDate(12, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(12, null);
+            }
+            ps.setString(13, model.getCustomerDms());
+            ps.setBoolean(14, model.isCustomerGps());
+            ps.setString(15, model.getCustomerGpsVendor());
             ps.executeUpdate();
             rs = conn.createStatement().executeQuery(sql2);
             if (rs != null && rs.next()) {
@@ -566,11 +651,19 @@ public class UploadLegacyCapexData_Jdbc {
             ps.setBoolean(9, model.isCustomerPrincipalAddress());
             ps.setLong(10, customerID);
             ps.setString(11, model.getCustomerAddressCreateUser());
-            java.util.Date parsed = dateformat.parse(model.getCustomerAddressCreateDate());
-            ps.setDate(12, new java.sql.Date(parsed.getTime()));
+            if (model.getCustomerAddressCreateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getCustomerAddressCreateDate());
+                ps.setDate(12, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(12, null);
+            }
             ps.setString(13, model.getCustomerAddressUpdateUser());
-            parsed = dateformat.parse(model.getCustomerAddressUpdateDate());
-            ps.setDate(14, new java.sql.Date(parsed.getTime()));
+            if (model.getCustomerAddressUpdateDate() != null) {
+                java.util.Date parsed = dateformat.parse(model.getCustomerAddressUpdateDate());
+                ps.setDate(14, new java.sql.Date(parsed.getTime()));
+            } else {
+                ps.setDate(14, null);
+            }
             ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(UploadLegacyCapexData_Jdbc.class.getName()).log(Level.SEVERE, null, ex);

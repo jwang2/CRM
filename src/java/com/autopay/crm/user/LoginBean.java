@@ -77,7 +77,6 @@ public class LoginBean implements Serializable {
      * jaas login
      */
     public String login() {
-        System.out.println("============= login: " + userName + " -- " + password);
         if (loggedIn) {
             return requestedURI;
         }
@@ -90,7 +89,7 @@ public class LoginBean implements Serializable {
             //req.login(this.user.getUsername(), this.user.getPasswordHash());
             req.login(userName, password);
             //log.info(">>> user logged in: " + this.user.getUsername());
-            init();
+           // init();
             if (this.user.getStatus() != null && !this.user.getStatus().equalsIgnoreCase("ACTIVE")) {
                 // FacesMessage facesMessages = new FacesMessage(PENDING_ACCOUNT);
                 // ctx.addMessage(null, facesMessages);
@@ -186,7 +185,7 @@ public class LoginBean implements Serializable {
         if (!loggedIn) {
             return false;
         }
-        if (getRequest().isUserInRole("ADMIN") || getRequest().isUserInRole("AP_ADMIN")) {
+        if (getRequest().isUserInRole("ADMIN") || getRequest().isUserInRole("AP_ADMIN") || getRequest().isUserInRole("AP_BIZ_DEV") || getRequest().isUserInRole("AP_BIZ_DEV_MGR")) {
             result = true;
         } else {
             result = false;

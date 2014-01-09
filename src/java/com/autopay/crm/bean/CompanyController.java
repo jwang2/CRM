@@ -4,6 +4,7 @@ import com.autopay.crm.model.dealer.Company;
 import com.autopay.crm.bean.util.JsfUtil;
 import com.autopay.crm.bean.util.PaginationHelper;
 import com.autopay.crm.session.CompanyFacade;
+import com.autopay.crm.user.LoginBean;
 
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -189,6 +190,10 @@ public class CompanyController implements Serializable {
 
     public Company getCompany(java.lang.Long id) {
         return ejbFacade.find(id);
+    }
+    
+    public String prepareCompany() {
+        return null;
     }
 
     @FacesConverter(forClass = Company.class)

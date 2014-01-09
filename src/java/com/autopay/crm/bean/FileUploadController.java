@@ -286,7 +286,7 @@ public class FileUploadController implements Serializable {
         //add Finance Company customer record
         Customer fico = null;
         if (!sameCustomer) {
-            fico = ejbCustomer.getCustomerByNameAndType(dataModel.getLenderName(), CrmConstants.CustomerType.FINANCE_COMPANY.name());
+            fico = ejbCustomer.getCustomerByNameAndType(dataModel.getLenderName(), CrmConstants.CustomerType.FINANCE_COMPANY.name(), CrmConstants.CustomerType.BOTH.name());
             if (fico == null) {
                 fico = new Customer();
                 fico.setName(dataModel.getLenderName());
@@ -353,33 +353,33 @@ public class FileUploadController implements Serializable {
         List<ExcelRowDataModel> result = new ArrayList<ExcelRowDataModel>();
         System.out.println("\n\n=================total======================: " + dataList.size() + "\n\n\n");
         for (String[] rowData : dataList) {
-            ExcelRowDataModel dataModel = new ExcelRowDataModel(rowData[0],
-                    rowData[1],
-                    rowData[2],
-                    rowData[3],
-                    rowData[4],
-                    rowData[5],
-                    rowData[6],
-                    rowData[7].length() == 0 ? 0 : Integer.valueOf(rowData[7]).intValue(),
-                    rowData[8].length() == 0 ? 0 : Double.valueOf(rowData[8]).doubleValue(),
-                    rowData[9].length() == 0 ? 0 : Integer.valueOf(rowData[9]).intValue(),
-                    rowData[10].length() == 0 ? 0 : Double.valueOf(rowData[10]).doubleValue(),
-                    rowData[11].length() == 0 ? 0 : Integer.valueOf(rowData[11]).intValue(),
-                    rowData[12].length() == 0 ? 0 : Double.valueOf(rowData[12]).doubleValue(),
-                    rowData[13].length() == 0 ? 0 : Integer.valueOf(rowData[13]).intValue(),
-                    rowData[14].length() == 0 ? 0 : Double.valueOf(rowData[14]).doubleValue(),
-                    rowData[15].length() == 0 ? 0 : Integer.valueOf(rowData[15]).intValue(),
-                    rowData[16].length() == 0 ? 0 : Double.valueOf(rowData[16]).doubleValue(),
-                    rowData[17].length() == 0 ? 0 : Integer.valueOf(rowData[17]).intValue(),
-                    rowData[18].length() == 0 ? 0 : Double.valueOf(rowData[18]).doubleValue(),
-                    rowData[19].length() == 0 ? 0 : Integer.valueOf(rowData[19]).intValue(),
-                    rowData[20].length() == 0 ? 0 : Double.valueOf(rowData[20]).doubleValue(),
-                    rowData[21].length() == 0 ? 0 : Integer.valueOf(rowData[21]).intValue(),
-                    rowData[22].length() == 0 ? 0 : Double.valueOf(rowData[22]).doubleValue(),
-                    rowData[23].length() == 0 ? 0 : Integer.valueOf(rowData[23]).intValue(),
-                    rowData[24].length() == 0 ? 0 : Double.valueOf(rowData[24]).doubleValue(),
-                    rowData[25].length() == 0 ? 0 : Integer.valueOf(rowData[25]).intValue(),
-                    rowData[26].length() == 0 ? 0 : Double.valueOf(rowData[26]).doubleValue());
+            ExcelRowDataModel dataModel = new ExcelRowDataModel(rowData[0].trim(),
+                    rowData[1].trim(),
+                    rowData[2].trim(),
+                    rowData[3].trim(),
+                    rowData[4].trim(),
+                    rowData[5].trim(),
+                    rowData[6].trim(),
+                    rowData[7].trim().length() == 0 ? 0 : Integer.valueOf(rowData[7].trim()).intValue(),
+                    rowData[8].trim().length() == 0 ? 0 : Double.valueOf(rowData[8].trim()).doubleValue(),
+                    rowData[9].trim().length() == 0 ? 0 : Integer.valueOf(rowData[9].trim()).intValue(),
+                    rowData[10].trim().length() == 0 ? 0 : Double.valueOf(rowData[10].trim()).doubleValue(),
+                    rowData[11].trim().length() == 0 ? 0 : Integer.valueOf(rowData[11].trim()).intValue(),
+                    rowData[12].trim().length() == 0 ? 0 : Double.valueOf(rowData[12].trim()).doubleValue(),
+                    rowData[13].trim().length() == 0 ? 0 : Integer.valueOf(rowData[13].trim()).intValue(),
+                    rowData[14].trim().length() == 0 ? 0 : Double.valueOf(rowData[14].trim()).doubleValue(),
+                    rowData[15].trim().length() == 0 ? 0 : Integer.valueOf(rowData[15].trim()).intValue(),
+                    rowData[16].trim().length() == 0 ? 0 : Double.valueOf(rowData[16].trim()).doubleValue(),
+                    rowData[17].trim().length() == 0 ? 0 : Integer.valueOf(rowData[17].trim()).intValue(),
+                    rowData[18].trim().length() == 0 ? 0 : Double.valueOf(rowData[18].trim()).doubleValue(),
+                    rowData[19].trim().length() == 0 ? 0 : Integer.valueOf(rowData[19].trim()).intValue(),
+                    rowData[20].trim().length() == 0 ? 0 : Double.valueOf(rowData[20].trim()).doubleValue(),
+                    rowData[21].trim().length() == 0 ? 0 : Integer.valueOf(rowData[21].trim()).intValue(),
+                    rowData[22].trim().length() == 0 ? 0 : Double.valueOf(rowData[22].trim()).doubleValue(),
+                    rowData[23].trim().length() == 0 ? 0 : Integer.valueOf(rowData[23].trim()).intValue(),
+                    rowData[24].trim().length() == 0 ? 0 : Double.valueOf(rowData[24].trim()).doubleValue(),
+                    rowData[25].trim().length() == 0 ? 0 : Integer.valueOf(rowData[25].trim()).intValue(),
+                    rowData[26].trim().length() == 0 ? 0 : Double.valueOf(rowData[26].trim()).doubleValue());
             result.add(dataModel);
         }
         return result;

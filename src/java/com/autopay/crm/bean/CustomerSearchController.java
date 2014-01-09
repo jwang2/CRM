@@ -145,7 +145,11 @@ public class CustomerSearchController implements Serializable {
                         result.add(c);
                     }
                 }
-                searchResult = result;
+                if (result.isEmpty()) {
+                    searchResult = new ArrayList<Customer>(searchResult_backup);
+                } else {
+                    searchResult = result;
+                }
             }
         }
         return "CustomerSearch";
@@ -418,10 +422,19 @@ public class CustomerSearchController implements Serializable {
             newCampaign.setCampaignCustomerCollection(campaignCustomers);
             try {
                 ejbCampaign.create(newCampaign);
+                
+                //refresh search result with showing campaign id
+                for (Customer customer : searchResult) {
+                    if (customer.getCampaignID() == null) {
+                        customer.setCampaignID(newCampaign.getId());
+                    }
+                }
             } catch (Exception e) {
                 log.error("Unable to create new campaign.", e);
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             }
+            
+            
         }
     }
     

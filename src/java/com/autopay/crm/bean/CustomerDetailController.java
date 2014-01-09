@@ -2,6 +2,7 @@ package com.autopay.crm.bean;
 
 import com.autopay.crm.bean.util.JsfUtil;
 import com.autopay.crm.model.Address;
+import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.Customer;
 import com.autopay.crm.model.CustomerContact;
 import com.autopay.crm.model.CustomerNote;
@@ -14,6 +15,7 @@ import com.autopay.crm.model.dealer.User;
 import com.autopay.crm.session.NotificationFacade;
 import com.autopay.crm.session.UserFacade;
 import com.autopay.crm.util.CrmConstants;
+import com.autopay.crm.util.CrmConstants.ContactTitle;
 import com.autopay.crm.util.CrmConstants.CustomerStatus;
 import com.autopay.crm.util.CrmConstants.CustomerType;
 import com.autopay.crm.util.CrmUtils;
@@ -59,6 +61,7 @@ public class CustomerDetailController implements Serializable {
     private String currentScheduleFilter;
     private String currentTab = null;
     private List<Customer> customers_viewrecently;
+    private CampaignCustomer campaignCustomer;
     //EJB
     @EJB
     private com.autopay.crm.session.CustomerFacade ejbCustomer;
@@ -78,6 +81,8 @@ public class CustomerDetailController implements Serializable {
     private UserFacade ejbUser;
     @EJB
     private NotificationFacade ejbNotification;
+    @EJB
+    private com.autopay.crm.session.CampaignCustomerFacade ejbCampaignCustomer;
 
     public CustomerDetailController() {
     }
@@ -87,8 +92,20 @@ public class CustomerDetailController implements Serializable {
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
+        campaignCustomer = null;
         addToViewRecently(customer);
         setCurrentTab(null);
+        return "/pages/customer/CustomerDetail";
+    }
+
+    public String prepareDetailFromCampaign(Customer customer) {
+        current = customer;
+        currentRelatedFicos = null;
+        currentNonRelatedFicos = null;
+        currentDeals = null;
+        campaignCustomer = null;
+        addToViewRecently(customer);
+        setCurrentTab("campaign");
         return "/pages/customer/CustomerDetail";
     }
 
@@ -97,6 +114,7 @@ public class CustomerDetailController implements Serializable {
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
+        campaignCustomer = null;
         addToViewRecently(current);
         setCurrentTab("schedules");
         return "/pages/customer/CustomerDetail";
@@ -107,6 +125,7 @@ public class CustomerDetailController implements Serializable {
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
+        campaignCustomer = null;
         addToViewRecently(current);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
@@ -239,7 +258,11 @@ public class CustomerDetailController implements Serializable {
 
     public String getCustomerGoogleSearchResultPage(final Customer customer) {
         if (customer.getWebsite() != null && customer.getWebsite().trim().length() > 0) {
-            return customer.getWebsite();
+            if (customer.getWebsite().startsWith("http")) {
+                return customer.getWebsite();
+            } else {
+                return "http://" + customer.getWebsite();
+            }
         } else {
             return getCustomerGoogleSearchResultPage(customer.getName(), getCustomerMainAddress(customer));
         }
@@ -383,6 +406,15 @@ public class CustomerDetailController implements Serializable {
      * Customer Contact Section
      * ***************************************************
      */
+    public List<String> getContactTitleListForSearch() {
+        List<String> result = new ArrayList<String>();
+        result.add("");
+        for (ContactTitle title : ContactTitle.values()) {
+            result.add(title.name());
+        }
+        return result;
+    }
+
     public CustomerContact getCurrentContact() {
         if (currentContact != null && currentContact.getAddressId() == null) {
             currentContact.setAddressId(new Address());
@@ -404,7 +436,10 @@ public class CustomerDetailController implements Serializable {
     public void prepareNewContact() {
         System.out.println("========= prepareNewContact");
         currentContact = new CustomerContact();
-        currentContact.setAddressId(new Address());
+        currentContact.setAddressId(getSelectedMainAddress());
+        if (current != null) {
+            currentContact.setPrimaryPhone(current.getPhone());
+        }
     }
 
     public void performDeleteContact() {
@@ -418,42 +453,43 @@ public class CustomerDetailController implements Serializable {
     public void performContactAction(final String userName, final boolean newContact) {
         System.out.println("============ performContactAction: " + userName + ", " + newContact);
         if (newContact) {
-            System.out.println("=========== address: " + currentContact.getAddressId());
-            if (!isAddressEmpty(currentContact.getAddressId())) {
-                //check if address already exist
-                final Address existAddress = ejbAddress.getAddress(currentContact.getAddressId().getAddress1(), currentContact.getAddressId().getZipCode());
-                if (existAddress == null) {
-                    if (currentContact.getAddressId().getAddress1().startsWith("P O BOX")) {
-                        currentContact.getAddressId().setType(CrmConstants.AddressType.POBOX.name());
+            if (!isContactEmpty(currentContact)) {
+                if (!isAddressEmpty(currentContact.getAddressId())) {
+                    //check if address already exist
+                    final Address existAddress = ejbAddress.getAddress(currentContact.getAddressId().getAddress1(), currentContact.getAddressId().getZipCode());
+                    if (existAddress == null) {
+                        if (currentContact.getAddressId().getAddress1().startsWith("P O BOX")) {
+                            currentContact.getAddressId().setType(CrmConstants.AddressType.POBOX.name());
+                        } else {
+                            currentContact.getAddressId().setType(CrmConstants.AddressType.REGULAR.name());
+                        }
+                        currentContact.getAddressId().setPrincipal(true);
+                        try {
+                            currentContact.getAddressId().setCreateUser(userName);
+                            ejbAddress.create(currentContact.getAddressId());
+                        } catch (Exception e) {
+                            log.error("Unable to create new contact address.", e);
+                            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+                        }
                     } else {
-                        currentContact.getAddressId().setType(CrmConstants.AddressType.REGULAR.name());
-                    }
-                    currentContact.getAddressId().setPrincipal(true);
-                    try {
-                        currentContact.getAddressId().setCreateUser(userName);
-                        ejbAddress.create(currentContact.getAddressId());
-                    } catch (Exception e) {
-                        log.error("Unable to create new contact address.", e);
-                        JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+                        currentContact.setAddressId(existAddress);
                     }
                 } else {
-                    currentContact.setAddressId(existAddress);
+                    currentContact.setAddressId(null);
                 }
-            } else {
-                currentContact.setAddressId(null);
+                currentContact.setCustomerId(current);
+                if (!hasPrimaryContact()) {
+                    currentContact.setPrincipal(true);
+                }
+                currentContact.setCreateUser(userName);
+                try {
+                    ejbContact.edit(currentContact);
+                } catch (Exception e) {
+                    log.error("Unable to update contact.", e);
+                    JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+                }
+                current.getCustomerContactCollection().add(currentContact);
             }
-            currentContact.setCustomerId(current);
-            if (!hasPrimaryContact()) {
-                currentContact.setPrincipal(true);
-            }
-            currentContact.setCreateUser(userName);
-            try {
-                ejbContact.edit(currentContact);
-            } catch (Exception e) {
-                log.error("Unable to update contact.", e);
-                JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            }
-            current.getCustomerContactCollection().add(currentContact);
         } else {
 
             //update
@@ -467,6 +503,20 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
+    private boolean isContactEmpty(CustomerContact contact) {
+        if ((contact.getFirstName() != null && contact.getFirstName().trim().length() == 0) 
+            && (contact.getLastName() != null && contact.getLastName().trim().length() == 0) 
+            && (contact.getTitle() != null && contact.getTitle().trim().length() == 0)
+                && (contact.getPrimaryEmail() != null && contact.getPrimaryEmail().trim().length() == 0)
+                && (contact.getPrimaryPhone() != null && contact.getPrimaryPhone().trim().length() == 0)
+                && (contact.getSecondaryEmail() != null && contact.getSecondaryEmail().trim().length() == 0)
+                && (contact.getSecondaryPhone() != null && contact.getSecondaryPhone().trim().length() == 0)
+                && (contact.getFax() != null && contact.getFax().trim().length() == 0)) {
+            return true;
+        }
+        return false;
+    }
+    
     private boolean isAddressEmpty(Address address) {
         if ((address.getAddress1() != null && address.getAddress1().trim().length() == 0)
                 && (address.getCity() != null && address.getCity().trim().length() == 0)
@@ -500,7 +550,8 @@ public class CustomerDetailController implements Serializable {
 
     /**
      * ***************************************************
-     * Customer Fico Section ***************************************************
+     * Customer Fico Section
+     * ***************************************************
      */
     public List<Customer> getCurrentNonRelatedFicos() {
         if (currentNonRelatedFicos == null) {
@@ -637,20 +688,32 @@ public class CustomerDetailController implements Serializable {
 
     private List<CustomerDeal> getCustomerDeals() {
         List<CustomerDeal> result = new ArrayList<CustomerDeal>();
-        List<Customer> ficos = new ArrayList<Customer>();
         final List<Customer> relatedFicos = getCurrentRelatedFicos();
         final List<Customer> nonRelatedFicos = getCurrentNonRelatedFicos();
+        final String[] monthStrs = getCustomerDealsShowRange(totalMonthsShownOnDealPage);
         if (relatedFicos != null) {
-            ficos.addAll(relatedFicos);
+            for (Customer fico : relatedFicos) {
+                CustomerDeal customerDeal = new CustomerDeal(fico.getName() + "*", monthStrs, getCustomerDeals(fico, totalMonthsShownOnDealPage));
+                result.add(customerDeal);
+            }
         }
         if (nonRelatedFicos != null) {
-            ficos.addAll(nonRelatedFicos);
+            for (Customer fico : nonRelatedFicos) {
+                CustomerDeal customerDeal = new CustomerDeal(fico.getName(), monthStrs, getCustomerDeals(fico, totalMonthsShownOnDealPage));
+                result.add(customerDeal);
+            }
         }
-        final String[] monthStrs = getCustomerDealsShowRange(totalMonthsShownOnDealPage);
-        for (Customer fico : ficos) {
-            CustomerDeal customerDeal = new CustomerDeal(fico.getName(), monthStrs, getCustomerDeals(fico, totalMonthsShownOnDealPage));
-
-            result.add(customerDeal);
+        //add subtotal row
+        if (!result.isEmpty()) {
+            Integer[] subtotal = new Integer[totalMonthsShownOnDealPage];
+            for (int i = 0; i < totalMonthsShownOnDealPage; i++) {
+                subtotal[i] = 0;
+                for (CustomerDeal cd : result) {
+                    subtotal[i] = subtotal[i] + cd.getDealValue(i);
+                }
+            }
+            CustomerDeal subtotalRecord = new CustomerDeal("Subtotal:", monthStrs, subtotal);
+            result.add(subtotalRecord);
         }
         return result;
     }
@@ -667,7 +730,7 @@ public class CustomerDetailController implements Serializable {
                 if (lead.getFinanceCompanyId().getId().longValue() == customer.getId().longValue()) {
                     int pos = CrmUtils.getMonthPosition(lastNumOfMonths, lead.getFileDate());
                     if (pos >= 0) {
-                        result[pos] = lead.getTotalFinanced();
+                        result[pos] = result[pos] + lead.getTotalFinanced();
                     }
                 }
             }
@@ -913,8 +976,49 @@ public class CustomerDetailController implements Serializable {
     }
 
     /**
-     * ***************************************************
-     * Inner Class Section ***************************************************
+     * *****************************************
+     * Customer campaign section ****************************************
+     */
+    public CampaignCustomer getCampaignCustomer() {
+        if (campaignCustomer == null) {
+            if (current != null) {
+                campaignCustomer = ejbCampaignCustomer.getCampaignCustomerByCustomerId(current.getId());
+            } else {
+                campaignCustomer = new CampaignCustomer();
+            }
+        }
+        return campaignCustomer;
+    }
+
+    public void setCampaignCustomer(CampaignCustomer campaignCustomer) {
+        this.campaignCustomer = campaignCustomer;
+    }
+
+    public void updateCampaignCustomer() {
+        if (campaignCustomer != null) {
+            ejbCampaignCustomer.edit(campaignCustomer);
+        }
+    }
+
+    public boolean isInCampaign() {
+        if (current.getCampaignID() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isLoginUserOwnCampaign(String loginUser, String campaignowner) {
+        if (loginUser.equals(campaignowner)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * **************************************************
+     * Inner Class Section **************************************************
      */
     public final class CustomerDealDetail extends Object implements Serializable, Comparable<CustomerDealDetail> {
 

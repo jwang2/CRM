@@ -27,7 +27,7 @@
         <h:panelGroup>
             <a4j:commandButton value="Cancel" onclick="#{rich:component('lp')}.hide(event);
                     return false;"/>
-            <a4j:commandButton value="Create" action="#{customerSearchBean.createCampaign(loginBean.userName)}" oncomplete="#{rich:component('lp')}.hide(event);return false;"/>
+            <a4j:commandButton render="customerResultPanel" value="Create" action="#{customerSearchBean.createCampaign(loginBean.userName)}" oncomplete="#{rich:component('lp')}.hide(event);return false;"/>
         </h:panelGroup>
 
     </rich:popupPanel>

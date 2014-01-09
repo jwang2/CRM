@@ -11,30 +11,43 @@
         <h:panelGroup rendered="true">
             <h:outputText value="Customers"/>
             <rich:dataTable id="campaignCustomerResultTable" styleClass="table" value="#{campaignSearchBean.campaignCustomers}" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
-                <rich:column sortBy="#{item.id}" sortOrder="#{customerSortingBean.idOrder}">
+                <rich:column sortBy="#{item.customerId.id}" sortOrder="#{customerSortingBean.idOrder}">
                     <f:facet name="header">
                         <a4j:commandLink value="#{bundle.ListCustomerTitle_id}" render="campaignCustomerResultTable" action="#{customerSortingBean.sortById()}"/>
                     </f:facet>
-                    <h:commandLink action="#{customerDetailBean.prepareDetail(item)}" value="#{item.id}"/>
+                    <h:commandLink action="#{customerDetailBean.prepareDetailFromCampaign(item.customerId)}" value="#{item.customerId.id}"/>
                 </rich:column>
-                <rich:column sortBy="#{item.name}" sortOrder="#{customerSortingBean.nameOrder}">
+                <rich:column sortBy="#{item.customerId.name}" sortOrder="#{customerSortingBean.nameOrder}">
                     <f:facet name="header">
                         <a4j:commandLink value="#{bundle.ListCustomerTitle_name}" render="campaignCustomerResultTable" action="#{customerSortingBean.sortByName()}"/>
                     </f:facet>
-                    <h:outputText value="#{item.name}"/>
+                    <h:outputText value="#{item.customerId.name}"/>
                 </rich:column>
-                <rich:column sortBy="#{item.status}" sortOrder="#{customerSortingBean.statusOrder}">
-                    <f:facet name="header">
-                        <a4j:commandLink value="#{bundle.ListCustomerTitle_status}" render="campaignCustomerResultTable" action="#{customerSortingBean.sortByStatus()}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.status}"/>
-                </rich:column>
-                <rich:column sortBy="#{item.type}" sortOrder="#{customerSortingBean.typeOrder}">
+                <rich:column sortBy="#{item.customerId.type}" sortOrder="#{customerSortingBean.typeOrder}">
                     <f:facet name="header">
                         <a4j:commandLink value="#{bundle.ListCustomerTitle_type}" render="campaignCustomerResultTable" action="#{customerSortingBean.sortByType()}"/>
                     </f:facet>
-                    <h:outputText value="#{item.type}"/>
+                    <h:outputText value="#{item.customerId.type}"/>
                 </rich:column>
+                <rich:column sortBy="#{item.customerId.status}" sortOrder="#{customerSortingBean.statusOrder}">
+                    <f:facet name="header">
+                        <a4j:commandLink value="#{bundle.ListCustomerTitle_status}" render="campaignCustomerResultTable" action="#{customerSortingBean.sortByStatus()}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.customerId.status}"/>
+                </rich:column>
+                <rich:column >
+                    <f:facet name="header">
+                        <h:outputText value="Start Date"/>
+                    </f:facet>
+                    <h:outputText value="#{item.startDate}"/>
+                </rich:column>
+                <rich:column >
+                    <f:facet name="header">
+                        <h:outputText value="Complete Date"/>
+                    </f:facet>
+                    <h:outputText value="#{item.completedDate}"/>
+                </rich:column>
+
             </rich:dataTable>
         </h:panelGroup>
 

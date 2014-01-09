@@ -1,0 +1,35 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <rich:popupPanel id="editcustomercampaign" header="Edit Customer Campaign" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:form>
+            <h:panelGrid columns="2" rendered="true">
+                
+                <h:outputLabel value="Start Date:"/>
+                <rich:calendar value="#{customerDetailBean.campaignCustomer.startDate}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true"/>
+
+                <h:outputLabel value="Complete Date:"/>
+                <rich:calendar value="#{customerDetailBean.campaignCustomer.completedDate}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true"/>
+
+                <h:outputText value="Note:" style=" alignment-baseline: middle"/>
+                <h:outputLabel value=""/>
+                
+                <h:outputLabel value=""/>
+                <h:inputTextarea rows="3" cols="40" value="#{customerDetailBean.campaignCustomer.note}"/>
+
+            </h:panelGrid>
+            <br/>
+            <h:panelGroup>
+                <a4j:commandButton value="Cancel" onclick="#{rich:component('editcustomercampaign')}.hide(event);
+                        return false;"/>
+                <a4j:commandButton execute="editcustomercampaign" render="customercampaignmain" value="Update" action="#{customerDetailBean.updateCampaignCustomer()}" oncomplete="#{rich:component('editcustomercampaign')}.hide(event);return false;"/>
+            </h:panelGroup>
+        </h:form>
+    </rich:popupPanel>
+
+</ui:composition>
+

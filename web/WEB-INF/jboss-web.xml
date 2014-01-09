@@ -2,4 +2,7 @@
 <jboss-web>
   <context-root>/CRM</context-root>
   <security-domain>java:/jaas/autopay_domain</security-domain>
+  <valve>
+      <class-name>org.apache.catalina.authenticator.SingleSignOn</class-name>
+  </valve>
 </jboss-web>

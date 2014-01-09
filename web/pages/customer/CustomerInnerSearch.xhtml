@@ -6,7 +6,7 @@
     <rich:toolbar height="15px" id="tb">
         <rich:toolbarGroup location="left">
             <c:forEach items="#{customerDetailBean.customers_viewrecently}" var="item">
-                <h:commandLink value="#{item.name}" action="#{customerDetailBean.prepareDetail(item)}" style="font-size: 0.8em"/>
+                <h:commandLink value="#{item.name}" action="#{customerDetailBean.prepareDetail(item)}" style="color: white; font-size: 0.8em"/>
             </c:forEach>
         </rich:toolbarGroup>
         <rich:toolbarGroup location="right">
@@ -15,7 +15,7 @@
                          validatorMessage="Enter 2 characters">
                 <rich:placeholder value="Enter Dealer first 2 letters"/>
             </h:inputText>
-            <h:commandButton id="searchButton" value="search" styleClass="nestedButton" action="#{customerSearchBean.searchAgain()}"/>
+            <h:commandButton id="searchButton" value="Search" styleClass="nestedButton" action="#{customerSearchBean.searchAgain()}"/>
 
         </rich:toolbarGroup>
     </rich:toolbar>

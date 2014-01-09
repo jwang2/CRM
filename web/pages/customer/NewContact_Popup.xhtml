@@ -6,18 +6,27 @@
 
     <rich:popupPanel id="newcontact" header="Create A Contact" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
         <h:form>
-            <h:panelGroup id="messagePanelSchedule" layout="block">
-                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
-            </h:panelGroup>
             <h:panelGrid columns="2" rendered="true">
+                <h:outputLabel value="Title:"/>
+                <h:selectOneMenu value="#{customerDetailBean.currentContact.title}">
+                    <f:selectItems value="#{customerDetailBean.contactTitleListForSearch}" var="title" itemLabel="#{title}" itemValue="#{title}"/>
+                </h:selectOneMenu>
                 <h:outputLabel value="First Name:"/>
                 <h:inputText size="30" value="#{customerDetailBean.currentContact.firstName}"/>
                 <h:outputLabel value="Last Name:"/>
                 <h:inputText size="30" value="#{customerDetailBean.currentContact.lastName}"/>
                 <h:outputLabel value="Primary Phone:"/>
-                <h:inputText size="30" value="#{customerDetailBean.currentContact.primaryPhone}"/>
+                <h:panelGroup>
+                    <h:inputText id="cpphone" size="30" value="#{customerDetailBean.currentContact.primaryPhone}" onkeyup="formatPhone(#{rich:element('cpphone')}, event);" >
+                        <rich:placeholder value="303-444-5555" />
+                    </h:inputText>
+                </h:panelGroup>
                 <h:outputLabel value="Secondary Phone:"/>
-                <h:inputText size="30" value="#{customerDetailBean.currentContact.secondaryPhone}"/>
+                <h:panelGroup>
+                    <h:inputText id="csphone" size="30" value="#{customerDetailBean.currentContact.secondaryPhone}" onkeyup="formatPhone(#{rich:element('csphone')}, event);" >
+                        <rich:placeholder value="303-444-5555" />
+                    </h:inputText>
+                </h:panelGroup>
                 <h:outputLabel value="Fax:"/>
                 <h:inputText size="30" value="#{customerDetailBean.currentContact.fax}"/>
                 <h:outputLabel value="Primary Email:"/>
@@ -41,7 +50,7 @@
             </h:panelGrid>
             <h:panelGroup>
                 <a4j:commandButton value="Cancel" onclick="#{rich:component('newcontact')}.hide(event);
-                        return false;"/>
+                                         return false;"/>
                 <a4j:commandButton execute="newcontact" render="contactmain" value="Create" action="#{customerDetailBean.performContactAction(loginBean.userName, true)}" oncomplete="#{rich:component('newcontact')}.hide(event);return false;"/>
             </h:panelGroup>
         </h:form>

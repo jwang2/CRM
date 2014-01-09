@@ -301,7 +301,7 @@ public class CampaignSearchController implements Serializable {
                 completedRecords++;
             }
         }
-        float rate = completedRecords/totalRecords;
+        float rate = new Float(completedRecords)/(new Float(totalRecords));
         result = new DecimalFormat("0.0").format(100 * rate);
 
         return result + "% (" + totalRecords + " records in campaign)";
@@ -377,10 +377,12 @@ public class CampaignSearchController implements Serializable {
      *  CUSTOMERS SECTION
      *********************************************/
     
-    public List<Customer> getCampaignCustomers() {
-        List<Customer> result = new ArrayList<Customer>();
+    public List<CampaignCustomer> getCampaignCustomers() {
+        List<CampaignCustomer> result = new ArrayList<CampaignCustomer>();
         for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {
-            result.add(cc.getCustomerId());
+            Customer c = cc.getCustomerId();
+            c.setCampaignID(current.getId());
+            result.add(cc);
         }
         return result;
     }

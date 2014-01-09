@@ -21,8 +21,6 @@ public final class CustomerSearchCriteria implements Serializable{
     private String totalFinancedOperator;
     private String totalLoanOperator;
     private String statusOperator;
-    private Date startDate;
-    private Date endDate;
     private String sortBy;
     
     public CustomerSearchCriteria() {
@@ -32,7 +30,7 @@ public final class CustomerSearchCriteria implements Serializable{
     public CustomerSearchCriteria(final String name, final String type, final String status, 
             final String phone, final String city, final String county, final String state, final String zipcode,
             final Integer totalFinanced, final String totalFinancedOperator, final int totalLoan, final String totalLoanOperator, 
-            final String statusOperator, final Date startDate, final Date endDate) {
+            final String statusOperator) {
         this.name = name;
         this.type = type;
         this.status = status;
@@ -46,8 +44,6 @@ public final class CustomerSearchCriteria implements Serializable{
         this.totalLoan = totalLoan;
         this.totalLoanOperator = totalLoanOperator;
         this.statusOperator = statusOperator;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 
     public String getName() {
@@ -162,22 +158,6 @@ public final class CustomerSearchCriteria implements Serializable{
         this.statusOperator = statusOperator;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
     public String getSortBy() {
         return sortBy;
     }
@@ -202,8 +182,6 @@ public final class CustomerSearchCriteria implements Serializable{
         hash = 67 * hash + (this.totalFinancedOperator != null ? this.totalFinancedOperator.hashCode() : 0);
         hash = 67 * hash + (this.totalLoanOperator != null ? this.totalLoanOperator.hashCode() : 0);
         hash = 67 * hash + (this.statusOperator != null ? this.statusOperator.hashCode() : 0);
-        hash = 67 * hash + (this.startDate != null ? this.startDate.hashCode() : 0);
-        hash = 67 * hash + (this.endDate != null ? this.endDate.hashCode() : 0);
         hash = 67 * hash + (this.sortBy != null ? this.sortBy.hashCode() : 0);
         return hash;
     }
@@ -256,12 +234,6 @@ public final class CustomerSearchCriteria implements Serializable{
         if ((this.statusOperator == null) ? (other.statusOperator != null) : !this.statusOperator.equals(other.statusOperator)) {
             return false;
         }
-        if (this.startDate != other.startDate && (this.startDate == null || !this.startDate.equals(other.startDate))) {
-            return false;
-        }
-        if (this.endDate != other.endDate && (this.endDate == null || !this.endDate.equals(other.endDate))) {
-            return false;
-        }
         if ((this.sortBy == null) ? (other.sortBy != null) : !this.sortBy.equals(other.sortBy)) {
             return false;
         }
@@ -270,7 +242,7 @@ public final class CustomerSearchCriteria implements Serializable{
 
     @Override
     public String toString() {
-        return "CustomerSearchCriteria{" + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", startDate=" + startDate + ", endDate=" + endDate + ", sortBy=" + sortBy + '}';
+        return "CustomerSearchCriteria{" + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", sortBy=" + sortBy + '}';
     }
 
 }

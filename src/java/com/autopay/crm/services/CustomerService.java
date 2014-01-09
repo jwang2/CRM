@@ -71,6 +71,9 @@ public class CustomerService {
 
     @WebMethod(operationName = "addCustomer")
     public Long addCustomer(@WebParam(name = "customer") CustomerObj customer, @WebParam(name = "isSignUp") boolean isSignUp) throws Exception {
+        if (customer == null) {
+            throw new Exception("Customer object is null.");
+        }
         //check if the customer is exist or not, if customer exists already, return the id, otherwise add new customer.
         Customer existCustomer = null;
         if (customer.getName() != null && customer.getAddresses() != null) {
@@ -109,15 +112,16 @@ public class CustomerService {
             newCustomer.setEin(customer.getEin());
             newCustomer.setLicenseNumber(customer.getLicenseNumber());
             newCustomer.setAulId(customer.getAulId());
-            newCustomer.setBulk(customer.isBulk());
-            newCustomer.setPos(customer.isPos());
+            newCustomer.setBulk(customer.getBulk());
+            newCustomer.setPos(customer.getPos());
             newCustomer.setDms(customer.getDms());
             newCustomer.setSource(customer.getSource());
             newCustomer.setBusinessLength(customer.getBusinessLength());
             newCustomer.setPortfolioSize(customer.getPortfolioSize());
             newCustomer.setSoldBefore(customer.getSoldBefore());
             newCustomer.setSoldprice(customer.getSoldPrice());
-            newCustomer.setUseGps(customer.isUseGPS());
+            newCustomer.setUseGps(customer.getUseGPS());
+            newCustomer.setGpsvendor(customer.getGpsVendor());
             newCustomer.setCalculationMethod(customer.getCalculationMethod());
             newCustomer.setCreateUser(customer.getCreatedBy());
             newCustomer.setDateCreated(customer.getCreatedDate());
@@ -214,7 +218,7 @@ public class CustomerService {
     }
 
     private void updateCustomerAttributes(CustomerObj customer) throws Exception {
-        if (customer.getId() != null) {
+        if (customer != null && customer.getId() != null) {
             Customer existCustomer = customerFacade.find(customer.getId());
             if (existCustomer != null) {
                 if (customer.getName() != null && customer.getName().trim().length() > 0) {
@@ -240,8 +244,8 @@ public class CustomerService {
                     existCustomer.setLicenseNumber(customer.getLicenseNumber());
                 }
                 existCustomer.setAulId(customer.getAulId()); //should we check if id is null, maybe need to set it to null???
-                existCustomer.setBulk(customer.isBulk());
-                existCustomer.setPos(customer.isPos());
+                existCustomer.setBulk(customer.getBulk());
+                existCustomer.setPos(customer.getPos());
                 if (existCustomer.getDms() != null && existCustomer.getDms().trim().length() > 0) {
                     existCustomer.setDms(customer.getDms());
                 }
@@ -260,7 +264,10 @@ public class CustomerService {
                 if (customer.getSoldPrice() != null) {
                     existCustomer.setSoldprice(customer.getSoldPrice());
                 }
-                existCustomer.setUseGps(customer.isUseGPS());
+                existCustomer.setUseGps(customer.getUseGPS());
+                if (customer.getGpsVendor() != null) {
+                    existCustomer.setGpsvendor(customer.getGpsVendor());
+                }
                 if (customer.getCalculationMethod() != null && customer.getCalculationMethod().trim().length() > 0) {
                     existCustomer.setCalculationMethod(customer.getCalculationMethod());
                 }
@@ -275,12 +282,15 @@ public class CustomerService {
                 throw new Exception("Customer with id " + customer.getId() + " is not existed.");
             }
         } else {
-            throw new Exception("missing customer id");
+            throw new Exception("Either customer object is null or missing customer id");
         }
     }
 
     @WebMethod(operationName = "updateCustomer")
     public void updateCustomer(@WebParam(name = "customer") CustomerObj customer) throws Exception {
+        if (customer == null) {
+            throw new Exception ("Customer object is null.");
+        }
         List<String> errorMsgs = new ArrayList<String>();
         try {
             updateCustomerAttributes(customer);
@@ -398,6 +408,9 @@ public class CustomerService {
         if (customer == null) {
             throw new Exception("Customer with id " + customerId + " is not exist.");
         }
+        if (contact == null) {
+            throw new Exception("Contact object is null.");
+        }
         CustomerContact newContact = new CustomerContact();
         newContact.setFirstName(contact.getFirstName());
         newContact.setLastName(contact.getLastName());
@@ -413,7 +426,7 @@ public class CustomerService {
 
     @WebMethod(operationName = "updateContact")
     public void updateContact(@WebParam(name = "customerContact") CustomerContactObj contact) throws Exception {
-        if (contact.getId() != null) {
+        if (contact != null && contact.getId() != null) {
             CustomerContact existContact = contactFacade.find(contact.getId());
             if (existContact != null) {
                 existContact.setFirstName(contact.getFirstName());
@@ -428,7 +441,7 @@ public class CustomerService {
                 throw new Exception("Contact with id " + contact.getId() + " is not exist.");
             }
         } else {
-            throw new Exception("missing contact id.");
+            throw new Exception("Either contact object is null or missing contact id.");
         }
     }
 
@@ -437,6 +450,9 @@ public class CustomerService {
         Customer customer = customerFacade.find(customerId);
         if (customer == null) {
             throw new Exception("Customer with id " + customerId + " is not exist.");
+        }
+        if (irr == null) {
+            throw new Exception("Irr object is null.");
         }
         IrrScore newIrr = new IrrScore();
         newIrr.setIrrName(irr.getIrrName());
@@ -450,7 +466,7 @@ public class CustomerService {
 
     @WebMethod(operationName = "updateIRR")
     public void updateIRR(@WebParam(name = "irr") IrrObj irr) throws Exception {
-        if (irr.getId() != null) {
+        if (irr != null && irr.getId() != null) {
             IrrScore existIrr = irrFacade.find(irr.getId());
             if (existIrr != null) {
                 existIrr.setIrrName(irr.getIrrName());
@@ -462,7 +478,7 @@ public class CustomerService {
                 throw new Exception("IRR with id " + irr.getId() + " is not exist.");
             }
         } else {
-            throw new Exception("missing IRR id.");
+            throw new Exception("Either irr object is null or missing IRR id.");
         }
     }
 
@@ -471,6 +487,9 @@ public class CustomerService {
         Customer customer = customerFacade.find(customerId);
         if (customer == null) {
             throw new Exception("Customer with id " + customerId + " is not exist.");
+        }
+        if (score == null) {
+            throw new Exception("Score object is null.");
         }
         DealerScore newScore = new DealerScore();
         newScore.setScore(score.getScore());
@@ -483,7 +502,7 @@ public class CustomerService {
 
     @WebMethod(operationName = "updateDealerScore")
     public void updateDealerScore(@WebParam(name = "dealerScore") DealerScoreObj score) throws Exception {
-        if (score.getId() != null) {
+        if (score != null && score.getId() != null) {
             DealerScore existScore = scoreFacade.find(score.getId());
             if (existScore != null) {
                 existScore.setScore(score.getScore());
@@ -494,12 +513,15 @@ public class CustomerService {
                 throw new Exception("Dealer score with id " + score.getId() + " is not exist.");
             }
         } else {
-            throw new Exception("missing dealer score id.");
+            throw new Exception("Either score object is null or missing dealer score id.");
         }
     }
 
     @WebMethod(operationName = "addBroker")
     public Long addBroker(@WebParam(name = "broker") BrokerObj broker) throws Exception {
+        if (broker == null) {
+            throw new Exception("Broker object is null.");
+        }
         Broker newBroker = new Broker();
         newBroker.setCompanyName(broker.getCompanyName());
         newBroker.setFirstName(broker.getFirstName());
@@ -549,7 +571,7 @@ public class CustomerService {
 
     @WebMethod(operationName = "updateBroker")
     public void updateBroker(@WebParam(name = "broker") BrokerObj broker) throws Exception {
-        if (broker.getId() != null) {
+        if (broker != null && broker.getId() != null) {
             Broker existBroker = brokerFacade.find(broker.getId());
             if (existBroker != null) {
                 if (broker.getCompanyName() != null && broker.getCompanyName().trim().length() > 0) {
@@ -606,12 +628,15 @@ public class CustomerService {
                 throw new Exception("Broker with id " + broker.getId() + " is not exist.");
             }
         } else {
-            throw new Exception("missing broker id.");
+            throw new Exception("either broker object is null or missing broker id.");
         }
     }
 
     @WebMethod(operationName = "addUser")
     public void addUser(@WebParam(name = "user") UserObj user) throws Exception {
+        if (user == null) {
+            throw new Exception("User object is null.");
+        }
         Users existUser = usersFacade.findUser(user.getUserName());
         if (existUser == null) {
             Users newUser = createNewUser(user);
@@ -621,7 +646,7 @@ public class CustomerService {
 
     @WebMethod(operationName = "updateUser")
     public void updateUser(@WebParam(name = "user") UserObj user) throws Exception {
-        if (user.getUserName() != null) {
+        if (user != null && user.getUserName() != null) {
             Users existUser = usersFacade.findUser(user.getUserName());
             System.out.println("################ updateUser: " + user.getUserName() + ", " + user.getStatus());
             System.out.println("############ existUser : " + existUser);
@@ -649,7 +674,7 @@ public class CustomerService {
                 throw new Exception("User with username '" + user.getUserName() + "' is not exist.");
             }
         } else {
-            throw new Exception("missing user login username.");
+            throw new Exception("Either user object is null or missing user login username.");
         }
     }
 
@@ -658,6 +683,9 @@ public class CustomerService {
         Customer customer = null;
         if (customerId != null) {
             customer = customerFacade.find(customerId);
+        }
+        if (user == null) {
+            throw new Exception("User object is null");
         }
         Users existUser = usersFacade.findUser(user.getUserName());
         if (existUser == null) {
@@ -680,6 +708,9 @@ public class CustomerService {
         if (brokerId != null) {
             broker = brokerFacade.find(brokerId);
         }
+        if (user == null) {
+            throw new Exception("User object is null");
+        }
         Users existUser = usersFacade.findUser(user.getUserName());
         if (existUser == null) {
             Users newUser = createNewUser(user);
@@ -700,6 +731,9 @@ public class CustomerService {
         Customer customer = customerFacade.find(customerId);
         if (customer == null) {
             throw new Exception("Customer with id " + customerId + " is not exist.");
+        }
+        if (address == null) {
+            throw new Exception("Address object is null");
         }
         final Address existAddress = addressFacade.getAddress(address.getAddress1(), address.getZip());
         if (existAddress == null) {
@@ -724,6 +758,9 @@ public class CustomerService {
         if (broker == null) {
             throw new Exception("Broker with id " + brokerId + " is not exist.");
         }
+        if (address == null) {
+            throw new Exception("Address object is null");
+        }
         final Address existAddress = addressFacade.getAddress(address.getAddress1(), address.getZip());
         if (existAddress == null) {
             Address newAddress = createNewAddress(address);
@@ -740,7 +777,7 @@ public class CustomerService {
 
     @WebMethod(operationName = "updateAddress")
     public void updateAddress(@WebParam(name = "address") AddressObj address) throws Exception {
-        if (address.getId() != null) {
+        if (address != null && address.getId() != null) {
             Address existAddress = addressFacade.find(address.getId());
             if (existAddress != null) {
                 existAddress.setAddress1(address.getAddress1());
@@ -760,13 +797,16 @@ public class CustomerService {
                 throw new Exception("Address with id " + address.getId() + " is not exist.");
             }
         } else {
-            throw new Exception("missing address id.");
+            throw new Exception("Either address object is null or missing address id.");
         }
     }
 
     @WebMethod(operationName = "addCustomerNote")
-    public Long addCustomerNote(@WebParam(name = "customerId") Long customerId, @WebParam(name = "customerNote") CustomerNoteObj note) {
+    public Long addCustomerNote(@WebParam(name = "customerId") Long customerId, @WebParam(name = "customerNote") CustomerNoteObj note) throws Exception {
         Customer customer = customerFacade.find(customerId);
+        if (note == null) {
+            throw new Exception("Note object is null");
+        }
         CustomerNote newNote = new CustomerNote();
         newNote.setNote(note.getNote());
         newNote.setCustomerId(customer);
@@ -806,5 +846,43 @@ public class CustomerService {
             newAddress.setType(CrmConstants.AddressType.REGULAR.name());
         }
         return newAddress;
+    }
+    
+    @WebMethod(operationName = "getCustomers")
+    public List<CustomerObj> getCustomers(@WebParam(name = "customerName") String customerName) {
+        List<Customer> customers = customerFacade.getCustomersByName(customerName);
+        List<CustomerObj> result = null;
+        if (customers != null && !customers.isEmpty()) {
+            result = new ArrayList<CustomerObj>();
+            for (Customer c : customers) {
+                CustomerObj cObj = new CustomerObj();
+                cObj.setAgreementSignedDate(c.getAgreementSignedDate());
+                cObj.setAulId(c.getAulId());
+                cObj.setBulk(c.getBulk());
+                cObj.setBusinessLength(c.getBusinessLength());
+                cObj.setCalculationMethod(c.getCalculationMethod());
+                cObj.setCreatedBy(c.getCreateUser());
+                cObj.setCreatedDate(c.getDateCreated());
+                cObj.setDba(c.getDba());
+                cObj.setDms(c.getDms());
+                cObj.setEin(c.getEin());
+                cObj.setExpirationDate(c.getExpirationDate());
+                cObj.setGpsVendor(c.getGpsvendor());
+                cObj.setId(c.getId());
+                cObj.setLastUpdated(c.getLastUpdated());
+                cObj.setLicenseNumber(c.getLicenseNumber());
+                cObj.setName(c.getName());
+                cObj.setPortfolioSize(c.getPortfolioSize());
+                cObj.setPos(c.getPos());
+                cObj.setSoldBefore(c.getSoldBefore());
+                cObj.setSoldPrice(c.getSoldprice());
+                cObj.setSource(c.getSource());
+                cObj.setType(c.getType());
+                cObj.setUpdatedBy(c.getUpdateUser());
+                cObj.setUseGPS(c.getUseGps());
+                result.add(cObj);
+            }
+        }
+        return result;
     }
 }
