@@ -18,6 +18,7 @@ import com.autopay.crm.util.CrmUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
@@ -115,15 +116,18 @@ public class CustomerSearchController implements Serializable {
     public String search() {
         try {
             System.out.println(customerSearchCriteria.toString());
+            long start = System.currentTimeMillis();
             recreateModel();
             pagination = null;
             searchResult = getFacade().getCustomersBySearchCriterias(customerSearchCriteria);
+            System.out.println("########### search time: " + (System.currentTimeMillis()-start));
             searchResult_backup = new ArrayList<Customer>(searchResult);
             if (searchResult == null || searchResult.isEmpty()) {
                 setNoCustomerFound(true);
             } else {
                 setNoCustomerFound(false);
             }
+            System.out.println("########## search time2: " + (System.currentTimeMillis()-start));
         } catch (Exception e) {
             JsfUtil.addErrorMessage("Exception is thrown during searching customers.");
             log.error(e);
@@ -407,6 +411,9 @@ public class CustomerSearchController implements Serializable {
             newCampaign.setName(campaignName);
             newCampaign.setDescription(campaignDesc);
             newCampaign.setAssignedUser(campaignAssignto);
+            if (campaignAssignto != null && campaignAssignto.trim().length() > 0) {
+                newCampaign.setStartDate(new Date());
+            }
             newCampaign.setActive(campaignStatus.equals(ActiveStatusType.Active.name()) ? true : false);
             newCampaign.setCreateUser(user);
             newCampaign.setType(campaignType);

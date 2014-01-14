@@ -2,23 +2,26 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:a4j="http://richfaces.org/a4j">
-    <rich:popupPanel id="updateschedule" header="Update Schedule" autosized="true" modal="false" 
-                     moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+    <rich:popupPanel id="updateschedule" header="Update Schedule" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
         <h:form>
-            <h:panelGroup id="messagePanelUpdateSchedule" layout="block">
-                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
-            </h:panelGroup>
+            <br/>
+            <rich:collapsiblePanel expanded="false"  header="Contact Info">
+                <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="5" value="#{customerDetailBean.getScheduleContactInfo(customerDetailBean.currentSchedule)}"/>
+            </rich:collapsiblePanel>
+            <br/>
+            <br/>
             <h:panelGrid columns="2" rendered="true">
                 <h:outputLabel value="Assign To:"/>
-                <rich:autocomplete value="#{customerDetailBean.currentSchedule.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" style="border: none; background: transparent">
+                <rich:autocomplete value="#{customerDetailBean.currentSchedule.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" styleClass="inputSearch2" style="border: none; background: transparent; vertical-align: middle">
                     <f:validateRequired/>
                 </rich:autocomplete>
 
                 <h:outputLabel value="Task:"/>
-                <h:inputText label="Task" size="27" value="#{customerDetailBean.currentTask.name}">
-                    <f:validateRequired/>
-                </h:inputText>
+                <h:selectOneMenu value="#{customerDetailBean.currentTask.name}">
+                    <f:selectItems value="#{customerDetailBean.taskList}" var="task" itemLabel="#{task}" itemValue="#{task}"/>
+                </h:selectOneMenu>
                 <h:outputLabel value="Task Type:"/>
                 <h:selectOneMenu value="#{customerDetailBean.currentTask.type}">
                     <f:selectItems value="#{customerDetailBean.taskTypes}" var="tasktype" itemLabel="#{tasktype}" itemValue="#{tasktype}"/>
@@ -31,11 +34,18 @@
                 <h:selectOneMenu value="#{customerDetailBean.currentSchedule.status}">
                     <f:selectItems value="#{customerDetailBean.scheduleStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
                 </h:selectOneMenu>
-                <h:outputText value="Note:"/>
-                <h:inputTextarea rows="4" cols="40" value="#{customerDetailBean.currentSchedule.note}"/>
+                <h:outputLabel value="Note:"/>
+                <h:outputLabel value=""/>
+                <h:outputLabel value=""/>
+                <h:inputTextarea rows="4" cols="35" value="#{customerDetailBean.currentScheduleNote.note}"/>
+                <h:outputLabel value=""/>
+                <h:panelGroup>
+                    <h:selectBooleanCheckbox value="#{customerDetailBean.sendEmailForCurSchedule}"/> Send out reminder email
+                </h:panelGroup>
             </h:panelGrid>
+            <br/>
             <h:panelGroup>
-                <a4j:commandButton value="Cancel" oncomplete="#{rich:component('updateschedule')}.hide(event);return false;"/>
+                <a4j:commandButton value="Cancel" action="#{customerDetailBean.cancelScheduleEditAction()}" oncomplete="#{rich:component('updateschedule')}.hide(event);return false;"/>
                 <a4j:commandButton execute="updateschedule" render="scheduleMain" value="Update" action="#{customerDetailBean.performScheduleAction(loginBean.userName, false)}" oncomplete="#{rich:component('updateschedule')}.hide(event);return false;"/>
             </h:panelGroup>
         </h:form>

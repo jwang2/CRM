@@ -2,34 +2,32 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j">
+                xmlns:rich="http://richfaces.org/rich">
     <h:panelGroup>
         <h:panelGroup id="messagePanelCustomerCampaign" layout="block">
             <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
         </h:panelGroup>
 
         <h:panelGroup id="customercampaignmain" rendered="true">
-            <h:panelGrid columns="2" rendered="true">
+            <h:panelGrid columns="2" rendered="true" cellspacing="10" cellpadding="10">
                 <h:outputLabel value="Campaign:"/>
                 <h:outputText value="#{customerDetailBean.selected.campaignID} #{customerDetailBean.campaignCustomer.campaignId.name}"/>
 
+                <h:outputLabel value="Assigned to:"/>
+                <h:outputText value="#{customerDetailBean.campaignCustomer.campaignId.assignedUser}"/>
+                
                 <h:outputLabel value="Start Date:"/>
                 <h:outputText value="#{customerDetailBean.campaignCustomer.startDate}" />
                 
-                <h:outputLabel value="Complete Date:"/>
+                <h:outputLabel value="Complete Date: "/>
                 <h:outputText value="#{customerDetailBean.campaignCustomer.completedDate}"/>
-
-                <h:outputText value="Note:"/>
-                <h:outputLabel value=""/>
-                <h:outputLabel value=""/>
-                <h:inputTextarea rows="3" cols="40" value="#{customerDetailBean.campaignCustomer.note}" disabled="true"/>
 
             </h:panelGrid>
         </h:panelGroup>
         <br/>
         <br/>
-        <a4j:commandButton rendered="#{customerDetailBean.isLoginUserOwnCampaign(loginBean.userName, customerDetailBean.campaignCustomer.campaignId.assignedUser)}" execute="@this" render="editcustomercampaign" value="Edit Campaign Customer" oncomplete="#{rich:component('editcustomercampaign')}.show();return false;"/>
-        <ui:include src="/pages/customer/CustomerCampaign_Popup.xhtml"/>
+        <h:commandButton rendered="#{customerDetailBean.showCampaignCustomerDoneButton(loginBean.userName, customerDetailBean.campaignCustomer.campaignId.assignedUser)}" value="Done Campaign For This Customer" action="#{customerDetailBean.completeCampaignForCustomer()}"/>
+        <h:commandButton rendered="#{!customerDetailBean.showCampaignCustomerDoneButton(loginBean.userName, customerDetailBean.campaignCustomer.campaignId.assignedUser)}" value="Reopen Campaign For This Customer" action="#{customerDetailBean.reopenCampaignForCustomer()}"/>
+        
     </h:panelGroup>
 </ui:composition>

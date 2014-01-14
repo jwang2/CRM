@@ -85,6 +85,9 @@
                         <li class="#{view.viewId.startsWith('/pages/upload/', 0) ? 'current' : ''}">
                             <h:link outcome="/pages/upload/UploadDealerDetails.xhtml" value="Upload Dealer Details" rendered="#{loginBean.superUser}"/>
                         </li>
+                        <li class="#{view.viewId.startsWith('/pages/admin/', 0) ? 'current' : ''}">
+                            <h:link outcome="/pages/admin/AdminPage.xhtml" value="Admin" rendered="#{loginBean.superUser}"/>
+                        </li>
                     </ul>
                 </h:form>
             </div>

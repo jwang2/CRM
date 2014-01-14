@@ -1,0 +1,72 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+    <rich:popupPanel id="updatecustomer" header="Update Customer" autosized="true" modal="false" 
+                     moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:form>
+        <h:panelGrid columns="3">
+            <h:outputLabel value="#{bundle.ViewCustomerLabel_name}"/>
+            <h:inputText size="40" value="#{customerDetailBean.selected.name}"/>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="#{bundle.ViewCustomerLabel_type}"/>
+            <h:selectOneMenu value="#{customerDetailBean.selected.type}" >
+                <f:selectItems value="#{customerDetailBean.customerTypes}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="#{bundle.ViewCustomerLabel_status}"/>
+            <h:selectOneMenu  value="#{customerDetailBean.selected.status}">
+                <f:selectItems value="#{customerDetailBean.customerStatuses}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="#{bundle.ViewCustomerLabel_accountEmail}"/>
+            <h:inputText size="40" value="#{customerDetailBean.selected.accountEmail}"/>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="#{bundle.ViewCustomerLabel_website}"/>
+            <h:inputText size="40" value="#{customerDetailBean.selected.website}"/>
+            <h:link onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" style="cursor: pointer">google</h:link>
+                        
+            <h:outputLabel value="#{bundle.ViewCustomerLabel_phone}"/>
+            <h:inputText size="40" value="#{customerDetailBean.selected.phone}"/>
+            <h:link onclick="window.open('#{customerDetailBean.customerGoogleSearchResultPage}');" style="cursor: pointer" >google</h:link>
+            
+            <h:outputLabel value="Address1:"/>
+            <h:inputText size="40" value="#{customerDetailBean.selectedMainAddress.address1}"/>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="Address2:"/>
+            <h:inputText size="40" value="#{customerDetailBean.selectedMainAddress.address2}"/>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="City:"/>
+            <h:inputText size="40" value="#{customerDetailBean.selectedMainAddress.city}"/>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="County"/>
+            <h:inputText size="40" value="#{customerDetailBean.selectedMainAddress.county}"/>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="State:"/>
+            <h:selectOneMenu value="#{customerDetailBean.selectedMainAddress.state}">
+                <f:selectItems value="#{customerDetailBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value=""/>
+            
+            <h:outputLabel value="Zip Code:"/>
+            <h:inputText size="40" value="#{customerDetailBean.selectedMainAddress.zipCode}"/>
+            <h:outputLabel value=""/>
+            
+        </h:panelGrid>
+        <h:panelGroup>
+            <a4j:commandButton value="Cancel" action="#{customerDetailBean.cancelCustomerEditAction()}" oncomplete="#{rich:component('updatecustomer')}.hide(event);return false;"/>
+            <a4j:commandButton execute="updatecustomer" render="customermain" value="Update" action="#{customerDetailBean.performCustomerEdit(loginBean.userName)}" oncomplete="#{rich:component('updatecustomer')}.hide(event);return false;"/>
+        </h:panelGroup>
+        </h:form>
+    </rich:popupPanel>
+</ui:composition>
+

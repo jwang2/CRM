@@ -12,9 +12,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,7 +53,7 @@ public class Note implements Serializable {
     @Size(max = 255)
     @Column(name = "create_user", length = 255)
     private String createUser;
-    @Column(name = "date_created")
+    @Column(name = "date_created", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Size(max = 255)
@@ -58,6 +62,12 @@ public class Note implements Serializable {
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
+    @JoinColumn(name = "schedules_id", referencedColumnName = "id")
+    @ManyToOne
+    private Schedules schedulesId;
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    @ManyToOne
+    private Customer customerId;
 
     public Note() {
     }
@@ -114,6 +124,33 @@ public class Note implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
+    public Schedules getSchedulesId() {
+        return schedulesId;
+    }
+
+    public void setSchedulesId(Schedules schedulesId) {
+        this.schedulesId = schedulesId;
+    }
+
+    public Customer getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Customer customerId) {
+        this.customerId = customerId;
+    }
+
+    @PrePersist
+    private void createDate() {
+        dateCreated = new Date();
+        lastUpdated = new Date();
+    }
+    
+    @PreUpdate
+    private void updateDate() {
+        lastUpdated = new Date();
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

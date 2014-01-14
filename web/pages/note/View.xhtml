@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewNoteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewNoteLabel_id}"/>
+                    <h:outputText value="#{noteController.selected.id}" title="#{bundle.ViewNoteTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewNoteLabel_note}"/>
+                    <h:outputText value="#{noteController.selected.note}" title="#{bundle.ViewNoteTitle_note}"/>
+                    <h:outputText value="#{bundle.ViewNoteLabel_createUser}"/>
+                    <h:outputText value="#{noteController.selected.createUser}" title="#{bundle.ViewNoteTitle_createUser}"/>
+                    <h:outputText value="#{bundle.ViewNoteLabel_dateCreated}"/>
+                    <h:outputText value="#{noteController.selected.dateCreated}" title="#{bundle.ViewNoteTitle_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewNoteLabel_updateUser}"/>
+                    <h:outputText value="#{noteController.selected.updateUser}" title="#{bundle.ViewNoteTitle_updateUser}"/>
+                    <h:outputText value="#{bundle.ViewNoteLabel_lastUpdated}"/>
+                    <h:outputText value="#{noteController.selected.lastUpdated}" title="#{bundle.ViewNoteTitle_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewNoteLabel_schedulesId}"/>
+                    <h:outputText value="#{noteController.selected.schedulesId}" title="#{bundle.ViewNoteTitle_schedulesId}"/>
+                    <h:outputText value="#{bundle.ViewNoteLabel_customerId}"/>
+                    <h:outputText value="#{noteController.selected.customerId}" title="#{bundle.ViewNoteTitle_customerId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{noteController.destroyAndView}" value="#{bundle.ViewNoteDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewNoteEditLink}"/>
+                <br />
+                <h:commandLink action="#{noteController.prepareCreate}" value="#{bundle.ViewNoteCreateLink}" />
+                <br />
+                <h:commandLink action="#{noteController.prepareList}" value="#{bundle.ViewNoteShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewNoteIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

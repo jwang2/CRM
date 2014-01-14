@@ -54,6 +54,8 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Customer.findByUpdateUser", query = "SELECT c FROM Customer c WHERE c.updateUser = :updateUser"),
     @NamedQuery(name = "Customer.findByLastUpdated", query = "SELECT c FROM Customer c WHERE c.lastUpdated = :lastUpdated")})
 public class Customer implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.EAGER)
+    private Collection<Note> noteCollection;
     @Size(max = 255)
     @Column(name = "gpsvendor", length = 255)
     private String gpsvendor;
@@ -148,9 +150,6 @@ public class Customer implements Serializable {
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
-    private Collection<CustomerNote> customerNoteCollection;
     @OneToMany(mappedBy = "customerId", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     private Collection<Schedules> schedulesCollection;
@@ -290,15 +289,6 @@ public class Customer implements Serializable {
 
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
-    }
-
-    @XmlTransient
-    public Collection<CustomerNote> getCustomerNoteCollection() {
-        return customerNoteCollection;
-    }
-
-    public void setCustomerNoteCollection(Collection<CustomerNote> customerNoteCollection) {
-        this.customerNoteCollection = customerNoteCollection;
     }
 
     @XmlTransient
@@ -574,6 +564,15 @@ public class Customer implements Serializable {
 
     public void setGpsvendor(String gpsvendor) {
         this.gpsvendor = gpsvendor;
+    }
+
+    @XmlTransient
+    public Collection<Note> getNoteCollection() {
+        return noteCollection;
+    }
+
+    public void setNoteCollection(Collection<Note> noteCollection) {
+        this.noteCollection = noteCollection;
     }
     
 }

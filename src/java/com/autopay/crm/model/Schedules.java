@@ -46,12 +46,14 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Schedules.findByFinishedDatetime", query = "SELECT s FROM Schedules s WHERE s.finishedDatetime = :finishedDatetime"),
     @NamedQuery(name = "Schedules.findByAssignedUser", query = "SELECT s FROM Schedules s WHERE s.assignedUser = :assignedUser"),
     @NamedQuery(name = "Schedules.findByStatus", query = "SELECT s FROM Schedules s WHERE s.status = :status"),
-    @NamedQuery(name = "Schedules.findByNote", query = "SELECT s FROM Schedules s WHERE s.note = :note"),
     @NamedQuery(name = "Schedules.findByCreateUser", query = "SELECT s FROM Schedules s WHERE s.createUser = :createUser"),
     @NamedQuery(name = "Schedules.findByDateCreated", query = "SELECT s FROM Schedules s WHERE s.dateCreated = :dateCreated"),
     @NamedQuery(name = "Schedules.findByUpdateUser", query = "SELECT s FROM Schedules s WHERE s.updateUser = :updateUser"),
     @NamedQuery(name = "Schedules.findByLastUpdated", query = "SELECT s FROM Schedules s WHERE s.lastUpdated = :lastUpdated")})
 public class Schedules implements Serializable {
+    @OneToMany(mappedBy = "schedulesId", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Note> noteCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,9 +74,6 @@ public class Schedules implements Serializable {
     @Size(max = 255)
     @Column(name = "status")
     private String status;
-    @Size(max = 255)
-    @Column(name = "note")
-    private String note;
     @Size(max = 255)
     @Column(name = "create_user")
     private String createUser;
@@ -147,14 +146,6 @@ public class Schedules implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public String getCreateUser() {
@@ -249,5 +240,13 @@ public class Schedules implements Serializable {
     public String toString() {
         return "com.autopay.crm.model.Schedules[ id=" + id + " ]";
     }
-    
+
+    @XmlTransient
+    public Collection<Note> getNoteCollection() {
+        return noteCollection;
+    }
+
+    public void setNoteCollection(Collection<Note> noteCollection) {
+        this.noteCollection = noteCollection;
+    }
 }

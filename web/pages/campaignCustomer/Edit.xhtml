@@ -25,8 +25,6 @@
                     <h:inputText id="completedDate" value="#{campaignCustomerController.selected.completedDate}" title="#{bundle.EditCampaignCustomerTitle_completedDate}" >
                         <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                     </h:inputText>
-                    <h:outputLabel value="#{bundle.EditCampaignCustomerLabel_note}" for="note" />
-                    <h:inputText id="note" value="#{campaignCustomerController.selected.note}" title="#{bundle.EditCampaignCustomerTitle_note}" />
                     <h:outputLabel value="#{bundle.EditCampaignCustomerLabel_customerId}" for="customerId" />
                     <h:selectOneMenu id="customerId" value="#{campaignCustomerController.selected.customerId}" title="#{bundle.EditCampaignCustomerTitle_customerId}" required="true" requiredMessage="#{bundle.EditCampaignCustomerRequiredMessage_customerId}">
                         <f:selectItems value="#{customerController.itemsAvailableSelectOne}"/>

@@ -13,26 +13,26 @@
                 <h:outputLabel value="No Schedules Found." styleClass="no-result-found"/>
             </h:panelGroup>
             <rich:dataTable id="scheduletable" styleClass="table" rendered="true" value="#{customerDetailBean.customerSchedules}" 
-                            var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
-                <h:column>
+                            var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="text-align: center; border:solid 1px; width: 100%;">
+                <rich:column>
                     <f:facet name="header">
                         <h:outputText value="ID"/>
                     </f:facet>
-                    <a4j:commandLink execute="@this" render="updateschedule" value="#{item.id}" actionListener="#{customerDetailBean.prepareScheduleDetail(item)}" oncomplete="#{rich:component('updateschedule')}.show();return false;"/>
-                </h:column>
-                <h:column>
+                    <a4j:commandLink disabled="#{customerDetailBean.isScheduleDone(item)}" execute="@this" render="updateschedule" value="#{item.id}" actionListener="#{customerDetailBean.prepareScheduleDetail(item)}" oncomplete="#{rich:component('updateschedule')}.show();return false;"/>
+                </rich:column>
+                <rich:column>
                     <f:facet name="header">
                         <h:outputText value="Assigned To"/>
                     </f:facet>
                     <h:outputText value="#{item.assignedUser}"/>
-                </h:column>
-                <h:column>
+                </rich:column>
+                <rich:column>
                     <f:facet name="header">
                         <h:outputText value="Scheduled Time"/>
                     </f:facet>
                     <h:outputText value="#{item.scheduledDatetime}"/>
-                </h:column>
-                <h:column>
+                </rich:column>
+                <rich:column>
                     <f:facet name="header">
                         <h:outputText value="Status"/><br/>
                         <h:selectOneMenu value="#{customerDetailBean.currentScheduleFilter}">
@@ -41,21 +41,37 @@
                         </h:selectOneMenu>
                     </f:facet>
                     <h:outputText value="#{item.status}"/>
-                </h:column>
-                <h:column>
+                </rich:column>
+                <rich:column>
                     <f:facet name="header">
                         <h:outputText value="Task"/>
                     </f:facet>
                     <ui:repeat value="#{item.taskCollection}" var="task">
                         <div>#{task.name}</div>
                     </ui:repeat>
-                </h:column>
-                <h:column>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Note"/>
+                    </f:facet>
+                    <h:outputText value="#{customerDetailBean.getScheduleNoteContent(item)}"/>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Contact Info"/>
+                    </f:facet>
+                    <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="#{customerDetailBean.getScheduleContactInfo(item).length() > 0 ? 5 : 1}" value="#{customerDetailBean.getScheduleContactInfo(item)}"/>
+                </rich:column>
+                <rich:column>
                     <f:facet name="header">
                         <h:outputText value=""/>
                     </f:facet>
-                    <a4j:commandLink execute="@this" render="scheduleDelete" value="delete" actionListener="#{customerDetailBean.prepareScheduleDetail(item)}" oncomplete="#{rich:component('scheduleDelete')}.show();return false;"/>
-                </h:column>
+                    <a4j:commandLink rendered="#{!customerDetailBean.isScheduleDone(item)}" execute="@this" render="updateschedule" value="Edit" actionListener="#{customerDetailBean.prepareScheduleDetail(item)}" oncomplete="#{rich:component('updateschedule')}.show();return false;"/>
+                    <br/>
+                    <a4j:commandLink rendered="#{!customerDetailBean.isScheduleDone(item)}" execute="@this" render="scheduleDelete" value="Delete" actionListener="#{customerDetailBean.prepareScheduleDetail(item)}" oncomplete="#{rich:component('scheduleDelete')}.show();return false;"/>
+                    <br/>
+                    <h:commandLink rendered="#{!customerDetailBean.isScheduleDone(item)}" action="#{customerDetailBean.performScheduleDone(item)}" value="Task Done"/>
+                </rich:column>
             </rich:dataTable>
         </h:panelGroup> 
         <br/>

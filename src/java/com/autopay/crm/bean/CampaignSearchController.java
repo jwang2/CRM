@@ -330,6 +330,12 @@ public class CampaignSearchController implements Serializable {
 
     public void performCampaignEdit(final String userName) {
         if (allowEditCampaign) {
+            if ((campaign_orig.getAssignedUser() == null || campaign_orig.getAssignedUser().trim().length() == 0)
+                    && (current.getAssignedUser() != null && current.getAssignedUser().trim().length() > 0)) {
+                if (current.getStartDate() == null) {
+                    current.setStartDate(new Date());
+                }
+            }
             //save campaign
             current.setLastUpdated(new Date());
             current.setUpdateUser(userName);

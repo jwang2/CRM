@@ -47,10 +47,12 @@
                 </h:selectOneMenu>
                 <h:outputLabel value="Zip Code:"/>
                 <h:inputText size="30" value="#{customerDetailBean.currentContact.addressId.zipCode}"/>
+                <h:panelGroup>
+                    <h:selectBooleanCheckbox value="#{customerDetailBean.currentContact.principal}"/> Primary Contact
+                </h:panelGroup>
             </h:panelGrid>
             <h:panelGroup>
-                <a4j:commandButton value="Cancel" onclick="#{rich:component('newcontact')}.hide(event);
-                                         return false;"/>
+                <a4j:commandButton value="Cancel" onclick="#{rich:component('newcontact')}.hide(event); return false;"/>
                 <a4j:commandButton execute="newcontact" render="contactmain" value="Create" action="#{customerDetailBean.performContactAction(loginBean.userName, true)}" oncomplete="#{rich:component('newcontact')}.hide(event);return false;"/>
             </h:panelGroup>
         </h:form>

@@ -5,9 +5,9 @@ import com.autopay.crm.model.Address;
 import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.Customer;
 import com.autopay.crm.model.CustomerContact;
-import com.autopay.crm.model.CustomerNote;
 import com.autopay.crm.model.Lead;
 import com.autopay.crm.model.LeadSearchResult;
+import com.autopay.crm.model.Note;
 import com.autopay.crm.model.ParentCustomer;
 import com.autopay.crm.model.Schedules;
 import com.autopay.crm.model.Task;
@@ -42,10 +42,10 @@ public class CustomerDetailController implements Serializable {
     private static Logger log = Logger.getLogger(CustomerDetailController.class);
     private Customer current;
     //overview related
-    private boolean allowEditCustomer = false;
     private Customer customer_orig;
     //contact related
     private CustomerContact currentContact;
+    private CustomerContact currentContact_Orig;
     //fico related
     private List<Customer> currentRelatedFicos;
     private List<Customer> currentNonRelatedFicos;
@@ -57,7 +57,10 @@ public class CustomerDetailController implements Serializable {
     private String newNoteContent;
     //schedule related
     private Task currentTask;
+    private Note currentScheduleNote;
+    private boolean sendEmailForCurSchedule = false;
     private Schedules currentSchedule;
+    private Schedules currentSchedule_Orig;
     private String currentScheduleFilter;
     private String currentTab = null;
     private List<Customer> customers_viewrecently;
@@ -68,7 +71,7 @@ public class CustomerDetailController implements Serializable {
     @EJB
     private com.autopay.crm.session.ParentCustomerFacade ejbParentCustomer;
     @EJB
-    private com.autopay.crm.session.CustomerNoteFacade ejbCustomerNote;
+    private com.autopay.crm.session.NoteFacade ejbNote;
     @EJB
     private com.autopay.crm.session.AddressFacade ejbAddress;
     @EJB
@@ -99,6 +102,7 @@ public class CustomerDetailController implements Serializable {
     }
 
     public String prepareDetailFromCampaign(Customer customer) {
+        System.out.println("###### from campaign customer page...." + customer.getCampaignID());
         current = customer;
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
@@ -111,6 +115,10 @@ public class CustomerDetailController implements Serializable {
 
     public String prepareDetail(Schedules schedule) {
         current = schedule.getCustomerId();
+        final List<Customer> cusomers = new ArrayList<Customer>();
+        cusomers.add(current);
+        ejbCustomer.getCustomerCampaignInfo(cusomers);
+        System.out.println("###### from home page schedule...." + current.getCampaignID());
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
@@ -276,24 +284,7 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
-    public boolean isAllowEditCustomer() {
-        return allowEditCustomer;
-    }
-
-    public void setAllowEditCustomer(boolean allowEditCustomer) {
-        this.allowEditCustomer = allowEditCustomer;
-    }
-
-    public String getCustomerEditButtonName() {
-        if (allowEditCustomer) {
-            return "Save";
-        } else {
-            return "Edit Customer";
-        }
-    }
-
     public String cancelCustomerEditAction() {
-        setAllowEditCustomer(false);
         if (customer_orig != null) {
             cloneCustomer(current, customer_orig);
         }
@@ -354,30 +345,28 @@ public class CustomerDetailController implements Serializable {
         return prepareDetail(current);
     }
 
+    public void prepareEditCustomer() {
+        customer_orig = new Customer();
+        cloneCustomer(customer_orig, current);
+    }
+
     public void performCustomerEdit(final String userName) {
-        if (allowEditCustomer) {
-            //save customer
-            try {
-                current.setLastUpdated(new Date());
-                current.setUpdateUser(userName);
-                ejbCustomer.edit(current);
-                Address address = getSelectedMainAddress();
-                if (address != null) {
-                    address.setUpdateUser(userName);
-                    address.setLastUpdated(new Date());
-                    ejbAddress.edit(address);
-                }
-            } catch (Exception e) {
-                log.error("Unable to update customer.", e);
-                JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+        //save customer
+        try {
+            current.setLastUpdated(new Date());
+            current.setUpdateUser(userName);
+            ejbCustomer.edit(current);
+            Address address = getSelectedMainAddress();
+            if (address != null) {
+                address.setUpdateUser(userName);
+                address.setLastUpdated(new Date());
+                ejbAddress.edit(address);
             }
-            setAllowEditCustomer(false);
-            customer_orig = null;
-        } else {
-            setAllowEditCustomer(true);
-            customer_orig = new Customer();
-            cloneCustomer(customer_orig, current);
+        } catch (Exception e) {
+            log.error("Unable to update customer.", e);
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
         }
+        customer_orig = null;
     }
 
     private void cloneCustomer(final Customer newcustomer, final Customer origcustomer) {
@@ -429,12 +418,26 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
+    private void cloneContact(CustomerContact newContact, CustomerContact origContact) {
+        newContact.setAddressId(origContact.getAddressId());
+        newContact.setFax(origContact.getFax());
+        newContact.setFirstName(origContact.getFirstName());
+        newContact.setLastName(origContact.getLastName());
+        newContact.setPrimaryEmail(origContact.getPrimaryEmail());
+        newContact.setPrimaryPhone(origContact.getPrimaryPhone());
+        newContact.setSecondaryEmail(origContact.getSecondaryEmail());
+        newContact.setSecondaryPhone(origContact.getSecondaryPhone());
+        newContact.setTitle(origContact.getTitle());
+        newContact.setPrincipal(origContact.getPrincipal());
+    }
+
     public void prepareContactDetail(CustomerContact contact) {
         setCurrentContact(contact);
+        currentContact_Orig = new CustomerContact();
+        cloneContact(currentContact_Orig, contact);
     }
 
     public void prepareNewContact() {
-        System.out.println("========= prepareNewContact");
         currentContact = new CustomerContact();
         currentContact.setAddressId(getSelectedMainAddress());
         if (current != null) {
@@ -448,6 +451,13 @@ public class CustomerDetailController implements Serializable {
             current.getCustomerContactCollection().remove(currentContact);
             setCurrentContact(null);
         }
+    }
+
+    public String cancelContactEditAction() {
+        if (currentContact_Orig != null) {
+            cloneContact(currentContact, currentContact_Orig);
+        }
+        return "";
     }
 
     public void performContactAction(final String userName, final boolean newContact) {
@@ -480,6 +490,13 @@ public class CustomerDetailController implements Serializable {
                 currentContact.setCustomerId(current);
                 if (!hasPrimaryContact()) {
                     currentContact.setPrincipal(true);
+                } else {
+                    final CustomerContact primaryContact = getPrimaryContact(currentContact.getId());
+                    if (primaryContact != null && currentContact.getPrincipal()) {
+                        //need update the existing primary contact, set it as non primary
+                        primaryContact.setPrincipal(false);
+                        ejbContact.edit(primaryContact);
+                    }
                 }
                 currentContact.setCreateUser(userName);
                 try {
@@ -494,8 +511,19 @@ public class CustomerDetailController implements Serializable {
 
             //update
             try {
+                final CustomerContact primaryContact = getPrimaryContact(currentContact.getId());
+                if (primaryContact != null && !primaryContact.getId().equals(currentContact.getId())) {
+                    if (currentContact.getPrincipal()) {
+                        //need update the existing primary contact, set it as non primary
+                        primaryContact.setPrincipal(false);
+                        ejbContact.edit(primaryContact);
+                    }
+                }
+
                 currentContact.setUpdateUser(userName);
                 ejbContact.edit(currentContact);
+                currentContact_Orig = null;
+
             } catch (Exception e) {
                 log.error("Unable to update contact.", e);
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -504,9 +532,9 @@ public class CustomerDetailController implements Serializable {
     }
 
     private boolean isContactEmpty(CustomerContact contact) {
-        if ((contact.getFirstName() != null && contact.getFirstName().trim().length() == 0) 
-            && (contact.getLastName() != null && contact.getLastName().trim().length() == 0) 
-            && (contact.getTitle() != null && contact.getTitle().trim().length() == 0)
+        if ((contact.getFirstName() != null && contact.getFirstName().trim().length() == 0)
+                && (contact.getLastName() != null && contact.getLastName().trim().length() == 0)
+                && (contact.getTitle() != null && contact.getTitle().trim().length() == 0)
                 && (contact.getPrimaryEmail() != null && contact.getPrimaryEmail().trim().length() == 0)
                 && (contact.getPrimaryPhone() != null && contact.getPrimaryPhone().trim().length() == 0)
                 && (contact.getSecondaryEmail() != null && contact.getSecondaryEmail().trim().length() == 0)
@@ -516,7 +544,7 @@ public class CustomerDetailController implements Serializable {
         }
         return false;
     }
-    
+
     private boolean isAddressEmpty(Address address) {
         if ((address.getAddress1() != null && address.getAddress1().trim().length() == 0)
                 && (address.getCity() != null && address.getCity().trim().length() == 0)
@@ -528,16 +556,30 @@ public class CustomerDetailController implements Serializable {
     }
 
     private boolean hasPrimaryContact() {
+        CustomerContact primaryContact = getPrimaryContact(null);
+        if (primaryContact != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private CustomerContact getPrimaryContact(Long curId) {
         if (current.getCustomerContactCollection() == null || current.getCustomerContactCollection().isEmpty()) {
-            return false;
+            return null;
         } else {
             for (CustomerContact contact : current.getCustomerContactCollection()) {
                 if (contact.getPrincipal()) {
-                    return true;
+                    if (curId == null) {
+                        return contact;
+                    } else {
+                        if (!curId.equals(contact.getId())) {
+                            return contact;
+                        }
+                    }
                 }
             }
+            return null;
         }
-        return false;
     }
 
     public String getContactAddressStr(final Address address) {
@@ -550,7 +592,7 @@ public class CustomerDetailController implements Serializable {
 
     /**
      * ***************************************************
-     * Customer Fico Section
+     * Customer Ficos Section
      * ***************************************************
      */
     public List<Customer> getCurrentNonRelatedFicos() {
@@ -650,16 +692,37 @@ public class CustomerDetailController implements Serializable {
 
     public void addNewNote(final String userName) {
         try {
-            CustomerNote newNote = new CustomerNote();
+            Note newNote = new Note();
             newNote.setNote(newNoteContent);
             newNote.setCreateUser(userName);
             newNote.setCustomerId(current);
-            ejbCustomerNote.create(newNote);
-            current.getCustomerNoteCollection().add(newNote);
+            ejbNote.create(newNote);
+            current.getNoteCollection().add(newNote);
+            setNewNoteContent("");
         } catch (Exception e) {
             log.error("Unable to create new note for customer.", e);
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
         }
+    }
+
+    public List<Note> getCurrentNoteCollection() {
+        List<Note> result = new ArrayList<Note>();
+        Collection<Note> notes = getSelected().getNoteCollection();
+        Date d = null;
+        for (Note note : notes) {
+            if (d == null) {
+                result.add(note);
+                d = note.getDateCreated();
+            } else {
+                if (note.getDateCreated().after(d)) {
+                    result.add(0, note);
+                    d = note.getDateCreated();
+                } else {
+                    result.add(note);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -810,6 +873,25 @@ public class CustomerDetailController implements Serializable {
         this.currentTask = currentTask;
     }
 
+    public Note getCurrentScheduleNote() {
+        if (currentScheduleNote == null) {
+            currentScheduleNote = new Note();
+        }
+        return currentScheduleNote;
+    }
+
+    public void setCurrentScheduleNote(Note currentScheduleNote) {
+        this.currentScheduleNote = currentScheduleNote;
+    }
+
+    public boolean isSendEmailForCurSchedule() {
+        return sendEmailForCurSchedule;
+    }
+
+    public void setSendEmailForCurSchedule(final boolean sendEmailForCurSchedule) {
+        this.sendEmailForCurSchedule = sendEmailForCurSchedule;
+    }
+
     public String getCurrentScheduleFilter() {
         if (currentScheduleFilter == null) {
             currentScheduleFilter = "ALL";
@@ -827,11 +909,56 @@ public class CustomerDetailController implements Serializable {
             setCurrentTask(task);
             break;
         }
+        if (schedule.getNoteCollection() != null) {
+            for (Note note : schedule.getNoteCollection()) {
+                setCurrentScheduleNote(note);
+                break;
+            }
+        }
+        sendEmailForCurSchedule = false;
+        currentSchedule_Orig = new Schedules();
+        cloneSchedules(currentSchedule_Orig, currentSchedule);
+    }
+
+    private void cloneSchedules(Schedules newSchedule, Schedules origSchedule) {
+        newSchedule.setAssignedUser(origSchedule.getAssignedUser());
+        newSchedule.setNoteCollection(origSchedule.getNoteCollection());
+        newSchedule.setScheduledDatetime(origSchedule.getScheduledDatetime());
+        newSchedule.setStatus(origSchedule.getStatus());
+        List<Task> tasks = new ArrayList<Task>();
+        for (Task task : origSchedule.getTaskCollection()) {
+            Task newTask = new Task();
+            newTask.setId(task.getId());
+            newTask.setDescription(task.getDescription());
+            newTask.setName(task.getName());
+            newTask.setType(task.getType());
+            newTask.setSchedulesId(task.getSchedulesId());
+            tasks.add(newTask);
+        }
+        newSchedule.setTaskCollection(tasks);
+        List<Note> notes = new ArrayList<Note>();
+        for (Note note : origSchedule.getNoteCollection()) {
+            Note newNote = new Note();
+            newNote.setNote(note.getNote());
+            newNote.setCreateUser(note.getCreateUser());
+            newNote.setCustomerId(note.getCustomerId());
+            newNote.setDateCreated(note.getDateCreated());
+            newNote.setId(note.getId());
+            newNote.setLastUpdated(note.getLastUpdated());
+            newNote.setSchedulesId(note.getSchedulesId());
+            newNote.setUpdateUser(note.getUpdateUser());
+            notes.add(newNote);
+        }
+        newSchedule.setNoteCollection(notes);
     }
 
     public void prepareNewSchedule() {
-        setCurrentSchedule(new Schedules());
+        Schedules newSchedule = new Schedules();
+        newSchedule.setScheduledDatetime(new Date());
+        setCurrentSchedule(newSchedule);
         setCurrentTask(new Task());
+        setCurrentScheduleNote(new Note());
+        sendEmailForCurSchedule = false;
     }
 
     public void performDeleteSchedule() {
@@ -840,41 +967,143 @@ public class CustomerDetailController implements Serializable {
         sendEmailNotificationForDeletedSchedule(currentSchedule, currentTask);
         setCurrentSchedule(null);
         setCurrentTask(null);
+        setCurrentScheduleNote(null);
+        sendEmailForCurSchedule = false;
+    }
+
+    public String getScheduleNoteContent(final Schedules schedule) {
+        String result = "";
+        if (schedule.getNoteCollection() != null && !schedule.getNoteCollection().isEmpty()) {
+            for (Note note : schedule.getNoteCollection()) {
+                result = note.getNote();
+                if (result.trim().length() > 0) {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    public String getScheduleContactInfo(final Schedules schedule) {
+        String result = "";
+        String primaryContact = "";
+        String contact = "";
+        final Customer customer = schedule.getCustomerId();
+        if (customer != null) {
+            if (customer.getCustomerContactCollection() != null && !customer.getCustomerContactCollection().isEmpty()) {
+                for (CustomerContact cc : customer.getCustomerContactCollection()) {
+                    String info = "";
+                    if (cc.getPrimaryPhone() != null && cc.getPrimaryPhone().trim().length() > 0) {
+                        info = info + "Phone: " + cc.getPrimaryPhone().trim() + "\n";
+                    } else if (cc.getSecondaryPhone() != null && cc.getSecondaryPhone().trim().length() > 0) {
+                        info = info + "Phone: " + cc.getSecondaryPhone().trim() + "\n";
+                    }
+                    if (cc.getPrimaryEmail() != null && cc.getPrimaryEmail().trim().length() > 0) {
+                        info = info + "Email: " + cc.getPrimaryEmail().trim() + "\n";
+                    } else if (cc.getSecondaryEmail() != null && cc.getSecondaryEmail().trim().length() > 0) {
+                        info = info + "Email: " + cc.getSecondaryEmail().trim() + "\n";
+                    }
+                    if (info.length() > 0) {
+                        if (cc.getPrincipal() != null && cc.getPrincipal()) {
+                            primaryContact = primaryContact + "Primary Contact: " + cc.getFirstName() + " " + cc.getLastName() + "\n";
+                            if (cc.getTitle() != null && cc.getTitle().trim().length() > 0) {
+                                primaryContact = primaryContact + "Title: " + cc.getTitle().trim() + "\n";
+                            }
+                            primaryContact = primaryContact + info;
+                        } else {
+                            contact = contact + "Contact: " + cc.getFirstName() + " " + cc.getLastName() + "\n";
+                            if (cc.getTitle() != null && cc.getTitle().trim().length() > 0) {
+                                contact = contact + "Title: " + cc.getTitle().trim() + "\n";
+                            }
+                            contact = contact + info;
+                        }
+                    }
+                }
+            }
+            if(primaryContact.trim().length() > 0) {
+                result = result + primaryContact;
+            }
+            if (contact.trim().length() > 0) {
+                result = result + contact;
+            }
+            if (result.trim().length() == 0) {
+                if (customer.getPhone() != null && customer.getPhone().trim().length() > 0) {
+                    result = result + "Phone: " + customer.getPhone().trim() + "\n";
+                }
+                if (customer.getAccountEmail() != null && customer.getAccountEmail().trim().length() > 0) {
+                    result = result + "Email: " + customer.getAccountEmail().trim() + "\n";
+                }
+            }
+        }
+        return result;
+    }
+
+    public String performScheduleDone(final Schedules schedule) {
+        if (schedule != null) {
+            schedule.setFinishedDatetime(new Date());
+            schedule.setStatus(CrmConstants.ScheduleStatus.DONE.name());
+            ejbSchedule.edit(schedule);
+        }
+        return "";
     }
 
     public void performScheduleAction(final String userName, final boolean newSchedule) {
         if (newSchedule) {
             currentSchedule.setCustomerId(current);
             currentTask.setSchedulesId(currentSchedule);
+            currentScheduleNote.setSchedulesId(currentSchedule);
+            currentScheduleNote.setCreateUser(userName);
             List<Task> taskList = new ArrayList<Task>();
             taskList.add(currentTask);
             currentSchedule.setTaskCollection(taskList);
+            List<Note> noteList = new ArrayList<Note>();
+            noteList.add(currentScheduleNote);
+            currentSchedule.setNoteCollection(noteList);
             currentSchedule.setCreateUser(userName);
             try {
                 ejbSchedule.create(currentSchedule);
                 try {
                     ejbTask.edit(currentTask);
+                    ejbNote.edit(currentScheduleNote);
                 } catch (Exception e) {
                     log.error("Unable to create new task.", e);
+                    e.printStackTrace();
                     JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
                 }
                 current.getSchedulesCollection().add(currentSchedule);
-                sendEmailNotificationForNewSchedule(currentSchedule, currentTask);
+                if (sendEmailForCurSchedule) {
+                    sendEmailNotificationForNewSchedule(currentSchedule, currentTask);
+                }
             } catch (Exception e) {
                 log.error("Unable to create new customer schedule.", e);
+                e.printStackTrace();
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             }
             setCurrentSchedule(null);
             setCurrentTask(null);
+            setCurrentScheduleNote(null);
+            sendEmailForCurSchedule = false;
         } else {
             //update
             currentSchedule.setUpdateUser(userName);
             currentSchedule.setLastUpdated(new Date());
             ejbSchedule.edit(currentSchedule);
-            sendEmailNotificationForUpdatedSchedule(currentSchedule, currentTask);
+            if (sendEmailForCurSchedule) {
+                sendEmailNotificationForUpdatedSchedule(currentSchedule, currentTask);
+            }
             setCurrentSchedule(null);
             setCurrentTask(null);
+            setCurrentScheduleNote(null);
+            sendEmailForCurSchedule = false;
+            currentSchedule_Orig = null;
         }
+    }
+
+    public String cancelScheduleEditAction() {
+        if (currentSchedule_Orig != null) {
+            cloneSchedules(currentSchedule, currentSchedule_Orig);
+        }
+        return "";
     }
 
     private void sendEmailNotificationForNewSchedule(final Schedules schedule, final Task task) {
@@ -889,7 +1118,7 @@ public class CustomerDetailController implements Serializable {
                     + "Name: " + task.getName() + "<br/>"
                     + "Type: " + task.getType() + "<br/>"
                     + "Scheduled Time: " + CrmUtils.getDateString(schedule.getScheduledDatetime(), "yyyy-MM-dd") + "<br/>"
-                    + (schedule.getNote() != null ? "Note: " + schedule.getNote() + "<br/>" : "<br/>")
+                    + getScheduleNoteContentForEmail(schedule)
                     + "<br/>"
                     + "Thank you<br/>"
                     + "CMR";
@@ -897,6 +1126,19 @@ public class CustomerDetailController implements Serializable {
             String content = createScheduleCalendar(schedule.getId(), 0, schedule.getScheduledDatetime(), createUser == null ? "" : createUser.getEmail(), assignToUser.getEmail(), task.getName(), desc, false);
             ejbNotification.sendCalendarMail(assignToUser.getEmail(), subject, body, content);
         }
+    }
+
+    public String getScheduleNoteContentForEmail(final Schedules schedule) {
+        String result = "";
+        if (schedule.getNoteCollection() != null && !schedule.getNoteCollection().isEmpty()) {
+            result = result + "Note: ";
+            for (Note note : schedule.getNoteCollection()) {
+                result = result + note.getNote() + "<br/>";
+            }
+        } else {
+            result = "<br/>";
+        }
+        return result;
     }
 
     private void sendEmailNotificationForUpdatedSchedule(final Schedules schedule, final Task task) {
@@ -930,7 +1172,7 @@ public class CustomerDetailController implements Serializable {
                     + "Name: " + task.getName() + "<br/>"
                     + "Type: " + task.getType() + "<br/>"
                     + "Scheduled Time: " + CrmUtils.getDateString(schedule.getScheduledDatetime(), "yyyy-MM-dd") + "<br/>"
-                    + (schedule.getNote() != null ? "Note: " + schedule.getNote() + "<br/>" : "<br/>")
+                    + getScheduleNoteContentForEmail(schedule)
                     + "<br/>"
                     + "Thank you<br/>"
                     + "CMR";
@@ -975,9 +1217,25 @@ public class CustomerDetailController implements Serializable {
         return result;
     }
 
+    public List<String> getTaskList() {
+        List<String> result = new ArrayList<String>();
+        for (CrmConstants.Task task : CrmConstants.Task.values()) {
+            result.add(task.getDisplayString());
+        }
+        return result;
+    }
+
+    public boolean isScheduleDone(final Schedules schedule) {
+        if (schedule != null && schedule.getFinishedDatetime() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * *****************************************
-     * Customer campaign section ****************************************
+     * Customer campaign section *****************************************
      */
     public CampaignCustomer getCampaignCustomer() {
         if (campaignCustomer == null) {
@@ -994,8 +1252,16 @@ public class CustomerDetailController implements Serializable {
         this.campaignCustomer = campaignCustomer;
     }
 
-    public void updateCampaignCustomer() {
+    public void completeCampaignForCustomer() {
         if (campaignCustomer != null) {
+            campaignCustomer.setCompletedDate(new Date());
+            ejbCampaignCustomer.edit(campaignCustomer);
+        }
+    }
+
+    public void reopenCampaignForCustomer() {
+        if (campaignCustomer != null && campaignCustomer.getCompletedDate() != null) {
+            campaignCustomer.setCompletedDate(null);
             ejbCampaignCustomer.edit(campaignCustomer);
         }
     }
@@ -1008,12 +1274,24 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
-    public boolean isLoginUserOwnCampaign(String loginUser, String campaignowner) {
+    private boolean isLoginUserOwnCampaign(String loginUser, String campaignowner) {
         if (loginUser.equals(campaignowner)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private boolean isCampaignCustomerDone() {
+        if (campaignCustomer != null && campaignCustomer.getCompletedDate() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean showCampaignCustomerDoneButton(String loginUser, String campaignowner) {
+        return (isLoginUserOwnCampaign(loginUser, campaignowner) && !isCampaignCustomerDone());
     }
 
     /**

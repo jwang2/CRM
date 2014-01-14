@@ -4,7 +4,7 @@ import com.autopay.crm.model.Address;
 import com.autopay.crm.model.Broker;
 import com.autopay.crm.model.Customer;
 import com.autopay.crm.model.CustomerContact;
-import com.autopay.crm.model.CustomerNote;
+import com.autopay.crm.model.Note;
 import com.autopay.crm.model.DealerScore;
 import com.autopay.crm.model.IrrScore;
 import com.autopay.crm.model.Users;
@@ -20,7 +20,7 @@ import com.autopay.crm.session.AddressFacade;
 import com.autopay.crm.session.BrokerFacade;
 import com.autopay.crm.session.CustomerContactFacade;
 import com.autopay.crm.session.CustomerFacade;
-import com.autopay.crm.session.CustomerNoteFacade;
+import com.autopay.crm.session.NoteFacade;
 import com.autopay.crm.session.DealerScoreFacade;
 import com.autopay.crm.session.IrrScoreFacade;
 import com.autopay.crm.session.UsersFacade;
@@ -59,7 +59,7 @@ public class CustomerService {
     @EJB
     private AddressFacade addressFacade;
     @EJB
-    private CustomerNoteFacade noteFacade;
+    private NoteFacade noteFacade;
 
     /**
      * This is a sample web service operation
@@ -807,7 +807,7 @@ public class CustomerService {
         if (note == null) {
             throw new Exception("Note object is null");
         }
-        CustomerNote newNote = new CustomerNote();
+        Note newNote = new Note();
         newNote.setNote(note.getNote());
         newNote.setCustomerId(customer);
         noteFacade.create(newNote);

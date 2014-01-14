@@ -4,7 +4,7 @@
  */
 package com.autopay.crm.session;
 
-import com.autopay.crm.model.CustomerNote;
+import com.autopay.crm.model.Note;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
  * @author Judy
  */
 @Stateless
-public class CustomerNoteFacade extends AbstractFacade<CustomerNote> {
+public class NoteFacade extends AbstractFacade<Note> {
     @PersistenceContext(unitName = "CRMPU")
     private EntityManager em;
 
@@ -23,8 +23,8 @@ public class CustomerNoteFacade extends AbstractFacade<CustomerNote> {
         return em;
     }
 
-    public CustomerNoteFacade() {
-        super(CustomerNote.class);
+    public NoteFacade() {
+        super(Note.class);
     }
     
 }

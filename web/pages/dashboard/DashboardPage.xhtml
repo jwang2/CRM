@@ -110,6 +110,18 @@
                                     <div>#{task.name}</div>
                                 </ui:repeat>
                             </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Note"/>
+                                </f:facet>
+                                <h:outputText value="#{customerDetailBean.getScheduleNoteContent(item)}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Contact Info"/>
+                                </f:facet>
+                                <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="#{customerDetailBean.getScheduleContactInfo(item).length() > 0 ? 5 : 1}" value="#{customerDetailBean.getScheduleContactInfo(item)}"/>
+                            </h:column>
                         </rich:dataTable>
                     </h:panelGroup>
                 </rich:collapsiblePanel>

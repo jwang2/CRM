@@ -1,9 +1,9 @@
 package com.autopay.crm.bean;
 
-import com.autopay.crm.model.CustomerNote;
+import com.autopay.crm.model.Note;
 import com.autopay.crm.bean.util.JsfUtil;
 import com.autopay.crm.bean.util.PaginationHelper;
-import com.autopay.crm.session.CustomerNoteFacade;
+import com.autopay.crm.session.NoteFacade;
 
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -18,29 +18,29 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
-@Named("customerNoteController")
+@Named("noteController")
 @SessionScoped
-public class CustomerNoteController implements Serializable {
+public class NoteController implements Serializable {
 
-    private CustomerNote current;
+    private Note current;
     private DataModel items = null;
     @EJB
-    private com.autopay.crm.session.CustomerNoteFacade ejbFacade;
+    private com.autopay.crm.session.NoteFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    public CustomerNoteController() {
+    public NoteController() {
     }
 
-    public CustomerNote getSelected() {
+    public Note getSelected() {
         if (current == null) {
-            current = new CustomerNote();
+            current = new Note();
             selectedItemIndex = -1;
         }
         return current;
     }
 
-    private CustomerNoteFacade getFacade() {
+    private NoteFacade getFacade() {
         return ejbFacade;
     }
 
@@ -67,13 +67,13 @@ public class CustomerNoteController implements Serializable {
     }
 
     public String prepareView() {
-        current = (CustomerNote) getItems().getRowData();
+        current = (Note) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
     public String prepareCreate() {
-        current = new CustomerNote();
+        current = new Note();
         selectedItemIndex = -1;
         return "Create";
     }
@@ -81,16 +81,16 @@ public class CustomerNoteController implements Serializable {
     public String create() {
         try {
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("CustomerNoteCreated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle_note").getString("NoteCreated"));
             return prepareCreate();
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle_note").getString("PersistenceErrorOccured"));
             return null;
         }
     }
 
     public String prepareEdit() {
-        current = (CustomerNote) getItems().getRowData();
+        current = (Note) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
@@ -98,16 +98,16 @@ public class CustomerNoteController implements Serializable {
     public String update() {
         try {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("CustomerNoteUpdated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle_note").getString("NoteUpdated"));
             return "View";
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle_note").getString("PersistenceErrorOccured"));
             return null;
         }
     }
 
     public String destroy() {
-        current = (CustomerNote) getItems().getRowData();
+        current = (Note) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
@@ -131,9 +131,9 @@ public class CustomerNoteController implements Serializable {
     private void performDestroy() {
         try {
             getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("CustomerNoteDeleted"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle_note").getString("NoteDeleted"));
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle_note").getString("PersistenceErrorOccured"));
         }
     }
 
@@ -187,21 +187,21 @@ public class CustomerNoteController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    public CustomerNote getCustomerNote(java.lang.Long id) {
+    public Note getNote(java.lang.Long id) {
         return ejbFacade.find(id);
     }
 
-    @FacesConverter(forClass = CustomerNote.class)
-    public static class CustomerNoteControllerConverter implements Converter {
+    @FacesConverter(forClass = Note.class)
+    public static class NoteControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            CustomerNoteController controller = (CustomerNoteController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "customerNoteController");
-            return controller.getCustomerNote(getKey(value));
+            NoteController controller = (NoteController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "noteController");
+            return controller.getNote(getKey(value));
         }
 
         java.lang.Long getKey(String value) {
@@ -221,11 +221,11 @@ public class CustomerNoteController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof CustomerNote) {
-                CustomerNote o = (CustomerNote) object;
+            if (object instanceof Note) {
+                Note o = (Note) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + CustomerNote.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Note.class.getName());
             }
         }
     }

@@ -19,7 +19,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -33,14 +32,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CampaignCustomer.findAll", query = "SELECT c FROM CampaignCustomer c"),
     @NamedQuery(name = "CampaignCustomer.findById", query = "SELECT c FROM CampaignCustomer c WHERE c.id = :id"),
     @NamedQuery(name = "CampaignCustomer.findByStartDate", query = "SELECT c FROM CampaignCustomer c WHERE c.startDate = :startDate"),
-    @NamedQuery(name = "CampaignCustomer.findByCompletedDate", query = "SELECT c FROM CampaignCustomer c WHERE c.completedDate = :completedDate"),
-    @NamedQuery(name = "CampaignCustomer.findByNote", query = "SELECT c FROM CampaignCustomer c WHERE c.note = :note")})
+    @NamedQuery(name = "CampaignCustomer.findByCompletedDate", query = "SELECT c FROM CampaignCustomer c WHERE c.completedDate = :completedDate")})
 public class CampaignCustomer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -48,13 +46,10 @@ public class CampaignCustomer implements Serializable {
     @Column(name = "completed_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date completedDate;
-    @Size(max = 255)
-    @Column(name = "note")
-    private String note;
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Customer customerId;
-    @JoinColumn(name = "campaign_id", referencedColumnName = "id")
+    @JoinColumn(name = "campaign_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Campaign campaignId;
 
@@ -87,14 +82,6 @@ public class CampaignCustomer implements Serializable {
 
     public void setCompletedDate(Date completedDate) {
         this.completedDate = completedDate;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public Customer getCustomerId() {

@@ -314,10 +314,15 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         }
         try {
             if (queryStr.trim().length() > 0) {
+                queryStr = "select distinct c.* from customer c, address a where c.id = a.customer_id and a.state = 'CO' order by c.id";
                 System.out.println("============================ search sql: \n" + queryStr);
+                long start = System.currentTimeMillis();
                 List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
+                System.out.println("@@@@@@@@@@@@ sql execution time: " + (System.currentTimeMillis()-start));
                 getCustomerTotalFinanced(result, startDate, endDate);
+                System.out.println("@@@@@@@@@@@@ sql execution time222: " + (System.currentTimeMillis()-start));
                 getCustomerCampaignInfo(result);
+                System.out.println("@@@@@@@@@@@@ sql execution time333: " + (System.currentTimeMillis()-start));
                 return result;
             } else {
                 return null;

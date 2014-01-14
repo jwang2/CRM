@@ -26,6 +26,35 @@ public class CrmConstants {
         ONE_TIME, EVERY_HOUR, EVERY_DAY, EVERY_WEEK, EVERY_MONTH, EVERY_YEAR
     }
     
+    public enum Task {
+        CALL_CUSTOMER("Call customer"),
+        EMAIL_CUSTOMER("Email customer"),
+        TASK_X("Task X"),
+        TASK_Y("Task Y"),
+        TASK_Z("Task Z");
+
+        private Task(String displayString) {
+            this.displayString = displayString;
+        }
+
+        public static Task findByDisplayString(final String displayString) {
+            Task result = null;
+
+            for (Task type : Task.values()) {
+                if (displayString.equals(type.getDisplayString())) {
+                    result = type;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public String getDisplayString() {
+            return displayString;
+        }
+        private final String displayString;
+    }
+    
     public enum ScheduleStatus {
         ASSIGNED, IN_PROGRESS, DONE
     }
