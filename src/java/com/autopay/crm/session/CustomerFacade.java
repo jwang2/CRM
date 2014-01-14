@@ -314,7 +314,6 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         }
         try {
             if (queryStr.trim().length() > 0) {
-                queryStr = "select distinct c.* from customer c, address a where c.id = a.customer_id and a.state = 'CO' order by c.id";
                 System.out.println("============================ search sql: \n" + queryStr);
                 long start = System.currentTimeMillis();
                 List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
