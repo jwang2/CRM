@@ -111,7 +111,7 @@ public class Address implements Serializable {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @ManyToOne
     private Customer customerId;
-    @OneToMany(mappedBy = "addressId", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "addressId", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.SUBSELECT)
     private Collection<CustomerContact> customerContactCollection;
 

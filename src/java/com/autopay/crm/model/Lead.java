@@ -134,7 +134,7 @@ public class Lead implements Serializable {
     @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Customer financeCompanyId;
     @JoinColumn(name = "dealer_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Customer dealerId;
 
     public Lead() {

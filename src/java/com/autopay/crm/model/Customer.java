@@ -54,7 +54,7 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Customer.findByUpdateUser", query = "SELECT c FROM Customer c WHERE c.updateUser = :updateUser"),
     @NamedQuery(name = "Customer.findByLastUpdated", query = "SELECT c FROM Customer c WHERE c.lastUpdated = :lastUpdated")})
 public class Customer implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.LAZY)
     private Collection<Note> noteCollection;
     @Size(max = 255)
     @Column(name = "gpsvendor", length = 255)
@@ -150,13 +150,13 @@ public class Customer implements Serializable {
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
-    @OneToMany(mappedBy = "customerId", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customerId", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.SUBSELECT)
     private Collection<Schedules> schedulesCollection;
-    @OneToMany(mappedBy = "customerId", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customerId", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.SUBSELECT)
     private Collection<Address> addressCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.SUBSELECT)
     private Collection<KnownCustomerNames> knownCustomerNamesCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
@@ -165,7 +165,7 @@ public class Customer implements Serializable {
     private Collection<Lead> leadCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dealerId")
     private Collection<Lead> leadCollection1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.SUBSELECT)
     private Collection<CustomerContact> customerContactCollection;
     @JoinColumn(name = "parent_customer_id", referencedColumnName = "id")
