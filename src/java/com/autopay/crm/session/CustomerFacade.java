@@ -7,7 +7,10 @@ package com.autopay.crm.session;
 import com.autopay.crm.model.Address;
 import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.Customer;
+import com.autopay.crm.model.CustomerContact;
+import com.autopay.crm.model.KnownCustomerNames;
 import com.autopay.crm.model.Lead;
+import com.autopay.crm.model.Note;
 import com.autopay.crm.model.Schedules;
 import com.autopay.crm.model.Task;
 import com.autopay.crm.model.search.CustomerSearchCriteria;
@@ -317,11 +320,16 @@ public class CustomerFacade extends AbstractFacade<Customer> {
                 System.out.println("============================ search sql: \n" + queryStr);
                 long start = System.currentTimeMillis();
                 List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
-                System.out.println("@@@@@@@@@@@@ sql execution time: " + (System.currentTimeMillis()-start));
+                System.out.println("@@@@@@@@@@@@ sql execution time: " + (System.currentTimeMillis() - start));
+                start = System.currentTimeMillis();
                 getCustomerTotalFinanced(result, startDate, endDate);
-                System.out.println("@@@@@@@@@@@@ sql execution time222: " + (System.currentTimeMillis()-start));
+                System.out.println("@@@@@@@@@@@@ sql execution time (total fianced): " + (System.currentTimeMillis() - start));
+                start = System.currentTimeMillis();
                 getCustomerCampaignInfo(result);
-                System.out.println("@@@@@@@@@@@@ sql execution time333: " + (System.currentTimeMillis()-start));
+                System.out.println("@@@@@@@@@@@@ sql execution time (campaign info): " + (System.currentTimeMillis() - start));
+                start = System.currentTimeMillis();
+                getCustomerAddressInfo(result);
+                System.out.println("@@@@@@@@@@@@ sql execution time (address info): " + (System.currentTimeMillis() - start));
                 return result;
             } else {
                 return null;
@@ -381,8 +389,20 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             return null;
         }
     }
+    
+    public Customer getCustomerDetail(final Customer customer) {
+        List<Customer> customerList = new ArrayList<Customer>();
+        customerList.add(customer);
+        getCustomerCampaignInfo(customerList);
+        getCustomerAddressInfo(customerList);
+        getCustomerNoteInfo(customerList);
+        getCustomerContactInfo(customerList);
+        getCustomerScheduleInfo(customerList);
+        getCustomerKnownNamesInfo(customerList);
+        return customerList.get(0);
+    }
 
-    public void getCustomerCampaignInfo(final List<Customer> customers) {
+    private String getCustomerIDsStr(final List<Customer> customers) {
         String customerIDs = "";
         for (Customer customer : customers) {
             if (customerIDs.length() == 0) {
@@ -391,6 +411,126 @@ public class CustomerFacade extends AbstractFacade<Customer> {
                 customerIDs = customerIDs + ", " + customer.getId();
             }
         }
+        return customerIDs;
+    }
+
+    private void getCustomerKnownNamesInfo(List<Customer> customers) {
+        String customerIDs = getCustomerIDsStr(customers);
+        if (customerIDs.length() > 0) {
+            String queryStr = "select * from known_customer_names where customer_id in (" + customerIDs + ")";
+            Map<Long, KnownCustomerNames> values = new HashMap<Long, KnownCustomerNames>();
+            List<KnownCustomerNames> result = (List<KnownCustomerNames>) em.createNativeQuery(queryStr, KnownCustomerNames.class).getResultList();
+            for (KnownCustomerNames knownName : result) {
+                values.put(knownName.getCustomerId().getId(), knownName);
+            }
+            for (Customer customer : customers) {
+                customer.setKnownCustomerNamesCollection(new ArrayList<KnownCustomerNames>());
+                if (values.containsKey(customer.getId())) {
+                    List<KnownCustomerNames> knownNameList = new ArrayList<KnownCustomerNames>();
+                    if (customer.getKnownCustomerNamesCollection() != null && !customer.getKnownCustomerNamesCollection().isEmpty()) {
+                        knownNameList.addAll(customer.getKnownCustomerNamesCollection());
+                    }
+                    knownNameList.add(values.get(customer.getId()));
+                    customer.setKnownCustomerNamesCollection(knownNameList);
+                }
+            }
+        }
+    }
+    
+    private void getCustomerScheduleInfo(List<Customer> customers) {
+        String customerIDs = getCustomerIDsStr(customers);
+        if (customerIDs.length() > 0) {
+            String queryStr = "select * from schedules where customer_id in (" + customerIDs + ")";
+            Map<Long, Schedules> values = new HashMap<Long, Schedules>();
+            List<Schedules> result = (List<Schedules>) em.createNativeQuery(queryStr, Schedules.class).getResultList();
+            for (Schedules schedule : result) {
+                values.put(schedule.getCustomerId().getId(), schedule);
+            }
+            for (Customer customer : customers) {
+                customer.setSchedulesCollection(new ArrayList<Schedules>());
+                if (values.containsKey(customer.getId())) {
+                    List<Schedules> scheduleList = new ArrayList<Schedules>();
+                    if (customer.getSchedulesCollection() != null && !customer.getSchedulesCollection().isEmpty()) {
+                        scheduleList.addAll(customer.getSchedulesCollection());
+                    }
+                    scheduleList.add(values.get(customer.getId()));
+                    customer.setSchedulesCollection(scheduleList);
+                }
+            }
+        }
+    }
+
+    private void getCustomerContactInfo(List<Customer> customers) {
+        String customerIDs = getCustomerIDsStr(customers);
+        if (customerIDs.length() > 0) {
+            String queryStr = "select * from customer_contact where customer_id in (" + customerIDs + ")";
+            Map<Long, CustomerContact> values = new HashMap<Long, CustomerContact>();
+            List<CustomerContact> result = (List<CustomerContact>) em.createNativeQuery(queryStr, CustomerContact.class).getResultList();
+            for (CustomerContact contact : result) {
+                values.put(contact.getCustomerId().getId(), contact);
+            }
+            for (Customer customer : customers) {
+                customer.setCustomerContactCollection(new ArrayList<CustomerContact>());
+                if (values.containsKey(customer.getId())) {
+                    List<CustomerContact> contactList = new ArrayList<CustomerContact>();
+                    if (customer.getCustomerContactCollection() != null && !customer.getCustomerContactCollection().isEmpty()) {
+                        contactList.addAll(customer.getCustomerContactCollection());
+                    }
+                    contactList.add(values.get(customer.getId()));
+                    customer.setCustomerContactCollection(contactList);
+                }
+            }
+        }
+    }
+
+    private void getCustomerNoteInfo(List<Customer> customers) {
+        String customerIDs = getCustomerIDsStr(customers);
+        if (customerIDs.length() > 0) {
+            String queryStr = "select * from note where customer_id in (" + customerIDs + ")";
+            Map<Long, Note> values = new HashMap<Long, Note>();
+            List<Note> result = (List<Note>) em.createNativeQuery(queryStr, Note.class).getResultList();
+            for (Note note : result) {
+                values.put(note.getCustomerId().getId(), note);
+            }
+            for (Customer customer : customers) {
+                customer.setNoteCollection(new ArrayList<Note>());
+                if (values.containsKey(customer.getId())) {
+                    List<Note> noteList = new ArrayList<Note>();
+                    if (customer.getNoteCollection() != null && !customer.getNoteCollection().isEmpty()) {
+                        noteList.addAll(customer.getNoteCollection());
+                    }
+                    noteList.add(values.get(customer.getId()));
+                    customer.setNoteCollection(noteList);
+                }
+            }
+        }
+    }
+
+    private void getCustomerAddressInfo(List<Customer> customers) {
+        String customerIDs = getCustomerIDsStr(customers);
+        if (customerIDs.length() > 0) {
+            String queryStr = "select * from address where customer_id in (" + customerIDs + ")";
+            Map<Long, Address> values = new HashMap<Long, Address>();
+            List<Address> result = (List<Address>) em.createNativeQuery(queryStr, Address.class).getResultList();
+            for (Address address : result) {
+                values.put(address.getCustomerId().getId(), address);
+            }
+            for (Customer customer : customers) {
+                customer.setAddressCollection(new ArrayList<Address>());
+                if (values.containsKey(customer.getId())) {
+                    List<Address> addressList = new ArrayList<Address>();
+                    if (customer.getAddressCollection() != null && !customer.getAddressCollection().isEmpty()) {
+                        addressList.addAll(customer.getAddressCollection());
+                    }
+                    addressList.add(values.get(customer.getId()));
+                    customer.setAddressCollection(addressList);
+                }
+            }
+        }
+    }
+
+    public void getCustomerCampaignInfo(List<Customer> customers) {
+        String customerIDs = getCustomerIDsStr(customers);
         if (customerIDs.length() > 0) {
             String queryStr = "select cc.* from campaign c, campaign_customer cc where c.active = 1 and c.id = cc.campaign_id and cc.customer_id in (" + customerIDs + ")";
             List<CampaignCustomer> result = (List<CampaignCustomer>) em.createNativeQuery(queryStr, CampaignCustomer.class).getResultList();
@@ -407,14 +547,7 @@ public class CustomerFacade extends AbstractFacade<Customer> {
     }
 
     public void getCustomerTotalFinanced(final List<Customer> customers, final Date startDate, final Date endDate) {
-        String customerIDs = "";
-        for (Customer customer : customers) {
-            if (customerIDs.length() == 0) {
-                customerIDs = customer.getId() + "";
-            } else {
-                customerIDs = customerIDs + ", " + customer.getId();
-            }
-        }
+        String customerIDs = getCustomerIDsStr(customers);
         if (customerIDs.length() > 0) {
             String queryStr;
             if (startDate == null && endDate == null) {

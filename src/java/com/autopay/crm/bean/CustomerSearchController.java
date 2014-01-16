@@ -411,8 +411,10 @@ public class CustomerSearchController implements Serializable {
             newCampaign.setName(campaignName);
             newCampaign.setDescription(campaignDesc);
             newCampaign.setAssignedUser(campaignAssignto);
+            Date campaignStartDate = null;
             if (campaignAssignto != null && campaignAssignto.trim().length() > 0) {
-                newCampaign.setStartDate(new Date());
+                campaignStartDate = new Date();
+                newCampaign.setStartDate(campaignStartDate);
             }
             newCampaign.setActive(campaignStatus.equals(ActiveStatusType.Active.name()) ? true : false);
             newCampaign.setCreateUser(user);
@@ -423,6 +425,9 @@ public class CustomerSearchController implements Serializable {
                     CampaignCustomer cc = new CampaignCustomer();
                     cc.setCampaignId(newCampaign);
                     cc.setCustomerId(customer);
+                    if (campaignStartDate != null) {
+                        cc.setStartDate(campaignStartDate);
+                    }
                     campaignCustomers.add(cc);
                 }
             }

@@ -43,6 +43,8 @@ public class CustomerDetailController implements Serializable {
     private Customer current;
     //overview related
     private Customer customer_orig;
+    private Customer customerToLink;
+    private boolean findCustomerToLink = false;
     //contact related
     private CustomerContact currentContact;
     private CustomerContact currentContact_Orig;
@@ -91,49 +93,48 @@ public class CustomerDetailController implements Serializable {
     }
 
     public String prepareDetail(Customer customer) {
-        current = customer;
+        current = ejbCustomer.getCustomerDetail(customer);
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
+        customerToLink = null;
         addToViewRecently(customer);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
     }
 
     public String prepareDetailFromCampaign(Customer customer) {
-        System.out.println("###### from campaign customer page...." + customer.getCampaignID());
-        current = customer;
+        current = ejbCustomer.getCustomerDetail(customer);
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
+        customerToLink = null;
         addToViewRecently(customer);
         setCurrentTab("campaign");
         return "/pages/customer/CustomerDetail";
     }
 
     public String prepareDetail(Schedules schedule) {
-        current = schedule.getCustomerId();
-        final List<Customer> cusomers = new ArrayList<Customer>();
-        cusomers.add(current);
-        ejbCustomer.getCustomerCampaignInfo(cusomers);
-        System.out.println("###### from home page schedule...." + current.getCampaignID());
+        current = ejbCustomer.getCustomerDetail(schedule.getCustomerId());
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
+        customerToLink = null;
         addToViewRecently(current);
         setCurrentTab("schedules");
         return "/pages/customer/CustomerDetail";
     }
 
     public String prepareDetail(LeadSearchResult leadSearchResult) {
-        current = leadSearchResult.getDealer();
+        current = ejbCustomer.getCustomerDetail(leadSearchResult.getDealer());
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
+        customerToLink = null;
         addToViewRecently(current);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
@@ -284,6 +285,18 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
+    public String getCustomerWebsiteValueFixedSize(final Customer customer, final int size) {
+        if (customer.getWebsite() != null && customer.getWebsite().trim().length() > 0) {
+            String webStr = customer.getWebsite();
+            if (webStr.length() > size + 3) {
+                webStr = webStr.substring(0, size) + "...";
+            }
+            return webStr;
+        } else {
+            return "google";
+        }
+    }
+
     public String cancelCustomerEditAction() {
         if (customer_orig != null) {
             cloneCustomer(current, customer_orig);
@@ -390,6 +403,55 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
+    public Customer getCustomerToLink() {
+        if (customerToLink == null) {
+            customerToLink = new Customer();
+        } else {
+            if (customerToLink != null && customerToLink.getId() != null) {
+                customerToLink = ejbCustomer.find(customerToLink.getId());
+                customerToLink = ejbCustomer.getCustomerDetail(customerToLink);
+            } else {
+                customerToLink = new Customer();
+            }
+        }
+        return customerToLink;
+    }
+
+    public Address getCustomerToLinkMainAddress() {
+        Customer customer = getCustomerToLink();
+        Address address = getCustomerMainAddress(customer);
+        if (address == null) {
+            address = new Address();
+        }
+        return address;
+    }
+
+    public void prepareLinkCustomers() {
+        if (customerToLink != null && customerToLink.getId() != null) {
+            customerToLink = ejbCustomer.find(customerToLink.getId());
+            findCustomerToLink = false;
+            if (customerToLink != null) {
+                customerToLink = ejbCustomer.getCustomerDetail(customerToLink);
+                findCustomerToLink = true;
+            }
+        }
+    }
+    
+    public boolean isFindCustomerToLink() {
+        return findCustomerToLink;
+    }
+
+    public void setFindCustomerToLink(boolean findCustomerToLink) {
+        this.findCustomerToLink = findCustomerToLink;
+    }
+    
+    public void linkCustomers() {
+        if (current != null && customerToLink != null) {
+            customerToLink = null;
+            findCustomerToLink = false;
+        }
+    }
+    
     /**
      * ***************************************************
      * Customer Contact Section
@@ -988,7 +1050,8 @@ public class CustomerDetailController implements Serializable {
         String result = "";
         String primaryContact = "";
         String contact = "";
-        final Customer customer = schedule.getCustomerId();
+        final Customer customer = ejbCustomer.getCustomerDetail(schedule.getCustomerId());
+
         if (customer != null) {
             if (customer.getCustomerContactCollection() != null && !customer.getCustomerContactCollection().isEmpty()) {
                 for (CustomerContact cc : customer.getCustomerContactCollection()) {
@@ -1020,7 +1083,7 @@ public class CustomerDetailController implements Serializable {
                     }
                 }
             }
-            if(primaryContact.trim().length() > 0) {
+            if (primaryContact.trim().length() > 0) {
                 result = result + primaryContact;
             }
             if (contact.trim().length() > 0) {
@@ -1235,7 +1298,7 @@ public class CustomerDetailController implements Serializable {
 
     /**
      * *****************************************
-     * Customer campaign section *****************************************
+     * Customer campaign section ****************************************
      */
     public CampaignCustomer getCampaignCustomer() {
         if (campaignCustomer == null) {
@@ -1296,7 +1359,7 @@ public class CustomerDetailController implements Serializable {
 
     /**
      * **************************************************
-     * Inner Class Section **************************************************
+     * Inner Class Section *************************************************
      */
     public final class CustomerDealDetail extends Object implements Serializable, Comparable<CustomerDealDetail> {
 

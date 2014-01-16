@@ -45,6 +45,8 @@ public class CampaignSearchController implements Serializable {
     private com.autopay.crm.session.CampaignFacade ejbCampaign;
     @EJB
     private com.autopay.crm.session.UserFacade ejbUser;
+    @EJB
+    private com.autopay.crm.session.CampaignCustomerFacade ejbCampaignCustomer;
 
     public CampaignSearchController() {
         campaignSearchCriteria = new CampaignSearchCriteria();
@@ -112,7 +114,7 @@ public class CampaignSearchController implements Serializable {
         recreateModel();
         pagination = null;
     }
-    
+
     public DataModel getItems() {
         if (items == null) {
             items = getPagination().createPageDataModel();
@@ -127,7 +129,7 @@ public class CampaignSearchController implements Serializable {
     public List<String> getCampaignStatusListForSearch() {
         List<String> result = new ArrayList<String>();
         result.add("");
-        for (ActiveStatusType type: ActiveStatusType.values()) {
+        for (ActiveStatusType type : ActiveStatusType.values()) {
             result.add(type.name());
         }
         return result;
@@ -135,12 +137,12 @@ public class CampaignSearchController implements Serializable {
 
     public List<ActiveStatusType> getCampaignStatusList() {
         List<ActiveStatusType> result = new ArrayList<ActiveStatusType>();
-        for (ActiveStatusType type: ActiveStatusType.values()) {
+        for (ActiveStatusType type : ActiveStatusType.values()) {
             result.add(type);
         }
         return result;
     }
-    
+
     public List<String> getCampaignTypeListForSearch() {
         List<String> result = new ArrayList<String>();
         result.add("");
@@ -149,10 +151,10 @@ public class CampaignSearchController implements Serializable {
         }
         return result;
     }
-    
+
     public List<CampaignType> getCampaignTypeList() {
         List<CampaignType> result = new ArrayList<CampaignType>();
-        for (CampaignType type: CampaignType.values()) {
+        for (CampaignType type : CampaignType.values()) {
             result.add(type);
         }
         return result;
@@ -165,7 +167,7 @@ public class CampaignSearchController implements Serializable {
         rowsPerPage = CrmConstants.DEFAULT_ITEMS_PER_PAGE;
         return "CampaignSearch";
     }
-    
+
     private boolean isSearchCriteriaEmpty() {
         boolean result = true;
         if (campaignSearchCriteria != null && !campaignSearchCriteria.equals(new CampaignSearchCriteria())) {
@@ -173,7 +175,7 @@ public class CampaignSearchController implements Serializable {
         }
         return result;
     }
-    
+
     public boolean isShownYourActiveCampaigns() {
         if (isSearchCriteriaEmpty() && searchResult != null && searchResult.size() > 0) {
             return true;
@@ -252,21 +254,21 @@ public class CampaignSearchController implements Serializable {
         current = (Campaign) getItems().getRowData();
         return "CampaignDetail";
     }
-    
+
     public String prepareDetails(final Campaign campaign) {
         current = campaign;
         return "/pages/campaign/CampaignDetail";
     }
-    
+
     public String prepareDetails(final Customer customer) {
         current = ejbCampaign.find(customer.getCampaignID());
         return "/pages/campaign/CampaignDetail";
     }
-    
+
     public String backToCampaignSearchPage() {
         return "/pages/campaign/CampaignSearch";
     }
-    
+
     public String getCampaignCriteriasStr() {
         String result = "";
         if (current != null) {
@@ -283,7 +285,7 @@ public class CampaignSearchController implements Serializable {
         }
         return result;
     }
-    
+
     public boolean isNoCampaignFound() {
         return noCampaignFound;
     }
@@ -291,7 +293,7 @@ public class CampaignSearchController implements Serializable {
     public void setNoCampaignFound(boolean noCampaignFound) {
         this.noCampaignFound = noCampaignFound;
     }
-    
+
     public String getCampaignCompletedPercentValue(final Campaign campaign) {
         String result = "";
         int totalRecords = campaign.getCampaignCustomerCollection().size();
@@ -301,7 +303,7 @@ public class CampaignSearchController implements Serializable {
                 completedRecords++;
             }
         }
-        float rate = new Float(completedRecords)/(new Float(totalRecords));
+        float rate = new Float(completedRecords) / (new Float(totalRecords));
         result = new DecimalFormat("0.0").format(100 * rate);
 
         return result + "% (" + totalRecords + " records in campaign)";
@@ -309,8 +311,7 @@ public class CampaignSearchController implements Serializable {
 
     /**
      * ************************************************
-     * OVERVIEW SECTION
-     **************************************************
+     * OVERVIEW SECTION *************************************************
      */
     public boolean isAllowEditCampaign() {
         return allowEditCampaign;
@@ -330,12 +331,27 @@ public class CampaignSearchController implements Serializable {
 
     public void performCampaignEdit(final String userName) {
         if (allowEditCampaign) {
-            if ((campaign_orig.getAssignedUser() == null || campaign_orig.getAssignedUser().trim().length() == 0)
-                    && (current.getAssignedUser() != null && current.getAssignedUser().trim().length() > 0)) {
-                if (current.getStartDate() == null) {
-                    current.setStartDate(new Date());
+            if (current.getStartDate() == null) {
+                if ((campaign_orig.getAssignedUser() == null || campaign_orig.getAssignedUser().trim().length() == 0)
+                        && (current.getAssignedUser() != null && current.getAssignedUser().trim().length() > 0)) {
+                    final Date campaignStartDate = new Date();
+                    current.setStartDate(campaignStartDate);
+                    //update start date for all customers in this campaign
+                    for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {
+                        cc.setStartDate(campaignStartDate);
+                        ejbCampaignCustomer.edit(cc);
+                    }
+                }
+            } else {
+                if (campaign_orig.getStartDate() == null || campaign_orig.getStartDate().equals(current.getStartDate())) {
+                    //update start date for all customers in this campaign
+                    for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {
+                        cc.setStartDate(current.getStartDate());
+                        ejbCampaignCustomer.edit(cc);
+                    }
                 }
             }
+
             //save campaign
             current.setLastUpdated(new Date());
             current.setUpdateUser(userName);
@@ -349,7 +365,7 @@ public class CampaignSearchController implements Serializable {
             cloneCampaign(campaign_orig, current);
         }
     }
-    
+
     public String cancelCampaignEditAction() {
         setAllowEditCampaign(false);
         if (campaign_orig != null) {
@@ -357,7 +373,7 @@ public class CampaignSearchController implements Serializable {
         }
         return "";
     }
-    
+
     private void cloneCampaign(final Campaign newcampaign, final Campaign oldcampaign) {
         newcampaign.setName(oldcampaign.getName());
         newcampaign.setActive(oldcampaign.getActive());
@@ -366,23 +382,24 @@ public class CampaignSearchController implements Serializable {
         newcampaign.setStartDate(oldcampaign.getStartDate());
         newcampaign.setCompletedDate(oldcampaign.getCompletedDate());
     }
-    
+
     public List<String> autocomplete(String prefix) {
         List<String> result = ejbCampaign.getCampaignNamesByName(prefix);
         Collections.sort(result);
         return result;
     }
-    
+
     public List<String> autocompleteAssignTo(String prefix) {
         List<String> result = ejbUser.getUserNamesByName(prefix);
         Collections.sort(result);
         return result;
     }
-    
-    /*********************************************
-     *  CUSTOMERS SECTION
-     *********************************************/
-    
+
+    /**
+     * *******************************************
+     * CUSTOMERS SECTION
+     ********************************************
+     */
     public List<CampaignCustomer> getCampaignCustomers() {
         List<CampaignCustomer> result = new ArrayList<CampaignCustomer>();
         for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {

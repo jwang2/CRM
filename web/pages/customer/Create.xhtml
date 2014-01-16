@@ -193,7 +193,10 @@
                 </h:panelGrid>
             </rich:panel>
 
-            <h:commandButton value="Save" action="#{customerDetailBean.performAddNewCustomer(loginBean.userName)}"/>
+            <h:commandButton value="Cancel" action="#{customerSearchBean.backToCustomerSearchPage()}" immediate="true"/>
+            
+            <h:commandButton value="Save" action="#{customerDetailBean.performAddNewCustomer(loginBean.userName)}" style="float: right"/>
+            
 
         </h:form>
     </ui:define>

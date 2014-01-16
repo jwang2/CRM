@@ -33,8 +33,7 @@
                     <h:outputLabel value="#{customerDetailBean.selected.type}"/>
 
                     <h:outputLabel value="#{bundle.ViewCustomerLabel_website}" style=" font-weight: bold"/>
-                    <h:link onclick="window.open('#{customerDetailBean.getCustomerGoogleSearchResultPage(customerDetailBean.selected)}');" style="cursor: pointer">#{customerDetailBean.getCustomerWebsiteValue(customerDetailBean.selected)}</h:link>
-
+                    <h:link onclick="window.open('#{customerDetailBean.getCustomerGoogleSearchResultPage(customerDetailBean.selected)}');" style="cursor: pointer">#{customerDetailBean.getCustomerWebsiteValueFixedSize(customerDetailBean.selected, 30)}</h:link>
                     
                     <h:outputLabel value="County:" style=" font-weight: bold"/>
                     <h:outputLabel value="#{customerDetailBean.selectedMainAddress.county}"/>
@@ -99,6 +98,21 @@
             </rich:panel>
 
             <ui:include src="/pages/customer/NewNote_Popup.xhtml"/>
+        </h:panelGroup>
+        <br/>
+        <h:panelGroup>
+            <rich:panel header="Link Customers">
+                <h:panelGrid columns="2" id="linkcustomermain" width="100%" styleClass="panelgrid-middle">
+                    <h:panelGroup>
+                    <h:outputLabel value="ID of customer considered same as this customer:" style=" font-weight: bold"/>
+                    <h:inputText size="30" value="#{customerDetailBean.customerToLink.id}" title="linkcustomerid"/>
+                    </h:panelGroup>
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <a4j:commandButton style="float: right;" render="linkcustomer" value="Link Customer"  action="#{customerDetailBean.prepareLinkCustomers()}" oncomplete="#{rich:component('linkcustomer')}.show();return false;"/>
+                </h:panelGrid>
+                <ui:include src="/pages/customer/LinkCustomer_Popup.xhtml"/>
+            </rich:panel>
         </h:panelGroup>
     </h:panelGroup>
 </ui:composition>
