@@ -1,33 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:rich="http://richfaces.org/rich">
-
-    <ui:composition template="/template.xhtml">
-
-        <ui:define name="title">
-            <h:outputText value="Admin"></h:outputText>
-        </ui:define>
-        <ui:define name="body">
-            <h:form id="adminForm" styleClass="jsfcrud_list_form">
-                <h:panelGroup id="adminMessagePanel" layout="block">
-                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
-                </h:panelGroup>
-                <rich:collapsiblePanel header="Link Customers">
-                    
-                </rich:collapsiblePanel>
-                <br/>
-                <br/>
-                <br/>
-                <rich:collapsiblePanel header="Create Rep">
-                    
-                </rich:collapsiblePanel>
-            </h:form>
-        </ui:define>
-
-    </ui:composition>
-</html>
-
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="body">
+        <h:outputText value="Admin Page" style="font-weight:bold; font-size: 1.5em"/>
+        <br/>
+        <br/>
+        <h:form id="adminForm">
+            <rich:tabPanel switchType="ajax" id="adminTabPanel" activeItem="#{customerDetailBean.currentTab}">
+                <rich:tab header="Link Customers" id="tabLinkCustomers" name="linkcusomers">
+                    <ui:include src="LinkCustomers.xhtml"/>
+                </rich:tab>
+                <rich:tab header="UnLink Customers" id="tabUnLinkCustomers" name="unlinkcusomers">
+                    <ui:include src="UnlinkCustomers.xhtml"/>
+                </rich:tab>
+                
+            </rich:tabPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>

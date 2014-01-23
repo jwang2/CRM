@@ -1,0 +1,44 @@
+<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
+    <h:panelGroup>
+        <h:outputLabel value="Customer Name:"/>
+        <rich:autocomplete value="#{adminBean.customerName}" mode="cachedAjax" minChars="2" autocompleteMethod="#{adminBean.autocomplete}" styleClass="inputSearch" style=" vertical-align: middle ;border: none; background: transparent"/>
+        <h:commandButton value="Show Customers" action="#{adminBean.getCustomers()}"/>
+        <h:commandButton value="Show More Customers" action="#{adminBean.addMoreCustomers()}"/>
+    </h:panelGroup>
+    <rich:dataTable id="customertolinktable" rendered="#{adminBean.customerList.size()>0}" styleClass="table" value="#{adminBean.customerList}" 
+                    var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="vertical-align: middle; text-align: center; border:solid 1px; width: 100%">
+        <rich:column width="150px">
+            <f:facet name="header">
+                <h:outputText value="Customer to Link"/>
+            </f:facet>
+            <h:selectBooleanCheckbox value="#{item.selected}">
+                <a4j:ajax execute="@this" event="valueChange" render="customertolinktable"/>
+            </h:selectBooleanCheckbox>
+        </rich:column>
+        <rich:column width="650px">
+            <f:facet name="header">
+                <h:outputText value="Customer"/>
+            </f:facet>
+            <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="2" value="#{adminBean.getCustomerDetail(item)}"/>
+        </rich:column>
+        <rich:column width="150px">
+            <f:facet name="header">
+                <h:outputText value="Main Customer"/>
+            </f:facet>
+            <h:selectOneRadio value="#{item.mainflag}">
+                <a4j:ajax execute="@this" event="valueChange" render="customertolinktable" listener="#{adminBean.mainCustomerChanges(item)}" />
+                <f:selectItem itemValue="true"/>
+            </h:selectOneRadio>
+        </rich:column>
+    </rich:dataTable>
+    <h:panelGroup rendered="#{adminBean.customerList.size()>0}">
+        <h:commandButton value="Link Customers" action="#{adminBean.linkCustomers(loginBean.userName)}" style="float: right"/>
+    </h:panelGroup>
+</ui:composition>
+
+

@@ -166,7 +166,19 @@ public class CustomerFacade extends AbstractFacade<Customer> {
     }
 
     public List<String> getCustomerNamesByName(final String name) {
-        String queryStr = "select name from " + Customer.class.getName() + " where name like '" + name + "%'";
+        String queryStr = "select name from " + Customer.class.getName() + " where name like '" + name + "%' and (linked_customer_id is null or linked_customer_id = id)";
+        try {
+            Query query = em.createQuery(queryStr);
+            List<String> result = query.getResultList();
+            return result;
+        } catch (Exception e) {
+            //log.error(e);
+            return null;
+        }
+    }
+    
+    public List<String> getCustomerNamesByNameNotIncludeLinkedCustomers(final String name) {
+        String queryStr = "select name from " + Customer.class.getName() + " where name like '" + name + "%' and linked_customer_id is null";
         try {
             Query query = em.createQuery(queryStr);
             List<String> result = query.getResultList();
@@ -177,8 +189,13 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         }
     }
 
-    public List<Customer> getCustomersByName(final String name) {
-        String queryStr = "select * from customer where name like '" + name + "%'";
+    public List<Customer> getCustomersByName(final String name, final boolean includeLinkedCustomers) {
+        String queryStr;
+        if (includeLinkedCustomers) {
+            queryStr = "select * from customer where name like '" + name + "%'";
+        } else {
+            queryStr = "select * from customer where name like '" + name + "%' and (linked_customer_id is null or linked_customer_id = id)";
+        }
         try {
             List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
             return result;
@@ -187,7 +204,7 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             return null;
         }
     }
-
+    
     public List<String> getCustomerNamesByNameAndType(final String name, final String type) {
         String queryStr = "select name from " + Customer.class.getName() + " where name like '" + name + "%' and type = '" + type + "'";
         try {
@@ -267,22 +284,22 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             }
 
             if (hasTotalFinanced && hasTotalLoan) {
-                lStr = " left join (select l.dealer_id as ld, l.finance_company_id as lfc, sum(l.total_financed) as total, sum(l.total_loan) as total2 from lead l where "
+                lStr = " left join (select cc.id as ld, cc.linked_customer_id as lcid, l.finance_company_id as lfc, sum(l.total_financed) as total, sum(l.total_loan) as total2 from lead l, customer cc where "
                         + " l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
-                        + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' group by l.dealer_id) x on c.id = x.ld where " + notExistStr + "x.total "
+                        + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' and l.dealer_id = cc.id group by case when lcid is not null then lcid else ld end) x on case when x.lcid is not null then c.id = x.lcid else c.id = x.ld end where " + notExistStr + "x.total "
                         + customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString()
                         + " and x.total2 " + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString();
             } else {
                 if (hasTotalFinanced) {
-                    lStr = " left join (select l.dealer_id as ld, l.finance_company_id as lfc, sum(l.total_financed) as total from lead l where "
+                    lStr = " left join (select cc.id as ld, cc.linked_customer_id lcid, l.finance_company_id as lfc, sum(l.total_financed) as total from lead l, customer cc where "
                             + " l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
-                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' group by l.dealer_id) x on c.id = x.ld where " + notExistStr + "x.total "
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' and l.dealer_id = cc.id group by case when lcid is not null then lcid else ld end) x on case when x.lcid is not null then c.id = x.lcid else c.id = x.ld end where " + notExistStr + "x.total "
                             + customerSearchCriteria.getTotalFinancedOperator() + " " + customerSearchCriteria.getTotalFinanced().toString();
 
                 } else if (hasTotalLoan) {
-                    lStr = " left join (select l.dealer_id as ld, l.finance_company_id as lfc, sum(l.total_loan) as total2 from lead l where "
+                    lStr = " left join (select cc.id as ld, cc.linked_customer_id lcid, l.finance_company_id as lfc, sum(l.total_loan) as total2 from lead l, customer cc where "
                             + " l.file_date >= '" + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and l.file_date <= '"
-                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' group by l.dealer_id) x on c.id = x.ld where " + notExistStr + "x.total2 "
+                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "' and l.dealer_id = cc.id group by case when lcid is not null then lcid else ld end) x on case when x.lcid is not null then c.id = x.lcid else c.id = x.ld end where " + notExistStr + "x.total2 "
                             + customerSearchCriteria.getTotalLoanOperator() + " " + customerSearchCriteria.getTotalLoan().toString();
                 } else {
                     lStr = " inner join (select l.dealer_id as ld, l.finance_company_id as lfc from lead l where l.file_date >= '"
@@ -303,13 +320,19 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             cWhere = cWhere + " and c.status " + customerSearchCriteria.getStatusOperator() + " '" + customerSearchCriteria.getStatus().toUpperCase() + "'";
         }
         if (customerSearchCriteria.getPhone() != null && customerSearchCriteria.getPhone().trim().length() > 0) {
-            cWhere = cWhere + " and c.phone = '" + customerSearchCriteria.getPhone().trim() + "'";
+            cWhere = cWhere + " and c.phone in (" + getPhoneSearchValueString(customerSearchCriteria.getPhone().trim()) + ")";
         }
         if (aStr.length() == 0 && lStr.length() == 0 && cWhere.length() > 0 && cWhere.startsWith(" and")) {
             cWhere = cWhere.substring(4);
             cWhere = " where " + cWhere;
         }
-
+        
+        if (cWhere.length() > 0) {
+            cWhere = cWhere + " and case when c.linked_customer_id is null then true else c.linked_customer_id = c.id end ";
+        } else {
+            cWhere = " where case when c.linked_customer_id is null then true else c.linked_customer_id = c.id end ";
+        }
+        
         queryStr = "select distinct c.* from customer c" + (aStr.length() == 0 ? "" : aStr) + (lStr.length() == 0 ? "" : lStr) + (cWhere.length() == 0 ? "" : cWhere);
 
         if (customerSearchCriteria.getSortBy() != null) {
@@ -339,6 +362,21 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             return null;
         }
     }
+    
+    private String getPhoneSearchValueString(final String phone) {
+        String result = "";
+        char[] phonechars = phone.toCharArray();
+        String phoneNums = "";
+        for (char c : phonechars) {
+            if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
+                phoneNums = phoneNums + c;
+            }
+        }
+        result = "'" + phoneNums + "'";
+        result = result + ", '" + phoneNums.substring(0,3) + "-" + phoneNums.substring(3,6) + "-" + phoneNums.substring(6) + "'";
+        result = result + ", '(" + phoneNums.substring(0,3) + ") " + phoneNums.substring(3,6) + "-" + phoneNums.substring(6) + "'";
+        return result;
+    }
 
     private Date getLatestDataInLeadRecords() {
         String queryStr = "select max(file_date) from lead";
@@ -351,10 +389,16 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         }
     }
 
-    public List<Customer> getRelatedFinanceCompanies(final long customerID, final boolean hasParentCustomerID) {
+    public List<Customer> getRelatedFinanceCompanies(final long customerID, final boolean hasParentCustomerID, final boolean isLinkedCustomer) {
         String queryStr = "select distinct c.* from customer c, lead l where l.dealer_id = " + customerID + " and l.dealer_id = l.finance_company_id and c.id = l.finance_company_id order by c.name";
+        if (isLinkedCustomer) {
+            queryStr = "select distinct c.* from customer c, lead l where l.dealer_id in ( select id from customer where linked_customer_id =  " + customerID + ") and case when c.linked_customer_id is null then true else c.id = c.linked_customer_id end and l.dealer_id = l.finance_company_id and c.id = l.finance_company_id order by c.name";
+        }
         if (hasParentCustomerID) {
             queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id = " + customerID + " and l.finance_company_id = c1.id and c2.id = " + customerID + " and c2.parent_customer_id = c1.parent_customer_id order by c1.name";
+            if (isLinkedCustomer) {
+                queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id in (select id from customer where linked_customer_id = " + customerID + ") and l.finance_company_id = c1.id and c2.id = " + customerID + " and c2.parent_customer_id = c1.parent_customer_id order by c1.name";
+            }
         }
         try {
             List<Customer> result = (List<Customer>) em.createNativeQuery(queryStr, Customer.class).getResultList();
@@ -365,11 +409,17 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         }
     }
 
-    public List<Customer> getNonRelatedFinanceCompanies(final long customerID, final boolean hasParentCustomerID) {
+    public List<Customer> getNonRelatedFinanceCompanies(final long customerID, final boolean hasParentCustomerID, final boolean isLinkedCustomer) {
         String queryStr = "select distinct c.* from customer c, lead l where l.dealer_id = " + customerID + " and l.dealer_id != l.finance_company_id and c.id = l.finance_company_id order by c.name";
+        if (isLinkedCustomer) {
+            queryStr = "select distinct c.* from customer c, lead l where l.dealer_id in (select id from customer where linked_customer_id = " + customerID + ") and case when c.linked_customer_id is null then true else c.id = c.linked_customer_id end and l.dealer_id != l.finance_company_id and c.id = l.finance_company_id order by c.name";
+        }
         try {
             if (hasParentCustomerID) {
                 queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id = " + customerID + " and l.finance_company_id = c1.id and c2.id = " + customerID + " and (c1.parent_customer_id is null or c2.parent_customer_id != c1.parent_customer_id) order by c1.name";
+                if (isLinkedCustomer) {
+                    queryStr = "select distinct c1.* from customer c1, customer c2, lead l where l.dealer_id in (select id from customer where linked_customer_id = " + customerID + ") and l.finance_company_id = c1.id and c2.id = " + customerID + " and (c1.parent_customer_id is null or c2.parent_customer_id != c1.parent_customer_id) order by c1.name";
+                }
             }
             List<Customer> result = (List<Customer>) em.createNativeQuery(queryStr, Customer.class).getResultList();
             return result;
@@ -379,9 +429,16 @@ public class CustomerFacade extends AbstractFacade<Customer> {
         }
     }
 
-    public List<Lead> getDealerLeads(final long customerID) {
-        String queryStr = "select * from lead where dealer_id = " + customerID;
+    public List<Lead> getDealerLeads(final long customerID, final boolean isLinkedCustomer) {
+        String queryStr;
         try {
+            if (!isLinkedCustomer) {
+                queryStr = "select * from lead where dealer_id = " + customerID;
+        
+            } else {
+                queryStr = "select * from lead where dealer_id in ( select id from customer where linked_customer_id = " + customerID + ")";
+        
+            }
             List<Lead> result = (List<Lead>) em.createNativeQuery(queryStr, Lead.class).getResultList();
             return result;
         } catch (Exception e) {
@@ -547,7 +604,19 @@ public class CustomerFacade extends AbstractFacade<Customer> {
     }
 
     public void getCustomerTotalFinanced(final List<Customer> customers, final Date startDate, final Date endDate) {
-        String customerIDs = getCustomerIDsStr(customers);
+        List<Customer> totalCustomers = new ArrayList<Customer> (customers);
+        Map<Long, Long> linkedCustomerIDMap = new HashMap<Long, Long>();
+        for (Customer customer : customers) {
+            if (customer.getLinkedCustomerId() != null) {
+                List<Customer> linkedCustomers = getLinkedCustomers(customer.getId());
+                totalCustomers.addAll(linkedCustomers);
+                for (Customer c : linkedCustomers) {
+                    linkedCustomerIDMap.put(c.getId(), customer.getId());
+                }
+            }
+        }
+        String customerIDs = getCustomerIDsStr(totalCustomers);
+        
         if (customerIDs.length() > 0) {
             String queryStr;
             if (startDate == null && endDate == null) {
@@ -571,12 +640,16 @@ public class CustomerFacade extends AbstractFacade<Customer> {
                 if (result != null) {
                     Map<Long, Integer> values = new HashMap<Long, Integer>();
                     for (Lead l : result) {
-                        Integer value = values.get(l.getDealerId().getId());
+                        Long dealerid = l.getDealerId().getId();
+                        if (linkedCustomerIDMap.containsKey(dealerid)) {
+                            dealerid = linkedCustomerIDMap.get(dealerid);
+                        }
+                        Integer value = values.get(dealerid);
                         if (value == null) {
                             value = 0;
                         }
                         value = value + l.getTotalFinanced().intValue();
-                        values.put(l.getDealerId().getId(), value);
+                        values.put(dealerid, value);
                     }
                     for (Customer customer : customers) {
                         if (values.containsKey(customer.getId())) {
@@ -590,6 +663,51 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             }
         }
     }
+    
+//    public void getCustomerTotalFinanced(final List<Customer> customers, final Date startDate, final Date endDate) {
+//        String customerIDs = getCustomerIDsStr(customers);
+//        if (customerIDs.length() > 0) {
+//            String queryStr;
+//            if (startDate == null && endDate == null) {
+//                queryStr = "select * from lead where dealer_id in (" + customerIDs + ")";
+//            } else {
+//                if (startDate == null) {
+//                    queryStr = "select * from lead where dealer_id in (" + customerIDs + ") and file_date <= '"
+//                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "'";
+//                } else if (endDate == null) {
+//                    queryStr = "select * from lead where dealer_id in (" + customerIDs + ") and file_date >= '"
+//                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "'";
+//                } else {
+//                    queryStr = "select * from lead where dealer_id in (" + customerIDs + ") and file_date >= '"
+//                            + CrmUtils.getDateString(startDate, "yyyy-MM-dd") + "' and file_date <= '"
+//                            + CrmUtils.getDateString(endDate, "yyyy-MM-dd") + "'";
+//                }
+//            }
+//
+//            try {
+//                List<Lead> result = (List<Lead>) em.createNativeQuery(queryStr, Lead.class).getResultList();
+//                if (result != null) {
+//                    Map<Long, Integer> values = new HashMap<Long, Integer>();
+//                    for (Lead l : result) {
+//                        Integer value = values.get(l.getDealerId().getId());
+//                        if (value == null) {
+//                            value = 0;
+//                        }
+//                        value = value + l.getTotalFinanced().intValue();
+//                        values.put(l.getDealerId().getId(), value);
+//                    }
+//                    for (Customer customer : customers) {
+//                        if (values.containsKey(customer.getId())) {
+//                            customer.setTotalDeals(values.get(customer.getId()));
+//                        }
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                log.error(e);
+//            }
+//        }
+//    }
 
     public List<Schedules> getSchedules(final long customerID, final String filter) {
         String queryStr = "select * from schedules where customer_id = " + customerID;
@@ -608,11 +726,32 @@ public class CustomerFacade extends AbstractFacade<Customer> {
     public List<Task> getScheduleTasks(final long scheduleID) {
         String queryStr = "select * from task where schedules_id = " + scheduleID;
         try {
-            System.out.println("============ sql: " + queryStr);
             List<Task> result = (List<Task>) em.createNativeQuery(queryStr, Task.class).getResultList();
             return result;
         } catch (Exception e) {
             log.error(e);
+            return null;
+        }
+    }
+    
+    public List<Customer> getLinkedCustomers(final long id) {
+        String queryStr = "select * from customer where linked_customer_id = " + id;
+        try {
+            List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
+            return result;
+        } catch (Exception e) {
+            //log.error(e);
+            return null;
+        }
+    }
+    
+    public List<Customer> getAllMainLinkedCustomers() {
+        String queryStr = "select * from customer where linked_customer_id = id";
+        try {
+            List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
+            return result;
+        } catch (Exception e) {
+            //log.error(e);
             return null;
         }
     }

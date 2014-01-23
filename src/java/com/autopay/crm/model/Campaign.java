@@ -93,7 +93,7 @@ public class Campaign implements Serializable {
     @Column(name = "last_updated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "campaignId", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "campaignId", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.SUBSELECT)
     private Collection<CampaignCustomer> campaignCustomerCollection;
 

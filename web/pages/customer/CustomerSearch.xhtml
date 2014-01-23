@@ -47,7 +47,9 @@
                         </h:selectOneMenu>
 
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByPhone}" for="phone" />
-                        <h:inputText id="phone" value="#{customerSearchBean.customerSearchCriteria.phone}" />
+                        <h:inputText id="phone" value="#{customerSearchBean.customerSearchCriteria.phone}" onkeyup="formatPhone(#{rich:element('phone')}, event);" >
+                            <rich:placeholder value="303-444-5555" />
+                        </h:inputText>
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByZipCode}" for="zipcode" />
                         <h:inputText id="zipcode" value="#{customerSearchBean.customerSearchCriteria.zipcode}" />
 
@@ -62,23 +64,10 @@
                             </h:inputText>
                         </h:panelGroup>
 
-                        <h:outputLabel value="#{bundleCrm.SearchLeadByTotalLoan}" for="totalLoan" />
-                        <h:panelGroup>
-                            <h:selectOneMenu id="totalLoanOp" value="#{customerSearchBean.customerSearchCriteria.totalLoanOperator}">
-                                <f:selectItems value="#{leadSearchController.operators}" var="totalLoanOperator" itemLabel="#{totalLoanOperator}" itemValue="#{totalLoanOperator}"/>
-                            </h:selectOneMenu>
-                            <h:outputText  value="&#160;&#160;&#160;" />
-                            <h:inputText id="totalLoan" value="#{customerSearchBean.customerSearchCriteria.totalLoan}" label="Total Loan">
-                                <f:validateLongRange minimum="1"/>
-                            </h:inputText>
-                        </h:panelGroup>
-
                         <h:outputLabel value="Sort By:" style="font-weight:bold; font-size: 1.5em"/>
                         <h:selectOneMenu id ="sortby" value="#{customerSearchBean.customerSearchCriteria.sortBy}">
                             <f:selectItems value="#{customerSearchBean.customerSortByList}" var="sortby" itemLabel="#{sortby}" itemValue="#{sortby}"/>
                         </h:selectOneMenu>
-                        <h:outputLabel value=""/>
-                        <h:outputLabel value=""/>
 
                     </h:panelGrid>
                     <br/>
@@ -105,6 +94,8 @@
                             <f:selectItems value="#{customerSearchBean.rowsPerPageList}" var="rowsPerPage" itemLabel="#{rowsPerPage}" itemValue="#{rowsPerPage}"/>
                         </h:selectOneMenu>
 
+                        <br/>
+                        <h:outputLabel value="(Customer marked with *** means this customer has linked other customers.)"/>
                         <rich:dataTable id="customerResultTable" styleClass="table" value="#{customerSearchBean.items}" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
                             <rich:column sortBy="#{item.id}" sortOrder="#{customerSortingBean.idOrder}">
                                 <f:facet name="header">
@@ -116,7 +107,7 @@
                                 <f:facet name="header">
                                     <a4j:commandLink value="#{bundleCrm.CustomerNameLabel}" render="customerResultTable" action="#{customerSortingBean.sortByName()}"/>
                                 </f:facet>
-                                <h:outputText value="#{item.name}"/>
+                                <h:outputText value="#{customerSearchBean.getCustomerName(item)}"/>
                             </rich:column>
                             <rich:column sortBy="#{item.type}" sortOrder="#{customerSortingBean.typeOrder}">
                                 <f:facet name="header">

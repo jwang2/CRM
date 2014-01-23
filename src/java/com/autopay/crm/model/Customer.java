@@ -54,6 +54,9 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Customer.findByUpdateUser", query = "SELECT c FROM Customer c WHERE c.updateUser = :updateUser"),
     @NamedQuery(name = "Customer.findByLastUpdated", query = "SELECT c FROM Customer c WHERE c.lastUpdated = :lastUpdated")})
 public class Customer implements Serializable {
+    @JoinColumn(name = "linked_customer_id", referencedColumnName = "id")
+    @ManyToOne
+    private LinkedCustomer linkedCustomerId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.LAZY)
     private Collection<Note> noteCollection;
     @Size(max = 255)
@@ -573,6 +576,14 @@ public class Customer implements Serializable {
 
     public void setNoteCollection(Collection<Note> noteCollection) {
         this.noteCollection = noteCollection;
+    }
+
+    public LinkedCustomer getLinkedCustomerId() {
+        return linkedCustomerId;
+    }
+
+    public void setLinkedCustomerId(LinkedCustomer linkedCustomerId) {
+        this.linkedCustomerId = linkedCustomerId;
     }
     
 }

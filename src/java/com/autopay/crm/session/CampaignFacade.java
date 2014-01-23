@@ -5,10 +5,14 @@
 package com.autopay.crm.session;
 
 import com.autopay.crm.model.Campaign;
+import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.search.CampaignSearchCriteria;
 import com.autopay.crm.util.CrmConstants;
 import com.autopay.crm.util.CrmUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +25,7 @@ import org.apache.log4j.Logger;
  */
 @Stateless
 public class CampaignFacade extends AbstractFacade<Campaign> {
+
     private static Logger log = Logger.getLogger(CampaignFacade.class);
     @PersistenceContext(unitName = "CRMPU")
     private EntityManager em;
@@ -33,7 +38,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
     public CampaignFacade() {
         super(Campaign.class);
     }
-    
+
     public List<Campaign> getCampaignsBySearchCriterias(final CampaignSearchCriteria campaignSearchCriteria) {
         String queryStr = "select * from campaign where ";
         String whereStr = "";
@@ -129,6 +134,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
                 queryStr = queryStr + whereStr;
                 System.out.println("============================ search sql: \n" + queryStr);
                 List<Campaign> result = (List<Campaign>) em.createNativeQuery(queryStr, Campaign.class).getResultList();
+                getCampaignCustomers(result);
                 return result;
             } else {
                 return null;
@@ -138,7 +144,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
             return null;
         }
     }
-    
+
     public List<Campaign> getUserActiveCampaigns(final String userName) {
         String queryStr = "select * from campaign where active = true and assigned_user = '" + userName + "'";
         try {
@@ -150,7 +156,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
             return null;
         }
     }
-    
+
     public List<String> getCampaignNamesByName(final String name) {
         String queryStr = "select * from " + Campaign.class.getName() + " where name like '" + name + "%'";
         try {
@@ -162,5 +168,48 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
             log.error(e);
             return null;
         }
+    }
+
+    private String getCampaignIDsStr(final List<Campaign> campaigns) {
+        String campaignIDs = "";
+        for (Campaign campaign : campaigns) {
+            if (campaignIDs.length() == 0) {
+                campaignIDs = campaign.getId() + "";
+            } else {
+                campaignIDs = campaignIDs + ", " + campaign.getId();
+            }
+        }
+        return campaignIDs;
+    }
+
+    private void getCampaignCustomers(List<Campaign> campaigns) {
+        String campaignIDs = getCampaignIDsStr(campaigns);
+        if (campaignIDs.length() > 0) {
+            String queryStr = "select * from campaign_customer where campaign_id in (" + campaignIDs + ")";
+            Map<Long, List<CampaignCustomer>> values = new HashMap<Long, List<CampaignCustomer>>();
+            List<CampaignCustomer> result = (List<CampaignCustomer>) em.createNativeQuery(queryStr, CampaignCustomer.class).getResultList();
+            for (CampaignCustomer cc : result) {
+                if (cc.getCustomerId().getLinkedCustomerId() == null || cc.getCustomerId().getLinkedCustomerId().getId().longValue() == cc.getCustomerId().getId().longValue()) {
+                    List<CampaignCustomer> customers = values.get(cc.getCampaignId().getId());
+                    if (customers == null) {
+                        customers = new ArrayList<CampaignCustomer>();
+                    }
+                    customers.add(cc);
+                    values.put(cc.getCampaignId().getId(), customers);
+                }
+            }
+            for (Campaign campaign : campaigns) {
+                campaign.setCampaignCustomerCollection(new ArrayList<CampaignCustomer>());
+                if (values.containsKey(campaign.getId())) {
+                    campaign.setCampaignCustomerCollection(values.get(campaign.getId()));
+                }
+            }
+        }
+    }
+    
+    public void getCampaignDetail(final Campaign campaign) {
+        List<Campaign> campaignList = new ArrayList<Campaign>();
+        campaignList.add(campaign);
+        getCampaignCustomers(campaignList);
     }
 }

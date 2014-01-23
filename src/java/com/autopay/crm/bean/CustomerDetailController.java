@@ -22,10 +22,14 @@ import com.autopay.crm.util.CrmUtils;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -43,8 +47,6 @@ public class CustomerDetailController implements Serializable {
     private Customer current;
     //overview related
     private Customer customer_orig;
-    private Customer customerToLink;
-    private boolean findCustomerToLink = false;
     //contact related
     private CustomerContact currentContact;
     private CustomerContact currentContact_Orig;
@@ -55,6 +57,7 @@ public class CustomerDetailController implements Serializable {
     private List<CustomerDeal> currentDeals;
     private int totalMonthsShownOnDealPage = 6;
     private List<String> dealColumnsNames;
+    private Map<String, String> dealColumnsSortings;
     //note related
     private String newNoteContent;
     //schedule related
@@ -98,7 +101,6 @@ public class CustomerDetailController implements Serializable {
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
-        customerToLink = null;
         addToViewRecently(customer);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
@@ -110,7 +112,6 @@ public class CustomerDetailController implements Serializable {
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
-        customerToLink = null;
         addToViewRecently(customer);
         setCurrentTab("campaign");
         return "/pages/customer/CustomerDetail";
@@ -122,7 +123,6 @@ public class CustomerDetailController implements Serializable {
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
-        customerToLink = null;
         addToViewRecently(current);
         setCurrentTab("schedules");
         return "/pages/customer/CustomerDetail";
@@ -134,7 +134,6 @@ public class CustomerDetailController implements Serializable {
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
-        customerToLink = null;
         addToViewRecently(current);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
@@ -403,55 +402,32 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
-    public Customer getCustomerToLink() {
-        if (customerToLink == null) {
-            customerToLink = new Customer();
-        } else {
-            if (customerToLink != null && customerToLink.getId() != null) {
-                customerToLink = ejbCustomer.find(customerToLink.getId());
-                customerToLink = ejbCustomer.getCustomerDetail(customerToLink);
-            } else {
-                customerToLink = new Customer();
+    public List<Customer> getLinkedCustomerForCurrent() {
+        List<Customer> customers = ejbCustomer.getLinkedCustomers(current.getId());
+        List<Customer> result = new ArrayList<Customer>();
+        for (Customer customer : customers) {
+            if (customer.getId().longValue() != current.getId().longValue()) {
+                result.add(ejbCustomer.getCustomerDetail(customer));
             }
         }
-        return customerToLink;
+        return result;
     }
-
-    public Address getCustomerToLinkMainAddress() {
-        Customer customer = getCustomerToLink();
-        Address address = getCustomerMainAddress(customer);
-        if (address == null) {
-            address = new Address();
-        }
-        return address;
-    }
-
-    public void prepareLinkCustomers() {
-        if (customerToLink != null && customerToLink.getId() != null) {
-            customerToLink = ejbCustomer.find(customerToLink.getId());
-            findCustomerToLink = false;
-            if (customerToLink != null) {
-                customerToLink = ejbCustomer.getCustomerDetail(customerToLink);
-                findCustomerToLink = true;
+    
+    public String getCustomerDetail(final Customer customer) {
+        String result = customer.getName() + " (" + customer.getType() + ") (" + customer.getId() + ")\n";
+        if (customer.getAddressCollection() != null && !customer.getAddressCollection().isEmpty()) {
+            for (Address address : customer.getAddressCollection()) {
+                if (address.getPrincipal()) {
+                    result = result + (address.getAddress1() == null || address.getAddress1().trim().length() == 0 ? "" : address.getAddress1() + "\n");
+                    result = result + (address.getCity() == null || address.getCity().trim().length() == 0 ? "" : address.getCity() + ",");
+                    result = result + (address.getState() == null || address.getState().trim().length() == 0 ? "" : address.getState() + " ");
+                    result = result + (address.getZipCode() == null || address.getZipCode().trim().length() == 0 ? "" : address.getZipCode());
+                }
             }
         }
-    }
-    
-    public boolean isFindCustomerToLink() {
-        return findCustomerToLink;
+        return result;
     }
 
-    public void setFindCustomerToLink(boolean findCustomerToLink) {
-        this.findCustomerToLink = findCustomerToLink;
-    }
-    
-    public void linkCustomers() {
-        if (current != null && customerToLink != null) {
-            customerToLink = null;
-            findCustomerToLink = false;
-        }
-    }
-    
     /**
      * ***************************************************
      * Customer Contact Section
@@ -660,7 +636,7 @@ public class CustomerDetailController implements Serializable {
     public List<Customer> getCurrentNonRelatedFicos() {
         if (currentNonRelatedFicos == null) {
             try {
-                currentNonRelatedFicos = ejbCustomer.getNonRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true);
+                currentNonRelatedFicos = ejbCustomer.getNonRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true, current.getLinkedCustomerId() == null ? false : true);
             } catch (Exception e) {
                 log.error("Unable to get non-related finance companies from database.", e);
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -676,7 +652,7 @@ public class CustomerDetailController implements Serializable {
     public List<Customer> getCurrentRelatedFicos() {
         if (currentRelatedFicos == null) {
             try {
-                currentRelatedFicos = ejbCustomer.getRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true);
+                currentRelatedFicos = ejbCustomer.getRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true, current.getLinkedCustomerId() == null ? false : true);
             } catch (Exception e) {
                 log.error("Unable to get related finance companies from database.", e);
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -698,8 +674,8 @@ public class CustomerDetailController implements Serializable {
     }
 
     private void reloadFicoInfo() {
-        currentNonRelatedFicos = ejbCustomer.getNonRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true);
-        currentRelatedFicos = ejbCustomer.getRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true);
+        currentNonRelatedFicos = ejbCustomer.getNonRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true, current.getLinkedCustomerId() == null ? false : true);
+        currentRelatedFicos = ejbCustomer.getRelatedFinanceCompanies(current.getId(), current.getParentCustomerId() == null ? false : true, current.getLinkedCustomerId() == null ? false : true);
     }
 
     public String unRelatedFico(final Customer fico) {
@@ -811,20 +787,33 @@ public class CustomerDetailController implements Serializable {
         this.currentDeals = currentDeals;
     }
 
+    private List<Long> getLinkedCustomersIDs(final long id) {
+        List<Long> result = new ArrayList<Long>();
+        List<Customer> linkedCustomers = ejbCustomer.getLinkedCustomers(id);
+        if (linkedCustomers != null && !linkedCustomers.isEmpty()) {
+            for (Customer lc : linkedCustomers) {
+                result.add(lc.getId());
+            }
+        }
+        return result;
+    }
+
     private List<CustomerDeal> getCustomerDeals() {
         List<CustomerDeal> result = new ArrayList<CustomerDeal>();
         final List<Customer> relatedFicos = getCurrentRelatedFicos();
         final List<Customer> nonRelatedFicos = getCurrentNonRelatedFicos();
         final String[] monthStrs = getCustomerDealsShowRange(totalMonthsShownOnDealPage);
+        List<Lead> leads = ejbCustomer.getDealerLeads(current.getId(), current.getLinkedCustomerId() == null ? false : true);
+        List<Long> linkedCustomerIDs = current.getLinkedCustomerId() == null ? null : getLinkedCustomersIDs(current.getId());
         if (relatedFicos != null) {
             for (Customer fico : relatedFicos) {
-                CustomerDeal customerDeal = new CustomerDeal(fico.getName() + "*", monthStrs, getCustomerDeals(fico, totalMonthsShownOnDealPage));
+                CustomerDeal customerDeal = new CustomerDeal(fico.getName() + "*", monthStrs, getCustomerDeals(leads, linkedCustomerIDs, fico, totalMonthsShownOnDealPage));
                 result.add(customerDeal);
             }
         }
         if (nonRelatedFicos != null) {
             for (Customer fico : nonRelatedFicos) {
-                CustomerDeal customerDeal = new CustomerDeal(fico.getName(), monthStrs, getCustomerDeals(fico, totalMonthsShownOnDealPage));
+                CustomerDeal customerDeal = new CustomerDeal(fico.getName(), monthStrs, getCustomerDeals(leads, linkedCustomerIDs, fico, totalMonthsShownOnDealPage));
                 result.add(customerDeal);
             }
         }
@@ -843,19 +832,28 @@ public class CustomerDetailController implements Serializable {
         return result;
     }
 
-    private Integer[] getCustomerDeals(final Customer customer, final int lastNumOfMonths) {
+    private Integer[] getCustomerDeals(final List<Lead> leads, final List<Long> linkedCustomerIDs, final Customer fico, final int lastNumOfMonths) {
         Integer[] result = new Integer[lastNumOfMonths];
         //init
         for (int i = 0; i < lastNumOfMonths; i++) {
             result[i] = 0;
         }
-        List<Lead> leads = ejbCustomer.getDealerLeads(current.getId());
+
         if (leads != null) {
             for (Lead lead : leads) {
-                if (lead.getFinanceCompanyId().getId().longValue() == customer.getId().longValue()) {
+                if (lead.getFinanceCompanyId().getId().longValue() == fico.getId().longValue()) {
                     int pos = CrmUtils.getMonthPosition(lastNumOfMonths, lead.getFileDate());
                     if (pos >= 0) {
                         result[pos] = result[pos] + lead.getTotalFinanced();
+                    }
+                } else {
+                    if (fico.getId().longValue() == current.getId().longValue() && linkedCustomerIDs != null) {
+                        if (linkedCustomerIDs.contains(lead.getFinanceCompanyId().getId())) {
+                            int pos = CrmUtils.getMonthPosition(lastNumOfMonths, lead.getFileDate());
+                            if (pos >= 0) {
+                                result[pos] = result[pos] + lead.getTotalFinanced();
+                            }
+                        }
                     }
                 }
             }
@@ -872,10 +870,11 @@ public class CustomerDetailController implements Serializable {
     }
 
     public List<String> getCustomerDealsShowRange() {
-        String[] values = getCustomerDealsShowRange(totalMonthsShownOnDealPage);
-        dealColumnsNames = new ArrayList<String>();
-        for (String value : values) {
-            dealColumnsNames.add(value);
+        if (currentDeals == null) {
+            String[] values = getCustomerDealsShowRange(totalMonthsShownOnDealPage);
+            dealColumnsNames = new ArrayList<String>();
+            dealColumnsNames.addAll(Arrays.asList(values));
+            initiDealColsSorting();
         }
         return dealColumnsNames;
     }
@@ -890,6 +889,67 @@ public class CustomerDetailController implements Serializable {
 
     public int getDealColumnIndex(String colName) {
         return dealColumnsNames.indexOf(colName);
+    }
+    
+    private void initiDealColsSorting() {
+        dealColumnsSortings = new HashMap<String, String>();
+        dealColumnsSortings.put("Name", "ascending");
+        for (String colname: dealColumnsNames) {
+            dealColumnsSortings.put(colname, "ascending");
+        }
+    }
+    
+    public void sortDeals(final String colName) {
+        String sortingCriteria = dealColumnsSortings.get(colName);
+        if (sortingCriteria == null) {
+            sortingCriteria = "descending";
+        }
+        if (sortingCriteria.equals("ascending")) {
+            sortingCriteria = "descending";
+        } else {
+            sortingCriteria = "ascending";
+        }
+        dealColumnsSortings.put(colName, sortingCriteria);
+        final CustomerDeal subtotalRec = currentDeals.get(currentDeals.size()-1);
+        Map<Object, CustomerDeal> dealsMap = getDealsMapForSorting(colName);
+        List<CustomerDeal> sortedDeals = new ArrayList<CustomerDeal>();
+        if (sortingCriteria.equals("ascending")) {
+            sortedDeals.addAll(dealsMap.values());
+            sortedDeals.add(subtotalRec);
+        } else {
+            sortedDeals.add(subtotalRec);
+            for (CustomerDeal deal : dealsMap.values()) {
+                sortedDeals.add(0, deal);
+            }
+        }
+        currentDeals = sortedDeals;
+    }
+    
+    private Map<Object, CustomerDeal> getDealsMapForSorting(final String colName) {
+        Map<Object, CustomerDeal> result = new TreeMap<Object, CustomerDeal>();
+        if (colName.equalsIgnoreCase("Name")) {
+            for (CustomerDeal deal : currentDeals) {
+                if (!deal.getCustomerName().equals("Subtotal:")) {
+                    result.put(deal.getCustomerName(), deal);
+                }
+            }
+        } else {
+            final int index = dealColumnsNames.indexOf(colName);
+            for (CustomerDeal deal : currentDeals) {
+                if (!deal.getCustomerName().equals("Subtotal:")) {
+                    result.put(deal.getDealValue(index), deal);
+                }
+            }
+        }
+        return result;
+    }
+    
+    public String getSubtotalFontStyle(final String value) {
+        if (value.equals("Subtotal:")) {
+            return "font-weight: bold";
+        } else {
+            return "";
+        }
     }
 
     /**

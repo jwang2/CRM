@@ -31,25 +31,25 @@
                 <h:outputLabel value="(Related finance company marked with *)"/>
                 <rich:dataTable id="dealstable" value="#{customerDetailBean.currentDeals}" 
                                         var="item" styleClass="table" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
-                    <rich:column sortBy="#{item.customerName}" sortOrder="#{customerDealsSortingBean.nameOrder}" >
+                    <rich:column >
                         <f:facet name="header">
-                            <a4j:commandLink value="Name" render="dealstable" action="#{customerDealsSortingBean.sortByName()}"/>
+                            <a4j:commandLink value="Name" render="dealstable" action="#{customerDetailBean.sortDeals('Name')}"/>
                         </f:facet>
-                        <h:outputText value="#{item.customerName}"/>
+                        <h:outputText value="#{item.customerName}" style="#{customerDetailBean.getSubtotalFontStyle(item.customerName)}"/>
                     </rich:column>
                     <c:forEach items="#{customerDetailBean.customerDealsShowRange}" var="col" varStatus='status'>
-                        <rich:column sortBy="#{item.getDetailsByIndex(status.index)}" sortOrder="#{customerDealsSortingBean.getColumnOrder(status.index, customerDetailBean.getCustomerDealsColTotal())}">
+                        <rich:column>
                             <f:facet name="header">
-                                <a4j:commandLink value="#{col}" render="dealstable" action="#{customerDealsSortingBean.sortByColumn(status.index)}"/>
+                                <a4j:commandLink value="#{col}" render="dealstable" action="#{customerDetailBean.sortDeals(col)}"/>
                             </f:facet>
-                            <h:outputText value="#{item.getDealValue(customerDetailBean.getDealColumnIndex(col))}"/>
+                            <h:outputText value="#{item.getDealValue(customerDetailBean.getDealColumnIndex(col))}" style="#{customerDetailBean.getSubtotalFontStyle(item.customerName)}"/>
                         </rich:column>
                     </c:forEach>
                     <rich:column>
                         <f:facet name="header">
                             <h:outputText value="Avg"/>
                         </f:facet>
-                        <h:outputText value="#{item.avgLoan}"/>
+                        <h:outputText value="#{item.avgLoan}" style="#{customerDetailBean.getSubtotalFontStyle(item.customerName)}"/>
                     </rich:column>
                 </rich:dataTable>
                 

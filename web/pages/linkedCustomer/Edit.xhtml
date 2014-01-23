@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditLinkedCustomerTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditLinkedCustomerLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{linkedCustomerController.selected.id}" title="#{bundle.EditLinkedCustomerTitle_id}" required="true" requiredMessage="#{bundle.EditLinkedCustomerRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.EditLinkedCustomerLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{linkedCustomerController.selected.createUser}" title="#{bundle.EditLinkedCustomerTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.EditLinkedCustomerLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{linkedCustomerController.selected.dateCreated}" title="#{bundle.EditLinkedCustomerTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditLinkedCustomerLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{linkedCustomerController.selected.updateUser}" title="#{bundle.EditLinkedCustomerTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.EditLinkedCustomerLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{linkedCustomerController.selected.lastUpdated}" title="#{bundle.EditLinkedCustomerTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                </h:panelGrid>
+                <h:commandLink action="#{linkedCustomerController.update}" value="#{bundle.EditLinkedCustomerSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditLinkedCustomerViewLink}"/>
+                <br />
+                <h:commandLink action="#{linkedCustomerController.prepareList}" value="#{bundle.EditLinkedCustomerShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditLinkedCustomerIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

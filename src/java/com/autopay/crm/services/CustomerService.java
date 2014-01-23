@@ -850,7 +850,7 @@ public class CustomerService {
     
     @WebMethod(operationName = "getCustomers")
     public List<CustomerObj> getCustomers(@WebParam(name = "customerName") String customerName) {
-        List<Customer> customers = customerFacade.getCustomersByName(customerName);
+        List<Customer> customers = customerFacade.getCustomersByName(customerName, true);
         List<CustomerObj> result = null;
         if (customers != null && !customers.isEmpty()) {
             result = new ArrayList<CustomerObj>();

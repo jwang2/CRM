@@ -292,6 +292,14 @@ public class CustomerSearchController implements Serializable {
         return CrmUtils.getCustomerTypeAbbr(type);
     }
     
+    public String getCustomerName(final Customer customer) {
+        String result = customer.getName();
+        if (customer.getLinkedCustomerId() != null) {
+            result = result + " ***";
+        }
+        return result;
+    }
+    
     public String getCustomerState(final Customer customer) {
         String result = "";
         if (customer.getAddressCollection() != null && customer.getAddressCollection().size() > 0) {

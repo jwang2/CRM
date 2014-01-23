@@ -71,6 +71,11 @@
         <managed-bean-class>com.autopay.crm.sort.CampaignSortingBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>adminBean</managed-bean-name>
+        <managed-bean-class>com.autopay.crm.bean.AdminController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
     <validator>
         <validator-id>NotAfterTodayValidator</validator-id>
         <validator-class>com.autopay.crm.validator.NotAfterTodayValidator</validator-class>

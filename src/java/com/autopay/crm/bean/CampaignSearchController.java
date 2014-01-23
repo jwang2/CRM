@@ -252,16 +252,19 @@ public class CampaignSearchController implements Serializable {
 
     public String prepareDetails() {
         current = (Campaign) getItems().getRowData();
+        ejbCampaign.getCampaignDetail(current);
         return "CampaignDetail";
     }
 
     public String prepareDetails(final Campaign campaign) {
         current = campaign;
+        ejbCampaign.getCampaignDetail(current);
         return "/pages/campaign/CampaignDetail";
     }
 
     public String prepareDetails(final Customer customer) {
         current = ejbCampaign.find(customer.getCampaignID());
+        ejbCampaign.getCampaignDetail(current);
         return "/pages/campaign/CampaignDetail";
     }
 
@@ -311,7 +314,8 @@ public class CampaignSearchController implements Serializable {
 
     /**
      * ************************************************
-     * OVERVIEW SECTION *************************************************
+     * OVERVIEW SECTION 
+     * ************************************************
      */
     public boolean isAllowEditCampaign() {
         return allowEditCampaign;

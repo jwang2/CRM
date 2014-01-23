@@ -34,7 +34,7 @@
 
                     <h:outputLabel value="#{bundle.ViewCustomerLabel_website}" style=" font-weight: bold"/>
                     <h:link onclick="window.open('#{customerDetailBean.getCustomerGoogleSearchResultPage(customerDetailBean.selected)}');" style="cursor: pointer">#{customerDetailBean.getCustomerWebsiteValueFixedSize(customerDetailBean.selected, 30)}</h:link>
-                    
+
                     <h:outputLabel value="County:" style=" font-weight: bold"/>
                     <h:outputLabel value="#{customerDetailBean.selectedMainAddress.county}"/>
 
@@ -100,18 +100,23 @@
             <ui:include src="/pages/customer/NewNote_Popup.xhtml"/>
         </h:panelGroup>
         <br/>
-        <h:panelGroup>
-            <rich:panel header="Link Customers">
-                <h:panelGrid columns="2" id="linkcustomermain" width="100%" styleClass="panelgrid-middle">
-                    <h:panelGroup>
-                    <h:outputLabel value="ID of customer considered same as this customer:" style=" font-weight: bold"/>
-                    <h:inputText size="30" value="#{customerDetailBean.customerToLink.id}" title="linkcustomerid"/>
-                    </h:panelGroup>
-                    <h:outputLabel value="" />
-                    <h:outputLabel value="" />
-                    <a4j:commandButton style="float: right;" render="linkcustomer" value="Link Customer"  action="#{customerDetailBean.prepareLinkCustomers()}" oncomplete="#{rich:component('linkcustomer')}.show();return false;"/>
-                </h:panelGrid>
-                <ui:include src="/pages/customer/LinkCustomer_Popup.xhtml"/>
+        <h:panelGroup rendered="#{customerDetailBean.selected.linkedCustomerId != null}">
+            <rich:panel header="Customers Linked to This Customer">
+                <rich:dataTable  styleClass="table" value="#{customerDetailBean.getLinkedCustomerForCurrent()}" 
+                                 var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Linked Customer"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Customer Detail"/>
+                        </f:facet>
+                        <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="2" value="#{customerDetailBean.getCustomerDetail(item)}"/>
+                    </h:column>
+                </rich:dataTable>
             </rich:panel>
         </h:panelGroup>
     </h:panelGroup>
