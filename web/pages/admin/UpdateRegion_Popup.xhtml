@@ -1,0 +1,126 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <rich:popupPanel id="updateRegion" header="Update Region" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:form>
+            <h:panelGroup>
+                <h:outputLabel value="Region Name:"/>
+                <h:outputText value="*" styleClass="mandatory"/>
+                <h:inputText id="regionnameedit" size="28" value="#{adminBean.currentRegion.name}" validator="#{adminBean.validateRegionName}"/>
+                <rich:message for="regionnameedit"/>
+            </h:panelGroup>
+            <br/>
+            <br/>
+            <rich:panel header="State Info" id="stateinfomainedit">
+                <h:panelGrid columns="2" width="100%" styleClass="panelgrid-middle">
+                    <h:panelGroup style="width:200px">
+                        <h:outputLabel value="States:"/>
+                        <h:selectOneMenu value="#{adminBean.stateAddToRegion}" style=" margin-right: 100px">
+                            <f:selectItems value="#{customerDetailBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+                        </h:selectOneMenu>
+                        <a4j:commandButton style="width: 60px; float: right; vertical-align: bottom" execute="stateinfomainedit" render="stateinfomainedit" value="Add -->" action="#{adminBean.addStateToRegion()}"/>
+                    </h:panelGroup>
+                    <h:dataTable id ="selectedstatetableedit" value="#{adminBean.statesForRegion}" var="selectedstate"  styleClass="table" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="text-align: center; border:solid 1px; width: 300px;">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Included States"/>
+                            </f:facet>
+                            <h:outputText value="#{selectedstate}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value=""/>
+                            </f:facet>
+                            <a4j:commandLink execute="stateinfomainedit" render="stateinfomainedit" value="Remove" action="#{adminBean.removeStateFromRegion(selectedstate)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGrid>
+            </rich:panel>
+            <br/>
+            <rich:panel header="ZipCode Info" id="zipcodeinfomainedit">
+                <h:panelGrid columns="2" width="100%" styleClass="panelgrid-middle">
+                    <h:panelGroup style="width: 200px">
+                        <h:outputLabel value="Zip Codes:" style="color: gray"/>
+                        <h:inputText size="18" value="#{adminBean.zipcodeAddToRegion}" readonly="true" style=" border-color: gray"/>
+                        <a4j:commandButton disabled="true" style=" width: 60px; float: right; vertical-align: bottom; color: gray" execute="zipcodeinfomainedit" render="zipcodeinfomainedit" value="Add -->" action="#{adminBean.addZipCodeToRegion()}"/>
+                    </h:panelGroup>
+                    <h:dataTable id="selectedzipcodetableedit" value="#{adminBean.zipcodesForRegion}" var="selectedzipcode" styleClass="table" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="text-align: center; border:solid 1px; width: 300px;">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Included ZipCodes"/>
+                            </f:facet>
+                            <h:outputText value="#{selectedzipcode}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value=""/>
+                            </f:facet>
+                            <a4j:commandLink execute="zipcodeinfomainedit" render="zipcodeinfomainedit" value="Remove" action="#{adminBean.removeZipCodeFromRegion(selectedzipcode)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGrid>
+            </rich:panel>
+            <br/>
+            <rich:panel header="Internal Representative Info" id="inrepinfomainedit">
+                <h:panelGrid columns="2" width="100%" styleClass="panelgrid-middle">
+                    <h:panelGroup style="width: 200px">
+                        <h:outputLabel value="Internal Representative:"/>
+                        <br/>
+                        <rich:autocomplete value="#{adminBean.internalRepAssignToRegion}" mode="cachedAjax" minChars="1" autocompleteMethod="#{adminBean.autocompleteAssignTo}" autofill="false" style="vertical-align: middle ;border: none; background: transparent"/>
+                        <a4j:commandButton style="width: 60px; float: right; vertical-align: bottom" execute="inrepinfomainedit" render="inrepinfomainedit" value="Add -->" action="#{adminBean.addInternalRepToRegion()}"/>
+                    </h:panelGroup>
+                    <h:dataTable id="selectedinreptableedit" value="#{adminBean.internalRepsForRegion}" var="selectedInRep" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="text-align: center; border:solid 1px; width: 300px;">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Included Reps"/>
+                            </f:facet>
+                            <h:outputText value="#{selectedInRep}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value=""/>
+                            </f:facet>
+                            <a4j:commandLink execute="inrepinfomainedit" render="inrepinfomainedit" value="Remove" action="#{adminBean.removeInternalRepFromRegion(selectedInRep)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGrid>
+            </rich:panel>
+            <br/>
+            <rich:panel header="External Representative Info" id="exrepinfomainedit">
+                <h:panelGrid columns="2" width="100%" styleClass="panelgrid-middle">
+                    <h:panelGroup style="width: 200px">
+                        <h:outputLabel value="External Representative:"/>
+                        <br/>
+                        <rich:autocomplete value="#{adminBean.externalRepAssignToRegion}" mode="cachedAjax" minChars="1" autocompleteMethod="#{adminBean.autocompleteAssignTo}" autofill="false" style="vertical-align: middle ;border: none; background: transparent"/>
+                        <a4j:commandButton style=" width: 60px; float: right; vertical-align: bottom" execute="exrepinfomainedit" render="exrepinfomainedit" value="Add -->" action="#{adminBean.addExternalRepToRegion()}"/>
+                    </h:panelGroup>
+                    <h:dataTable id="selectedexreptableedit" value="#{adminBean.externalRepsForRegion}" var="selectedExRep" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="text-align: center; border:solid 1px; width: 300px;">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Included Reps"/>
+                            </f:facet>
+                            <h:outputText value="#{selectedExRep}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value=""/>
+                            </f:facet>
+                            <a4j:commandLink execute="exrepinfomainedit" render="exrepinfomainedit" value="Remove" action="#{adminBean.removeExternalRepFromRegion(selectedExRep)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGrid>
+            </rich:panel>
+            <br/>
+            <h:panelGroup>
+                <a4j:commandButton value="Cancel" onclick="#{rich:component('updateRegion')}.hide(event);
+                        return false;"/>
+                <a4j:commandButton style="float: right" execute="updateRegion" render="regiontable" value="Update" action="#{adminBean.updateRegion(loginBean.userName)}" oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('updateRegion')}.hide(event);return false;}"/>
+            </h:panelGroup>
+        </h:form>
+    </rich:popupPanel>
+
+</ui:composition>

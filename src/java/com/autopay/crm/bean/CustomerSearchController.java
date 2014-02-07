@@ -7,8 +7,12 @@ import com.autopay.crm.model.Campaign;
 import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.Customer;
 import com.autopay.crm.model.Lead;
+import com.autopay.crm.model.Region;
+import com.autopay.crm.model.RegionArea;
 import com.autopay.crm.model.search.CustomerSearchCriteria;
 import com.autopay.crm.session.CustomerFacade;
+import com.autopay.crm.session.RegionFacade;
+import com.autopay.crm.session.RepresentativeFacade;
 import com.autopay.crm.util.CrmConstants;
 import com.autopay.crm.util.CrmConstants.ActiveStatusType;
 import com.autopay.crm.util.CrmConstants.CustomerSortBy;
@@ -53,11 +57,14 @@ public class CustomerSearchController implements Serializable {
     private String campaignType;
     //search criterias
     private CustomerSearchCriteria customerSearchCriteria;
-    
     @EJB
     private com.autopay.crm.session.CustomerFacade ejbCustomer;
     @EJB
     private com.autopay.crm.session.CampaignFacade ejbCampaign;
+    @EJB
+    private RepresentativeFacade ejbRepresentative;
+    @EJB
+    private RegionFacade ejbRegion;
 
     public CustomerSearchController() {
         customerSearchCriteria = new CustomerSearchCriteria();
@@ -120,21 +127,22 @@ public class CustomerSearchController implements Serializable {
             recreateModel();
             pagination = null;
             searchResult = getFacade().getCustomersBySearchCriterias(customerSearchCriteria);
-            System.out.println("########### search time: " + (System.currentTimeMillis()-start));
-            searchResult_backup = new ArrayList<Customer>(searchResult);
+            System.out.println("########### search time: " + (System.currentTimeMillis() - start));
+            if (searchResult != null) {
+                searchResult_backup = new ArrayList<Customer>(searchResult);
+            }
             if (searchResult == null || searchResult.isEmpty()) {
                 setNoCustomerFound(true);
             } else {
                 setNoCustomerFound(false);
             }
-            System.out.println("########## search time2: " + (System.currentTimeMillis()-start));
         } catch (Exception e) {
             JsfUtil.addErrorMessage("Exception is thrown during searching customers.");
             log.error(e);
         }
         return "CustomerSearch";
     }
-    
+
     public String searchAgain() {
         System.out.println("======== searchAgain: " + searchByName);
         if (searchByName != null && searchResult != null) {
@@ -249,7 +257,7 @@ public class CustomerSearchController implements Serializable {
         }
         return result;
     }
-    
+
     public List<String> getCustomerSortByList() {
         List<String> result = new ArrayList<String>();
         for (CustomerSortBy sortBy : CustomerSortBy.values()) {
@@ -284,14 +292,24 @@ public class CustomerSearchController implements Serializable {
 
     public List<String> autocomplete(String prefix) {
         List<String> result = getFacade().getCustomerNamesByName(prefix);
-        Collections.sort(result);
+        if (result != null) {
+            Collections.sort(result);
+        }
         return result;
     }
-    
+
+    public List<String> autocompleteRep(String prefix) {
+        List<String> result = ejbRepresentative.getRepresentativesByName(prefix);
+        if (result != null) {
+            Collections.sort(result);
+        }
+        return result;
+    }
+
     public String getCustomerTypeAbbr(final String type) {
         return CrmUtils.getCustomerTypeAbbr(type);
     }
-    
+
     public String getCustomerName(final Customer customer) {
         String result = customer.getName();
         if (customer.getLinkedCustomerId() != null) {
@@ -299,7 +317,7 @@ public class CustomerSearchController implements Serializable {
         }
         return result;
     }
-    
+
     public String getCustomerState(final Customer customer) {
         String result = "";
         if (customer.getAddressCollection() != null && customer.getAddressCollection().size() > 0) {
@@ -310,7 +328,7 @@ public class CustomerSearchController implements Serializable {
         }
         return result;
     }
-    
+
     public int getCustomerTotalFinanced(final Customer customer) {
         int result = 0;
         List<Long> idList = new ArrayList<Long>();
@@ -328,7 +346,7 @@ public class CustomerSearchController implements Serializable {
 //        }
         return result;
     }
-    
+
     public String backToCustomerSearchPage() {
         return "/pages/customer/CustomerSearch";
     }
@@ -381,6 +399,7 @@ public class CustomerSearchController implements Serializable {
     public void createCampaign(final String user) {
         if (searchResult != null) {
             System.out.println("========== create Campaign: " + user);
+            List<String> statesUserRepresent = getStatesListLoginUserRepresent(user);
             Campaign newCampaign = new Campaign();
             String criteria = "";
             if (customerSearchCriteria != null) {
@@ -403,7 +422,33 @@ public class CustomerSearchController implements Serializable {
                     criteria = criteria.length() == 0 ? "county=" + customerSearchCriteria.getCounty() : criteria + "|county=" + customerSearchCriteria.getCounty();
                 }
                 if (customerSearchCriteria.getState() != null && customerSearchCriteria.getState().trim().length() > 0) {
-                    criteria = criteria.length() == 0 ? "state=" + customerSearchCriteria.getState() : criteria + "|state=" + customerSearchCriteria.getState();
+                    if (!statesUserRepresent.isEmpty()) {
+                        if (statesUserRepresent.contains(customerSearchCriteria.getState())) {
+                            String states = "";
+                            for (String state : statesUserRepresent) {
+                                if (states.length() == 0) {
+                                    states = state;
+                                } else {
+                                    states = states + ", " + state;
+                                }
+                            }
+                            criteria = criteria.length() == 0 ? "state=" + states : criteria + "|state=" + states;
+                        }
+                    } else {
+                        criteria = criteria.length() == 0 ? "state=" + customerSearchCriteria.getState() : criteria + "|state=" + customerSearchCriteria.getState();
+                    }
+                } else {
+                    if (!statesUserRepresent.isEmpty()) {
+                        String states = "";
+                        for (String state : statesUserRepresent) {
+                            if (states.length() == 0) {
+                                states = state;
+                            } else {
+                                states = states + ", " + state;
+                            }
+                        }
+                        criteria = criteria.length() == 0 ? "state=" + states : criteria + "|state=" + states;
+                    }
                 }
                 if (customerSearchCriteria.getZipcode() != null && customerSearchCriteria.getZipcode().trim().length() > 0) {
                     criteria = criteria.length() == 0 ? "zipcode=" + customerSearchCriteria.getZipcode() : criteria + "|zipcode=" + customerSearchCriteria.getZipcode();
@@ -428,8 +473,23 @@ public class CustomerSearchController implements Serializable {
             newCampaign.setCreateUser(user);
             newCampaign.setType(campaignType);
             List<CampaignCustomer> campaignCustomers = new ArrayList<CampaignCustomer>();
+            List<Customer> validCustomers = new ArrayList<Customer>();
             for (Customer customer : searchResult) {
+                if (!statesUserRepresent.isEmpty()) {
+                    boolean validCustomer = false;
+                    if (customer.getAddressCollection() != null && !customer.getAddressCollection().isEmpty()) {
+                        for (Address address : customer.getAddressCollection()) {
+                            if (address.getState() != null && statesUserRepresent.contains(address.getState())) {
+                                validCustomer = true;
+                            }
+                        }
+                    }
+                    if (!validCustomer) {
+                        continue;
+                    }
+                }
                 if (customer.getCampaignID() == null) {
+                    validCustomers.add(customer);
                     CampaignCustomer cc = new CampaignCustomer();
                     cc.setCampaignId(newCampaign);
                     cc.setCustomerId(customer);
@@ -442,9 +502,9 @@ public class CustomerSearchController implements Serializable {
             newCampaign.setCampaignCustomerCollection(campaignCustomers);
             try {
                 ejbCampaign.create(newCampaign);
-                
+
                 //refresh search result with showing campaign id
-                for (Customer customer : searchResult) {
+                for (Customer customer : validCustomers) {
                     if (customer.getCampaignID() == null) {
                         customer.setCampaignID(newCampaign.getId());
                     }
@@ -453,9 +513,52 @@ public class CustomerSearchController implements Serializable {
                 log.error("Unable to create new campaign.", e);
                 JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             }
-            
-            
         }
     }
-    
+
+    private List<String> getStatesListLoginUserRepresent(final String userName) {
+        List<String> result = new ArrayList<String>();
+        List<Region> regions = ejbRegion.getRegionsUserRepresent(userName);
+        for (Region region : regions) {
+            if (region.getRegionAreaCollection() != null) {
+                for (RegionArea ra : region.getRegionAreaCollection()) {
+                    if (ra.getState() != null) {
+                        result.add(ra.getState());
+                    }
+                }
+            }
+        }
+        Collections.sort(result);
+        return result;
+    }
+
+    public String getStatesLoginUserRepresent(final String userName) {
+        String states = "";
+        List<String> statelist = getStatesListLoginUserRepresent(userName);
+        for (String state : statelist) {
+            if (states.length() == 0) {
+                states = state;
+            } else {
+                states = states + ", " + state;
+            }
+        }
+        return states;
+    }
+
+    public boolean searchStateMatchStateUserRepresent(final String userName) {
+        List<String> statesUserRepresent = getStatesListLoginUserRepresent(userName);
+        if (customerSearchCriteria.getState() == null || customerSearchCriteria.getState().trim().length() == 0) {
+            return true;
+        } else {
+            if (statesUserRepresent.isEmpty()) {
+                return true;
+            } else {
+                if (statesUserRepresent.contains(customerSearchCriteria.getState())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
 }

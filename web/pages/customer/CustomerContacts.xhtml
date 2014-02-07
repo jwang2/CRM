@@ -8,7 +8,12 @@
         <h:panelGroup id="messagePanelContact" layout="block">
             <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
         </h:panelGroup>
-
+        <a4j:commandButton style="float: right" execute="@this" render="newcontact" value="#{bundleCrm.NewContactButton}" actionListener="#{customerDetailBean.prepareNewContact()}" oncomplete="#{rich:component('newcontact')}.show();return false;"/>
+        <ui:include src="/pages/customer/NewContact_Popup.xhtml"/>
+        <ui:include src="/pages/customer/UpdateContact_Popup.xhtml"/>
+        <ui:include src="/pages/customer/DeleteContact_Popup.xhtml"/>
+        <br/>
+        <br/>
         <h:panelGroup id="contactmain">
             <h:outputText value="Contacts" style="font-weight:bold;"/>
             <h:panelGroup rendered="#{customerDetailBean.selected.customerContactCollection.size()==0}">
@@ -71,14 +76,7 @@
                     <a4j:commandLink render="contactDelete" value="delete" actionListener="#{customerDetailBean.prepareContactDetail(item)}" oncomplete="#{rich:component('contactDelete')}.show();return false;"/>
                 </h:column>
             </rich:dataTable>
-
         </h:panelGroup>
-        <br/>
-        <a4j:commandButton execute="@this" render="newcontact" value="#{bundleCrm.NewContactButton}" actionListener="#{customerDetailBean.prepareNewContact()}" oncomplete="#{rich:component('newcontact')}.show();return false;"/>
-        <ui:include src="/pages/customer/NewContact_Popup.xhtml"/>
-        <ui:include src="/pages/customer/UpdateContact_Popup.xhtml"/>
-        <ui:include src="/pages/customer/DeleteContact_Popup.xhtml"/>
-
     </h:panelGroup>
 </ui:composition>
 

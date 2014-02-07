@@ -22,15 +22,17 @@
                     <h:panelGrid columns="4" width="100%">
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByName}" for="name" />
                         <rich:autocomplete id="name" value="#{customerSearchBean.customerSearchCriteria.name}" mode="cachedAjax" minChars="2" autocompleteMethod="#{customerSearchBean.autocomplete}" autofill="false" styleClass="inputSearch" style="border: none; background: transparent"/>
-                        <h:outputLabel value="#{bundleCrm.SearchCustomerByCity}" for="city" />
-                        <h:inputText id="city" value="#{customerSearchBean.customerSearchCriteria.city}" />
-
+                        
+                        <h:outputLabel value="Representative:" for="representative"/>
+                        <rich:autocomplete id="rep" value="#{customerSearchBean.customerSearchCriteria.representative}" mode="cachedAjax" minChars="2" autocompleteMethod="#{customerSearchBean.autocompleteRep}" autofill="false" style="border: none; background: transparent"/>
+                        
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByType}" for="type"/>
                         <h:selectOneMenu id ="type" value="#{customerSearchBean.customerSearchCriteria.type}">
                             <f:selectItems value="#{customerSearchBean.customerTypesForSearch}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
                         </h:selectOneMenu>
-                        <h:outputLabel value="#{bundleCrm.SearchCustomerByCounty}" for="county" />
-                        <h:inputText id="county" value="#{customerSearchBean.customerSearchCriteria.county}" />
+                        
+                        <h:outputLabel value="#{bundleCrm.SearchCustomerByCity}" for="city" />
+                        <h:inputText id="city" value="#{customerSearchBean.customerSearchCriteria.city}" />
 
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByStatus}" for="status"/>
                         <h:panelGroup>
@@ -41,17 +43,19 @@
                                 <f:selectItems value="#{customerSearchBean.customerStatusesForSearch}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
                             </h:selectOneMenu>
                         </h:panelGroup>
-                        <h:outputLabel value="#{bundleCrm.SearchCustomerByState}" for="state" />
-                        <h:selectOneMenu id="state" value="#{customerSearchBean.customerSearchCriteria.state}">
-                            <f:selectItems value="#{customerSearchBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
-                        </h:selectOneMenu>
+                        
+                        <h:outputLabel value="#{bundleCrm.SearchCustomerByCounty}" for="county" />
+                        <h:inputText id="county" value="#{customerSearchBean.customerSearchCriteria.county}" />
 
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByPhone}" for="phone" />
                         <h:inputText id="phone" value="#{customerSearchBean.customerSearchCriteria.phone}" onkeyup="formatPhone(#{rich:element('phone')}, event);" >
                             <rich:placeholder value="303-444-5555" />
                         </h:inputText>
-                        <h:outputLabel value="#{bundleCrm.SearchCustomerByZipCode}" for="zipcode" />
-                        <h:inputText id="zipcode" value="#{customerSearchBean.customerSearchCriteria.zipcode}" />
+                        
+                        <h:outputLabel value="#{bundleCrm.SearchCustomerByState}" for="state" />
+                        <h:selectOneMenu id="state" value="#{customerSearchBean.customerSearchCriteria.state}">
+                            <f:selectItems value="#{customerSearchBean.stateListForSearch}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
+                        </h:selectOneMenu>
 
                         <h:outputLabel value="#{bundleCrm.SearchLeadByTotalFianced}" for="totalFinanced" />
                         <h:panelGroup>
@@ -63,7 +67,13 @@
                                 <f:validateLongRange minimum="1"/>
                             </h:inputText>
                         </h:panelGroup>
+                        
+                        <h:outputLabel value="#{bundleCrm.SearchCustomerByZipCode}" for="zipcode" />
+                        <h:inputText id="zipcode" value="#{customerSearchBean.customerSearchCriteria.zipcode}" />
 
+                        <h:outputLabel value=""/>
+                        <h:outputLabel value=""/>
+                        
                         <h:outputLabel value="Sort By:" style="font-weight:bold; font-size: 1.5em"/>
                         <h:selectOneMenu id ="sortby" value="#{customerSearchBean.customerSearchCriteria.sortBy}">
                             <f:selectItems value="#{customerSearchBean.customerSortByList}" var="sortby" itemLabel="#{sortby}" itemValue="#{sortby}"/>
@@ -83,7 +93,7 @@
                     </h:panelGroup>
                     <h:panelGroup id="customersearchresult" rendered="#{customerSearchBean.resultCount > 0}">
                         <ui:include src="/pages/customer/CustomerInnerSearch.xhtml"/>
-                        <ui:include src="/pages/campaign/Create_Popup.xhtml"/>
+                        <ui:include src="/pages/campaign/CreateCampaign_Popup.xhtml"/>
                         <br/>
                         <h:outputText value="#{customerSearchBean.pagination.pageFirstItem + 1}..#{customerSearchBean.pagination.pageLastItem + 1}/#{customerSearchBean.pagination.itemsCount}"/><h:outputText  value="&#160;&#160;&#160;" />
                         <a4j:commandLink render="customerResultPanel" action="#{customerSearchBean.previous}" value="#{bundle.Previous} #{customerSearchBean.pagination.pageSize}" rendered="#{customerSearchBean.pagination.hasPreviousPage}"/><h:outputText  value="&#160;&#160;&#160;" />
@@ -95,7 +105,7 @@
                         </h:selectOneMenu>
 
                         <br/>
-                        <h:outputLabel value="(Customer marked with *** means this customer has linked other customers.)"/>
+                        <h:outputLabel value="(Customer marked with *** means this customer has linked to other customers.)"/>
                         <rich:dataTable id="customerResultTable" styleClass="table" value="#{customerSearchBean.items}" var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
                             <rich:column sortBy="#{item.id}" sortOrder="#{customerSortingBean.idOrder}">
                                 <f:facet name="header">
@@ -152,7 +162,6 @@
                                 </f:facet>
                                 <h:outputText value="#{item.status}"/>
                             </rich:column>
-
                         </rich:dataTable>
                     </h:panelGroup>
                 </h:panelGroup>

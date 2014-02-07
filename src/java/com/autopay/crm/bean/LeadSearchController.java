@@ -270,13 +270,17 @@ public class LeadSearchController implements Serializable {
     
     public List<String> autocompleteDealer(String prefix) {
         List<String> result = ejbCustomer.getCustomerNamesByNameAndType(prefix, CustomerType.DEALER.name());
-        Collections.sort(result);
+        if (result != null) {
+            Collections.sort(result);
+        }
         return result;
     }
     
     public List<String> autocompleteFico(String prefix) {
         List<String> result = ejbCustomer.getCustomerNamesByNameAndType(prefix, CustomerType.FINANCE_COMPANY.name());
-        Collections.sort(result);
+        if (result != null) {
+            Collections.sort(result);
+        }
         return result;
     }
 }

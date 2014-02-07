@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListRegionAreaTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListRegionAreaEmpty}" rendered="#{regionAreaController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{regionAreaController.items.rowCount > 0}">
+                    <h:outputText value="#{regionAreaController.pagination.pageFirstItem + 1}..#{regionAreaController.pagination.pageLastItem + 1}/#{regionAreaController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{regionAreaController.previous}" value="#{bundle.Previous} #{regionAreaController.pagination.pageSize}" rendered="#{regionAreaController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{regionAreaController.next}" value="#{bundle.Next} #{regionAreaController.pagination.pageSize}" rendered="#{regionAreaController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{regionAreaController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListRegionAreaTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListRegionAreaTitle_state}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.state}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListRegionAreaTitle_zipCode}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.zipCode}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListRegionAreaTitle_regionId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.regionId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{regionAreaController.prepareView}" value="#{bundle.ListRegionAreaViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{regionAreaController.prepareEdit}" value="#{bundle.ListRegionAreaEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{regionAreaController.destroy}" value="#{bundle.ListRegionAreaDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{regionAreaController.prepareCreate}" value="#{bundle.ListRegionAreaCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListRegionAreaIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

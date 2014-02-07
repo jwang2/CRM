@@ -1,0 +1,41 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <rich:popupPanel id="updatecampaign" header="Update Campaign" autosized="true" modal="false" 
+                     moveable="false" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:form>
+            <h:panelGrid columns="2" width="100%" >
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_name}" />
+                <h:inputText value="#{campaignSearchBean.selected.name}" size="40"/>
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_description}"/>
+                <h:inputText value="#{campaignSearchBean.selected.description}" size="40"/>
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_active}"/>
+                <h:selectOneMenu value="#{campaignSearchBean.selected.active}">
+                    <f:selectItems value="#{campaignSearchBean.campaignStatusList}" var="status" itemLabel="#{status}" itemValue="#{status.value}"/>
+                </h:selectOneMenu>
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_assignedUser}"/>    
+                <rich:autocomplete value="#{campaignSearchBean.selected.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" style="border: none; background: transparent"/>
+                <h:outputLabel value="Type:"/>
+                <h:selectOneMenu value="#{campaignSearchBean.selected.type}">
+                    <f:selectItems value="#{campaignSearchBean.campaignTypeList}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
+                </h:selectOneMenu>
+                <h:outputLabel value="Start Date:"/>
+                <rich:calendar value="#{campaignSearchBean.selected.startDate}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true" disabled="true"/>
+
+                <h:outputLabel value="Complete Date:"/>
+                <rich:calendar value="#{campaignSearchBean.selected.completedDate}"  datePattern="MM/dd/yyyy hh:mm:ss" enableManualInput="true"/>
+
+            </h:panelGrid>
+            <h:panelGroup>
+                <a4j:commandButton value="Cancel" action="#{campaignSearchBean.cancelCampaignEditAction()}" oncomplete="#{rich:component('updatecampaign')}.hide(event);return false;"/>
+
+                <a4j:commandButton execute="updatecampaign" render="campaignoverviewmain" value="Update" action="#{campaignSearchBean.performCampaignEdit(loginBean.userName)}" oncomplete="#{rich:component('updatecampaign')}.hide(event);return false;"/>
+            </h:panelGroup>
+        </h:form>
+    </rich:popupPanel>
+
+</ui:composition>
+

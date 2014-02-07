@@ -4,7 +4,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:rich="http://richfaces.org/rich">
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
 
     <ui:composition template="/template.xhtml">
 
@@ -23,10 +24,9 @@
                 <h:outputLabel value="#{dashboardBean.todayDate}" style="color: #9ea374; font-family: Arial, Verdana, sans-serif; font-size: 1.5em"/>
                 <br/>
                 <br/>
-
-                <rich:collapsiblePanel header="Active Campaigns For You:">
+                <rich:collapsiblePanel id="activecampaignpanel" header="Active Campaigns For You:">
                     <h:outputLabel value="Total:  #{dashboardBean.getActiveCampaigns(loginBean.userName).size()}"/>
-                    <h:commandLink value="Refresh" action="#{dashboardBean.refreshActiveCampaigns(loginBean.userName)}" style="float: right"/>
+                    <a4j:commandLink render="activecampaignpanel" value="Refresh" action="#{dashboardBean.refreshActiveCampaigns(loginBean.userName)}" style="float: right"/>
                     <br/>
                     <br/>
                     <h:panelGroup>
@@ -62,10 +62,9 @@
                 </rich:collapsiblePanel>
                 <br/>
                 <br/>
-                <br/>
-                <rich:collapsiblePanel header="Scheduled Tasks For You:">
+                <rich:collapsiblePanel id="activeschedulepanel" header="Scheduled Tasks For You:">
                     <h:outputLabel value="Total:  #{dashboardBean.getActiveSchedules(loginBean.userName).size()}"/>
-                    <h:commandLink value="Refresh" action="#{dashboardBean.refreshActiveSchedules(loginBean.userName)}" style="float: right"/>
+                    <a4j:commandLink render="activeschedulepanel" value="Refresh" action="#{dashboardBean.refreshActiveSchedules(loginBean.userName)}" style="float: right"/>
                     <br/>
                     <br/>
                     <h:panelGroup>
@@ -122,6 +121,75 @@
                                 </f:facet>
                                 <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="#{customerDetailBean.getScheduleContactInfo(item).length() > 0 ? 5 : 1}" value="#{customerDetailBean.getScheduleContactInfo(item)}"/>
                             </h:column>
+                        </rich:dataTable>
+                    </h:panelGroup>
+                </rich:collapsiblePanel>
+                <br/>
+                <br/>
+                <rich:collapsiblePanel id="customerreppanel" header="Customers you represent:" rendered="#{dashboardBean.isCustomerReprentative(loginBean.userName)}">
+                    <a4j:commandLink render="customerreppanel" value="Show customers you represent" rendered="#{dashboardBean.representedCustomers == null || dashboardBean.repCustomerCount==0}" action="#{dashboardBean.refreshRepresentedCustomers(loginBean.userName)}" style="float: right"/>
+                    <a4j:commandLink  render="customerreppanel" rendered="#{dashboardBean.repCustomerCount>0}" value="Refresh" action="#{dashboardBean.refreshRepresentedCustomers(loginBean.userName)}" style="float: right"/>
+                    <br/>
+                    <br/>
+                    <h:panelGroup rendered="#{dashboardBean.repCustomerCount>0}">
+                        <h:outputLabel value="Total: #{dashboardBean.representedCustomers.size()}"/>
+                        <rich:dataTable id="customerreptable" styleClass="table" value="#{dashboardBean.representedCustomers}" 
+                                        var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="border:solid 1px; width: 100%">
+                            <rich:column sortBy="#{item.id}" sortOrder="#{customerSortingBean.idOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerIdLabel}" render="customerreptable" action="#{customerSortingBean.sortById()}"/>
+                                </f:facet>
+                                <h:commandLink action="#{customerDetailBean.prepareDetail(item)}" value="#{item.id}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.name}" sortOrder="#{customerSortingBean.nameOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerNameLabel}" render="customerreptable" action="#{customerSortingBean.sortByName()}"/>
+                                </f:facet>
+                                <h:outputText value="#{customerSearchBean.getCustomerName(item)}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.type}" sortOrder="#{customerSortingBean.typeOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerTypeLabel}" render="customerreptable" action="#{customerSortingBean.sortByType()}"/>
+                                </f:facet>
+                                <h:outputText value="#{customerSearchBean.getCustomerTypeAbbr(item.type)}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.totalDeals}" sortOrder="#{customerSortingBean.dealsOrder}" >
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerDealsLabel}" render="customerreptable" action="#{customerSortingBean.sortByDeals()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.totalDeals}"/>
+                            </rich:column>
+                            <rich:column >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundleCrm.CustomerCampaignLabel}"/>
+                                </f:facet>
+                                <h:commandLink action="#{campaignSearchBean.prepareDetails(item)}" value="#{item.campaignID}"/>
+                            </rich:column>
+                            <rich:column >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundleCrm.CustomerPhoneLabel}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.phone}"/>
+                            </rich:column>
+                            <rich:column >
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundleCrm.CustomerWebsitLabel}"/>
+                                </f:facet>
+                                <h:link onclick="window.open('#{customerDetailBean.getCustomerGoogleSearchResultPage(item)}');" style="cursor: pointer">#{customerDetailBean.getCustomerWebsiteValue(item)}</h:link>
+
+                            </rich:column>
+                            <rich:column sortBy="#{customerSearchBean.getCustomerState(item)}" sortOrder="#{customerSortingBean.stateOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerStateLabel}" render="customerreptable" action="#{customerSortingBean.sortByState()}"/>
+                                </f:facet>
+                                <h:outputText value="#{customerSearchBean.getCustomerState(item)}"/>
+                            </rich:column>
+                            <rich:column sortBy="#{item.status}" sortOrder="#{customerSortingBean.statusOrder}">
+                                <f:facet name="header">
+                                    <a4j:commandLink value="#{bundleCrm.CustomerStatusLabel}" render="customerreptable" action="#{customerSortingBean.sortByStatus()}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.status}"/>
+                            </rich:column>
                         </rich:dataTable>
                     </h:panelGroup>
                 </rich:collapsiblePanel>

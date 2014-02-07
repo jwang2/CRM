@@ -5,19 +5,24 @@ import com.autopay.crm.model.Address;
 import com.autopay.crm.model.CampaignCustomer;
 import com.autopay.crm.model.Customer;
 import com.autopay.crm.model.CustomerContact;
+import com.autopay.crm.model.CustomerRep;
 import com.autopay.crm.model.Lead;
 import com.autopay.crm.model.LeadSearchResult;
 import com.autopay.crm.model.Note;
 import com.autopay.crm.model.ParentCustomer;
+import com.autopay.crm.model.Representative;
 import com.autopay.crm.model.Schedules;
 import com.autopay.crm.model.Task;
 import com.autopay.crm.model.dealer.User;
+import com.autopay.crm.session.CustomerRepFacade;
 import com.autopay.crm.session.NotificationFacade;
+import com.autopay.crm.session.RepresentativeFacade;
 import com.autopay.crm.session.UserFacade;
 import com.autopay.crm.util.CrmConstants;
 import com.autopay.crm.util.CrmConstants.ContactTitle;
 import com.autopay.crm.util.CrmConstants.CustomerStatus;
 import com.autopay.crm.util.CrmConstants.CustomerType;
+import com.autopay.crm.util.CrmConstants.RepresentativeType;
 import com.autopay.crm.util.CrmUtils;
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -32,7 +37,11 @@ import java.util.ResourceBundle;
 import java.util.TreeMap;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import org.apache.log4j.Logger;
 
 /**
@@ -47,6 +56,10 @@ public class CustomerDetailController implements Serializable {
     private Customer current;
     //overview related
     private Customer customer_orig;
+    private String internalRep;
+    private String externalRep;
+    private List<String> assignedInReps;
+    private List<String> assignedExReps;
     //contact related
     private CustomerContact currentContact;
     private CustomerContact currentContact_Orig;
@@ -91,38 +104,34 @@ public class CustomerDetailController implements Serializable {
     private NotificationFacade ejbNotification;
     @EJB
     private com.autopay.crm.session.CampaignCustomerFacade ejbCampaignCustomer;
+    @EJB
+    private RepresentativeFacade ejbRepresentative;
+    @EJB
+    private CustomerRepFacade ejbCustomerRep;
 
     public CustomerDetailController() {
     }
 
     public String prepareDetail(Customer customer) {
         current = ejbCustomer.getCustomerDetail(customer);
-        currentRelatedFicos = null;
-        currentNonRelatedFicos = null;
-        currentDeals = null;
-        campaignCustomer = null;
-        addToViewRecently(customer);
+        resetValues();
+        addToViewRecently(current);
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
     }
 
     public String prepareDetailFromCampaign(Customer customer) {
         current = ejbCustomer.getCustomerDetail(customer);
-        currentRelatedFicos = null;
-        currentNonRelatedFicos = null;
-        currentDeals = null;
-        campaignCustomer = null;
-        addToViewRecently(customer);
+        resetValues();
+        addToViewRecently(current);
         setCurrentTab("campaign");
         return "/pages/customer/CustomerDetail";
     }
 
     public String prepareDetail(Schedules schedule) {
         current = ejbCustomer.getCustomerDetail(schedule.getCustomerId());
-        currentRelatedFicos = null;
-        currentNonRelatedFicos = null;
-        currentDeals = null;
-        campaignCustomer = null;
+        resetValues();
+        currentSchedule = schedule;
         addToViewRecently(current);
         setCurrentTab("schedules");
         return "/pages/customer/CustomerDetail";
@@ -130,13 +139,18 @@ public class CustomerDetailController implements Serializable {
 
     public String prepareDetail(LeadSearchResult leadSearchResult) {
         current = ejbCustomer.getCustomerDetail(leadSearchResult.getDealer());
+        resetValues();
+        addToViewRecently(current);
+        setCurrentTab(null);
+        return "/pages/customer/CustomerDetail";
+    }
+    
+    private void resetValues() {
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
-        addToViewRecently(current);
-        setCurrentTab(null);
-        return "/pages/customer/CustomerDetail";
+        currentSchedule = null;
     }
 
     public String prepareCreate() {
@@ -388,6 +402,9 @@ public class CustomerDetailController implements Serializable {
         newcustomer.setAccountEmail(origcustomer.getAccountEmail());
         newcustomer.setWebsite(origcustomer.getWebsite());
         newcustomer.setPhone(origcustomer.getPhone());
+        newcustomer.setInternalRepresentatives(origcustomer.getInternalRepresentatives());
+        newcustomer.setExternalRepresentatives(origcustomer.getExternalRepresentatives());
+        newcustomer.setCampaignID(origcustomer.getCampaignID());
         Address origaddress = getCustomerMainAddress(origcustomer);
         if (origaddress != null) {
             Address newaddress = new Address();
@@ -412,7 +429,7 @@ public class CustomerDetailController implements Serializable {
         }
         return result;
     }
-    
+
     public String getCustomerDetail(final Customer customer) {
         String result = customer.getName() + " (" + customer.getType() + ") (" + customer.getId() + ")\n";
         if (customer.getAddressCollection() != null && !customer.getAddressCollection().isEmpty()) {
@@ -426,6 +443,299 @@ public class CustomerDetailController implements Serializable {
             }
         }
         return result;
+    }
+
+    public String getInternalRep() {
+        return internalRep;
+    }
+
+    public void setInternalRep(String internalRep) {
+        this.internalRep = internalRep;
+    }
+
+    public String getExternalRep() {
+        return externalRep;
+    }
+
+    public void setExternalRep(String externalRep) {
+        this.externalRep = externalRep;
+    }
+
+    public List<String> getAssignedInReps() {
+        return assignedInReps;
+    }
+
+    public void setAssignedInReps(List<String> assignedInReps) {
+        this.assignedInReps = assignedInReps;
+    }
+
+    public List<String> getAssignedExReps() {
+        return assignedExReps;
+    }
+
+    public void setAssignedExReps(List<String> assignedExReps) {
+        this.assignedExReps = assignedExReps;
+    }
+
+    public void addInternalRep() {
+        if (assignedInReps != null && !assignedInReps.contains(internalRep)) {
+            assignedInReps.add(internalRep);
+            internalRep = null;
+        }
+    }
+
+    public void addExternalRep() {
+        if (assignedExReps != null && !assignedExReps.contains(externalRep)) {
+            assignedExReps.add(externalRep);
+            externalRep = null;
+        }
+    }
+
+    public void removeInternalRep(final String rep) {
+        if (assignedInReps != null) {
+            assignedInReps.remove(rep);
+        }
+    }
+
+    public void removeExternalRep(final String rep) {
+        if (assignedExReps != null) {
+            assignedExReps.remove(rep);
+        }
+    }
+
+    public void prepareEditRepresentative() {
+        internalRep = null;
+        externalRep = null;
+        assignedInReps = new ArrayList<String>();
+        assignedExReps = new ArrayList<String>();
+        if (current.getInternalRepresentatives() != null && !current.getInternalRepresentatives().isEmpty()) {
+            for (Representative rep : current.getInternalRepresentatives()) {
+                assignedInReps.add(rep.getUsername() + " (" + rep.getFirstName() + " " + rep.getLastName() + ")*");
+            }
+        }
+        if (current.getExternalRepresentatives() != null && !current.getExternalRepresentatives().isEmpty()) {
+            for (Representative rep : current.getExternalRepresentatives()) {
+                assignedExReps.add(rep.getUsername() + " (" + rep.getFirstName() + " " + rep.getLastName() + ")*");
+            }
+        }
+        if (current.getCustomerRepCollection() != null && !current.getCustomerRepCollection().isEmpty()) {
+            for (CustomerRep cr : current.getCustomerRepCollection()) {
+                if (cr.getRepresentativeId() != null && cr.getRepresentativeId().getType().equalsIgnoreCase(RepresentativeType.Internal.name())) {
+                    assignedInReps.add(cr.getRepresentativeId().getUsername() + " (" + cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName() + ")");
+                } else {
+                    assignedExReps.add(cr.getRepresentativeId().getUsername() + " (" + cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName() + ")");
+                }
+            }
+        }
+    }
+
+    public void performRepresentativeEdit(final String userName) {
+        //save customer representative
+        try {
+            List<String> origInReps = new ArrayList<String>();
+            List<String> origExReps = new ArrayList<String>();
+            if (current.getInternalRepresentatives() != null && !current.getInternalRepresentatives().isEmpty()) {
+                for (Representative rep : current.getInternalRepresentatives()) {
+                    origInReps.add(rep.getUsername() + " (" + rep.getFirstName() + " " + rep.getLastName() + ")*");
+                }
+            }
+            if (current.getExternalRepresentatives() != null && !current.getExternalRepresentatives().isEmpty()) {
+                for (Representative rep : current.getExternalRepresentatives()) {
+                    origExReps.add(rep.getUsername() + " (" + rep.getFirstName() + " " + rep.getLastName() + ")*");
+                }
+            }
+            if (current.getCustomerRepCollection() != null && !current.getCustomerRepCollection().isEmpty()) {
+                for (CustomerRep cr : current.getCustomerRepCollection()) {
+                    if (cr.getRepresentativeId() != null && cr.getRepresentativeId().getType().equalsIgnoreCase(RepresentativeType.Internal.name())) {
+                        origInReps.add(cr.getRepresentativeId().getUsername() + " (" + cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName() + ")");
+                    } else {
+                        origExReps.add(cr.getRepresentativeId().getUsername() + " (" + cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName() + ")");
+                    }
+                }
+            }
+
+            List<String> addedInReps = new ArrayList<String>();
+            List<String> addedExReps = new ArrayList<String>();
+            List<String> removedInReps = new ArrayList<String>();
+            List<String> removedExReps = new ArrayList<String>();
+
+            for (String rep : origInReps) {
+                if (!assignedInReps.contains(rep)) {
+                    removedInReps.add(rep);
+                }
+            }
+            for (String rep : origExReps) {
+                if (!assignedExReps.contains(rep)) {
+                    removedExReps.add(rep);
+                }
+            }
+            for (String rep : assignedInReps) {
+                if (!origInReps.contains(rep)) {
+                    addedInReps.add(rep);
+                }
+            }
+            for (String rep : assignedExReps) {
+                if (!origExReps.contains(rep)) {
+                    addedExReps.add(rep);
+                }
+            }
+
+            List<CustomerRep> needRemovedCustomerReps = new ArrayList<CustomerRep>();
+            List<CustomerRep> needAddedCustomerReps = new ArrayList<CustomerRep>();
+            List<Representative> needRemovedReps = new ArrayList<Representative>();
+            List<Representative> needAddedReps = new ArrayList<Representative>();
+            if (!removedInReps.isEmpty()) {
+                for (String rep : removedInReps) {
+                    String rep_username = rep;
+                    int pos = rep.indexOf("(");
+                    if (pos >= 0) {
+                        rep_username = rep_username.substring(0, pos).trim();
+                    }
+                    Representative repObj = ejbRepresentative.getRepresentativeByUsernameType(rep_username, RepresentativeType.Internal.name());
+                    if (repObj != null) {
+                        needRemovedReps.add(repObj);
+                    }
+                }
+            }
+
+            if (!removedExReps.isEmpty()) {
+                for (String rep : removedExReps) {
+                    String rep_username = rep;
+                    int pos = rep.indexOf("(");
+                    if (pos >= 0) {
+                        rep_username = rep_username.substring(0, pos).trim();
+                    }
+                    Representative repObj = ejbRepresentative.getRepresentativeByUsernameType(rep_username, RepresentativeType.External.name());
+                    if (repObj != null) {
+                        needRemovedReps.add(repObj);
+                    }
+                }
+            }
+
+            if (!addedInReps.isEmpty()) {
+                for (String rep : addedInReps) {
+                    String rep_username = rep;
+                    int pos = rep.indexOf("(");
+                    if (pos >= 0) {
+                        rep_username = rep_username.substring(0, pos).trim();
+                    }
+                    Representative repObj = ejbRepresentative.getRepresentativeByUsernameType(rep_username, RepresentativeType.Internal.name());
+                    if (repObj == null) {
+                        User user = ejbUser.find(rep_username);
+                        if (user != null) {
+                            repObj = new Representative();
+                            repObj.setCreateUser(userName);
+                            repObj.setEmail(user.getEmail());
+                            repObj.setFirstName(user.getFirstName());
+                            repObj.setLastName(user.getLastName());
+                            repObj.setType(RepresentativeType.Internal.name());
+                            repObj.setUsername(rep_username);
+                            ejbRepresentative.create(repObj);
+                        }
+                    }
+                    if (repObj != null) {
+                        needAddedReps.add(repObj);
+                    }
+                }
+            }
+
+            if (!addedExReps.isEmpty()) {
+                for (String rep : addedExReps) {
+                    String rep_username = rep;
+                    int pos = rep.indexOf("(");
+                    if (pos >= 0) {
+                        rep_username = rep_username.substring(0, pos).trim();
+                    }
+                    Representative repObj = ejbRepresentative.getRepresentativeByUsernameType(rep_username, RepresentativeType.External.name());
+                    if (repObj == null) {
+                        User user = ejbUser.find(rep_username);
+                        if (user != null) {
+                            repObj = new Representative();
+                            repObj.setCreateUser(userName);
+                            repObj.setEmail(user.getEmail());
+                            repObj.setFirstName(user.getFirstName());
+                            repObj.setLastName(user.getLastName());
+                            repObj.setType(RepresentativeType.External.name());
+                            repObj.setUsername(rep_username);
+                            ejbRepresentative.create(repObj);
+                        }
+                    }
+                    if (repObj != null) {
+                        needAddedReps.add(repObj);
+                    }
+                }
+            }
+
+            if (!needAddedReps.isEmpty()) {
+                for (Representative rep : needAddedReps) {
+                    CustomerRep cr = new CustomerRep();
+                    cr.setCreateUser(userName);
+                    cr.setRepresentativeId(rep);
+                    cr.setCustomerId(current);
+                    ejbCustomerRep.create(cr);
+                    needAddedCustomerReps.add(cr);
+                }
+            }
+            if (!needRemovedReps.isEmpty()) {
+                for (Representative rep : needRemovedReps) {
+                    for (CustomerRep cr : current.getCustomerRepCollection()) {
+                        if (cr.getRepresentativeId().getId().equals(rep.getId())) {
+                            needRemovedCustomerReps.add(cr);
+                        }
+                    }
+                }
+            }
+
+            if (!needRemovedCustomerReps.isEmpty()) {
+                current.getCustomerRepCollection().removeAll(needRemovedCustomerReps);
+            }
+            if (!needAddedCustomerReps.isEmpty()) {
+                current.getCustomerRepCollection().addAll(needAddedCustomerReps);
+            }
+            current.setLastUpdated(new Date());
+            current.setUpdateUser(userName);
+            ejbCustomer.edit(current);
+
+            if (!needRemovedCustomerReps.isEmpty()) {
+                ejbCustomerRep.deleteCustomerReps(needRemovedCustomerReps);
+            }
+
+
+            //update current representative list for UI display
+            List<Representative> curInReps = new ArrayList<Representative>();
+            List<Representative> curExReps = new ArrayList<Representative>();
+            for (String rep : assignedInReps) {
+                if (rep.endsWith(")*")) {
+                    String rep_username = rep;
+                    int pos = rep.indexOf("(");
+                    if (pos >= 0) {
+                        rep_username = rep_username.substring(0, pos).trim();
+                    }
+                    Representative repObj = ejbRepresentative.getRepresentativeByUsernameType(rep_username, RepresentativeType.Internal.name());
+                    if (repObj != null) {
+                        curInReps.add(repObj);
+                    }
+                }
+            }
+            current.setInternalRepresentatives(curInReps);
+            for (String rep : assignedExReps) {
+                if (rep.endsWith(")*")) {
+                    String rep_username = rep;
+                    int pos = rep.indexOf("(");
+                    if (pos >= 0) {
+                        rep_username = rep_username.substring(0, pos).trim();
+                    }
+                    Representative repObj = ejbRepresentative.getRepresentativeByUsernameType(rep_username, RepresentativeType.External.name());
+                    if (repObj != null) {
+                        curExReps.add(repObj);
+                    }
+                }
+            }
+            current.setExternalRepresentatives(curExReps);
+        } catch (Exception e) {
+            log.error("Unable to update customer representative.", e);
+            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+        }
     }
 
     /**
@@ -477,10 +787,25 @@ public class CustomerDetailController implements Serializable {
 
     public void prepareNewContact() {
         currentContact = new CustomerContact();
-        currentContact.setAddressId(getSelectedMainAddress());
+        Address newAddress = new Address();
+        cloneAddress(newAddress, getSelectedMainAddress());
+        currentContact.setAddressId(newAddress);
         if (current != null) {
             currentContact.setPrimaryPhone(current.getPhone());
         }
+    }
+
+    private void cloneAddress(final Address newAddress, final Address origAddress) {
+        newAddress.setAddress1(origAddress.getAddress1());
+        newAddress.setAddress2(origAddress.getAddress2());
+        newAddress.setCity(origAddress.getCity());
+        newAddress.setCountry(origAddress.getCountry());
+        newAddress.setCounty(origAddress.getCounty());
+        newAddress.setFax(origAddress.getFax());
+        newAddress.setPhone(origAddress.getPhone());
+        newAddress.setState(origAddress.getState());
+        newAddress.setType(origAddress.getType());
+        newAddress.setZipCode(origAddress.getZipCode());
     }
 
     public void performDeleteContact() {
@@ -499,32 +824,9 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void performContactAction(final String userName, final boolean newContact) {
-        System.out.println("============ performContactAction: " + userName + ", " + newContact);
         if (newContact) {
             if (!isContactEmpty(currentContact)) {
-                if (!isAddressEmpty(currentContact.getAddressId())) {
-                    //check if address already exist
-                    final Address existAddress = ejbAddress.getAddress(currentContact.getAddressId().getAddress1(), currentContact.getAddressId().getZipCode());
-                    if (existAddress == null) {
-                        if (currentContact.getAddressId().getAddress1().startsWith("P O BOX")) {
-                            currentContact.getAddressId().setType(CrmConstants.AddressType.POBOX.name());
-                        } else {
-                            currentContact.getAddressId().setType(CrmConstants.AddressType.REGULAR.name());
-                        }
-                        currentContact.getAddressId().setPrincipal(true);
-                        try {
-                            currentContact.getAddressId().setCreateUser(userName);
-                            ejbAddress.create(currentContact.getAddressId());
-                        } catch (Exception e) {
-                            log.error("Unable to create new contact address.", e);
-                            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-                        }
-                    } else {
-                        currentContact.setAddressId(existAddress);
-                    }
-                } else {
-                    currentContact.setAddressId(null);
-                }
+
                 currentContact.setCustomerId(current);
                 if (!hasPrimaryContact()) {
                     currentContact.setPrincipal(true);
@@ -538,7 +840,33 @@ public class CustomerDetailController implements Serializable {
                 }
                 currentContact.setCreateUser(userName);
                 try {
-                    ejbContact.edit(currentContact);
+                    Address contactAddress = currentContact.getAddressId();
+                    currentContact.setAddressId(null);
+                    ejbContact.create(currentContact);
+
+                    if (!isAddressEmpty(contactAddress)) {
+                        //check if address already exist
+                        final Address existAddress = ejbAddress.getAddress(contactAddress.getAddress1(), contactAddress.getZipCode());
+                        if (existAddress == null) {
+                            if (contactAddress.getAddress1().startsWith("P O BOX")) {
+                                contactAddress.setType(CrmConstants.AddressType.POBOX.name());
+                            } else {
+                                contactAddress.setType(CrmConstants.AddressType.REGULAR.name());
+                            }
+                            contactAddress.setPrincipal(true);
+                            try {
+                                contactAddress.setCreateUser(userName);
+                                ejbAddress.create(contactAddress);
+                                currentContact.setAddressId(contactAddress);
+                            } catch (Exception e) {
+                                log.error("Unable to create new contact address.", e);
+                                JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
+                            }
+                        } else {
+                            currentContact.setAddressId(existAddress);
+                        }
+                        ejbContact.edit(currentContact);
+                    }
                 } catch (Exception e) {
                     log.error("Unable to update contact.", e);
                     JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
@@ -546,7 +874,6 @@ public class CustomerDetailController implements Serializable {
                 current.getCustomerContactCollection().add(currentContact);
             }
         } else {
-
             //update
             try {
                 final CustomerContact primaryContact = getPrimaryContact(currentContact.getId());
@@ -626,6 +953,26 @@ public class CustomerDetailController implements Serializable {
             result = address.getAddress1() + "," + address.getCity() + "," + address.getState() + " " + address.getZipCode();
         }
         return result;
+    }
+    
+    public void validateContactFirstName(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        String firstname = (String) value;
+        if (firstname == null || firstname.trim().length() == 0) {
+            String message = "Contact first name field is required.";
+            FacesMessage fm = new FacesMessage(message);
+            fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(fm);
+        }
+    }
+    
+    public void validateContactLastName(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        String lastname = (String) value;
+        if (lastname == null || lastname.trim().length() == 0) {
+            String message = "Contact last name field is required.";
+            FacesMessage fm = new FacesMessage(message);
+            fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(fm);
+        }
     }
 
     /**
@@ -890,15 +1237,15 @@ public class CustomerDetailController implements Serializable {
     public int getDealColumnIndex(String colName) {
         return dealColumnsNames.indexOf(colName);
     }
-    
+
     private void initiDealColsSorting() {
         dealColumnsSortings = new HashMap<String, String>();
         dealColumnsSortings.put("Name", "ascending");
-        for (String colname: dealColumnsNames) {
+        for (String colname : dealColumnsNames) {
             dealColumnsSortings.put(colname, "ascending");
         }
     }
-    
+
     public void sortDeals(final String colName) {
         String sortingCriteria = dealColumnsSortings.get(colName);
         if (sortingCriteria == null) {
@@ -910,7 +1257,7 @@ public class CustomerDetailController implements Serializable {
             sortingCriteria = "ascending";
         }
         dealColumnsSortings.put(colName, sortingCriteria);
-        final CustomerDeal subtotalRec = currentDeals.get(currentDeals.size()-1);
+        final CustomerDeal subtotalRec = currentDeals.get(currentDeals.size() - 1);
         Map<Object, CustomerDeal> dealsMap = getDealsMapForSorting(colName);
         List<CustomerDeal> sortedDeals = new ArrayList<CustomerDeal>();
         if (sortingCriteria.equals("ascending")) {
@@ -924,7 +1271,7 @@ public class CustomerDetailController implements Serializable {
         }
         currentDeals = sortedDeals;
     }
-    
+
     private Map<Object, CustomerDeal> getDealsMapForSorting(final String colName) {
         Map<Object, CustomerDeal> result = new TreeMap<Object, CustomerDeal>();
         if (colName.equalsIgnoreCase("Name")) {
@@ -943,7 +1290,7 @@ public class CustomerDetailController implements Serializable {
         }
         return result;
     }
-    
+
     public String getSubtotalFontStyle(final String value) {
         if (value.equals("Subtotal:")) {
             return "font-weight: bold";
@@ -1026,6 +1373,7 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void prepareScheduleDetail(final Schedules schedule) {
+        System.out.println("======== prepareScheduleDetail......");
         setCurrentSchedule(schedule);
         for (Task task : schedule.getTaskCollection()) {
             setCurrentTask(task);
@@ -1075,6 +1423,7 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void prepareNewSchedule() {
+        System.out.println("========= prepareNewSchedule.....");
         Schedules newSchedule = new Schedules();
         newSchedule.setScheduledDatetime(new Date());
         setCurrentSchedule(newSchedule);
@@ -1084,6 +1433,7 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void performDeleteSchedule() {
+        System.out.println("====== performDeleteSchedule....");
         ejbSchedule.remove(currentSchedule);
         current.getSchedulesCollection().remove(currentSchedule);
         sendEmailNotificationForDeletedSchedule(currentSchedule, currentTask);
@@ -1162,6 +1512,7 @@ public class CustomerDetailController implements Serializable {
     }
 
     public String performScheduleDone(final Schedules schedule) {
+        System.out.println("========== perform schedule done...." + (schedule == null ? null : schedule.getId()));
         if (schedule != null) {
             schedule.setFinishedDatetime(new Date());
             schedule.setStatus(CrmConstants.ScheduleStatus.DONE.name());
@@ -1171,6 +1522,7 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void performScheduleAction(final String userName, final boolean newSchedule) {
+        System.out.println("========== performScheduleAction.....");
         if (newSchedule) {
             currentSchedule.setCustomerId(current);
             currentTask.setSchedulesId(currentSchedule);

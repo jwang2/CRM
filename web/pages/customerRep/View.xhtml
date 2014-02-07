@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewCustomerRepTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewCustomerRepLabel_id}"/>
+                    <h:outputText value="#{customerRepController.selected.id}" title="#{bundle.ViewCustomerRepTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewCustomerRepLabel_createUser}"/>
+                    <h:outputText value="#{customerRepController.selected.createUser}" title="#{bundle.ViewCustomerRepTitle_createUser}"/>
+                    <h:outputText value="#{bundle.ViewCustomerRepLabel_dateCreated}"/>
+                    <h:outputText value="#{customerRepController.selected.dateCreated}" title="#{bundle.ViewCustomerRepTitle_dateCreated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCustomerRepLabel_updateUser}"/>
+                    <h:outputText value="#{customerRepController.selected.updateUser}" title="#{bundle.ViewCustomerRepTitle_updateUser}"/>
+                    <h:outputText value="#{bundle.ViewCustomerRepLabel_lastUpdated}"/>
+                    <h:outputText value="#{customerRepController.selected.lastUpdated}" title="#{bundle.ViewCustomerRepTitle_lastUpdated}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewCustomerRepLabel_representativeId}"/>
+                    <h:outputText value="#{customerRepController.selected.representativeId}" title="#{bundle.ViewCustomerRepTitle_representativeId}"/>
+                    <h:outputText value="#{bundle.ViewCustomerRepLabel_customerId}"/>
+                    <h:outputText value="#{customerRepController.selected.customerId}" title="#{bundle.ViewCustomerRepTitle_customerId}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{customerRepController.destroyAndView}" value="#{bundle.ViewCustomerRepDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewCustomerRepEditLink}"/>
+                <br />
+                <h:commandLink action="#{customerRepController.prepareCreate}" value="#{bundle.ViewCustomerRepCreateLink}" />
+                <br />
+                <h:commandLink action="#{customerRepController.prepareList}" value="#{bundle.ViewCustomerRepShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewCustomerRepIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

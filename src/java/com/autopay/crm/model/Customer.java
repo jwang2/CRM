@@ -4,10 +4,13 @@
  */
 package com.autopay.crm.model;
 
+import com.autopay.crm.util.CrmConstants;
+import com.autopay.crm.util.CrmConstants.RepresentativeType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -54,6 +57,9 @@ import org.hibernate.annotations.FetchMode;
     @NamedQuery(name = "Customer.findByUpdateUser", query = "SELECT c FROM Customer c WHERE c.updateUser = :updateUser"),
     @NamedQuery(name = "Customer.findByLastUpdated", query = "SELECT c FROM Customer c WHERE c.lastUpdated = :lastUpdated")})
 public class Customer implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.LAZY)
+    private Collection<CustomerRep> customerRepCollection;
     @JoinColumn(name = "linked_customer_id", referencedColumnName = "id")
     @ManyToOne
     private LinkedCustomer linkedCustomerId;
@@ -144,7 +150,7 @@ public class Customer implements Serializable {
     @Size(max = 255)
     @Column(name = "create_user")
     private String createUser;
-    @Column(name = "date_created" , updatable = false)
+    @Column(name = "date_created", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Size(max = 255)
@@ -178,7 +184,11 @@ public class Customer implements Serializable {
     private int totalDeals;
     @Transient
     private Long campaignID;
-    
+    @Transient
+    private List<Representative> internalRepresentatives;
+    @Transient
+    private List<Representative> externalRepresentatives;
+
     public Customer() {
         dateCreated = new Date();
         lastUpdated = new Date();
@@ -189,7 +199,7 @@ public class Customer implements Serializable {
         dateCreated = new Date();
         lastUpdated = new Date();
     }
-  
+
     public Long getId() {
         return id;
     }
@@ -414,6 +424,72 @@ public class Customer implements Serializable {
         this.campaignID = campaignID;
     }
 
+    public List<Representative> getInternalRepresentatives() {
+        return internalRepresentatives;
+    }
+
+    public void setInternalRepresentatives(List<Representative> internalRepresentatives) {
+        this.internalRepresentatives = internalRepresentatives;
+    }
+
+    public List<Representative> getExternalRepresentatives() {
+        return externalRepresentatives;
+    }
+
+    public void setExternalRepresentatives(List<Representative> externalRepresentatives) {
+        this.externalRepresentatives = externalRepresentatives;
+    }
+
+    public String getInternalRepresentativesStr() {
+        String result = "";
+        if (internalRepresentatives != null && !internalRepresentatives.isEmpty()) {
+            for (Representative rep : internalRepresentatives) {
+                if (result.length() == 0) {
+                    result = rep.getFirstName() + " " + rep.getLastName();
+                } else {
+                    result = result + ", " + rep.getFirstName() + " " + rep.getLastName();
+                }
+            }
+        }
+        if (customerRepCollection != null && !customerRepCollection.isEmpty()) {
+            for (CustomerRep cr : customerRepCollection) {
+                if (cr.getRepresentativeId() != null && cr.getRepresentativeId().getType().equalsIgnoreCase(RepresentativeType.Internal.name())) {
+                    if (result.length() == 0) {
+                        result = cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName();
+                    } else {
+                        result = result + ", " + cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName();
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public String getExternalRepresentativesStr() {
+        String result = "";
+        if (externalRepresentatives != null && !externalRepresentatives.isEmpty()) {
+            for (Representative rep : externalRepresentatives) {
+                if (result.length() == 0) {
+                    result = rep.getFirstName() + " " + rep.getLastName();
+                } else {
+                    result = result + ", " + rep.getFirstName() + " " + rep.getLastName();
+                }
+            }
+        }
+        if (customerRepCollection != null && !customerRepCollection.isEmpty()) {
+            for (CustomerRep cr : customerRepCollection) {
+                if (cr.getRepresentativeId() != null && cr.getRepresentativeId().getType().equalsIgnoreCase(RepresentativeType.External.name())) {
+                    if (result.length() == 0) {
+                        result = cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName();
+                    } else {
+                        result = result + ", " + cr.getRepresentativeId().getFirstName() + " " + cr.getRepresentativeId().getLastName();
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     public String getEin() {
         return ein;
     }
@@ -585,5 +661,13 @@ public class Customer implements Serializable {
     public void setLinkedCustomerId(LinkedCustomer linkedCustomerId) {
         this.linkedCustomerId = linkedCustomerId;
     }
-    
+
+    @XmlTransient
+    public Collection<CustomerRep> getCustomerRepCollection() {
+        return customerRepCollection;
+    }
+
+    public void setCustomerRepCollection(Collection<CustomerRep> customerRepCollection) {
+        this.customerRepCollection = customerRepCollection;
+    }
 }

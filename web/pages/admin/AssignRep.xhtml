@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Assign Representative"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="assignRepForm" styleClass="jsfcrud_list_form">
+                <br/>
+                <h:outputLabel value="Assign Representative" style="color: #591f00; font-family: Arial, Verdana, sans-serif; font-weight:bold;font-size: 1.5em"/>
+                <br/>
+                <br/>
+                <h:panelGroup>
+                    <h:outputLabel value="Regions:"/>
+                </h:panelGroup>
+                <rich:dataTable id="regiontable" styleClass="table" value="#{adminBean.regions}" 
+                                var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="vertical-align: middle; text-align: center; border:solid 1px; width: 100%">
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Region Name"/>
+                        </f:facet>
+                        <a4j:commandLink execute="@this" render="updateRegion" value="#{item.name}" actionListener="#{adminBean.prepareRegionDetail(item)}" oncomplete="#{rich:component('updateRegion')}.show();return false;"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="States"/>
+                        </f:facet>
+                        <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="1" value="#{adminBean.getRegionStatesStr(item)}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Zip Codes"/>
+                        </f:facet>
+                        <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="1" value="#{adminBean.getRegionZipCodesStr(item)}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Internal Representatives"/>
+                        </f:facet>
+                        <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="1" value="#{adminBean.getRegionInternalRepsStr(item)}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="External Representatives"/>
+                        </f:facet>
+                        <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="1" value="#{adminBean.getRegionExternalRepsStr(item)}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value=""/>
+                        </f:facet>
+                        <a4j:commandLink execute="@this" render="deleteRegion" value="Delete" actionListener="#{adminBean.prepareRegionDetail(item)}" oncomplete="#{rich:component('deleteRegion')}.show();return false;"/>
+                    </rich:column>
+                </rich:dataTable>
+                <br/>
+                <h:panelGroup>
+                    <a4j:commandButton style='float: right' execute="@this" render="newRegion" value="Create New Region" actionListener="#{adminBean.prepareNewRegion()}" oncomplete="#{rich:component('newRegion')}.show();return false;"/>
+                    <ui:include src="/pages/admin/NewRegion_Popup.xhtml"/>
+                    <ui:include src="/pages/admin/UpdateRegion_Popup.xhtml"/>
+                    <ui:include src="/pages/admin/DeleteRegion_Popup.xhtml"/>
+                </h:panelGroup>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

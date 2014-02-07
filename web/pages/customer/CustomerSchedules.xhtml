@@ -4,8 +4,13 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:a4j="http://richfaces.org/a4j">
-    <h:panelGroup>
-
+    <h:panelGroup>      
+        <a4j:commandButton style="float: right" execute="@this" render="newschedule" value="#{bundleCrm.NewScheduleButton}" actionListener="#{customerDetailBean.prepareNewSchedule()}" oncomplete="#{rich:component('newschedule')}.show();return false;"/>
+        <ui:include src="/pages/customer/NewSchedule_Popup.xhtml"/>
+        <ui:include src="/pages/customer/UpdateSchedule_Popup.xhtml"/>
+        <ui:include src="/pages/customer/ScheduleDeletePopup.xhtml"/>
+        <br/>
+        <br/>
         <h:panelGroup id="scheduleMain">
             <h:outputText value="Schedules" style="font-weight:bold;"/>
             <h:panelGroup rendered="#{customerDetailBean.customerSchedules.size()==0}">
@@ -18,7 +23,7 @@
                     <f:facet name="header">
                         <h:outputText value="ID"/>
                     </f:facet>
-                    <a4j:commandLink disabled="#{customerDetailBean.isScheduleDone(item)}" execute="@this" render="updateschedule" value="#{item.id}" actionListener="#{customerDetailBean.prepareScheduleDetail(item)}" oncomplete="#{rich:component('updateschedule')}.show();return false;"/>
+                    <h:outputLabel value="#{item.id}"/>
                 </rich:column>
                 <rich:column>
                     <f:facet name="header">
@@ -70,15 +75,10 @@
                     <br/>
                     <a4j:commandLink rendered="#{!customerDetailBean.isScheduleDone(item)}" execute="@this" render="scheduleDelete" value="Delete" actionListener="#{customerDetailBean.prepareScheduleDetail(item)}" oncomplete="#{rich:component('scheduleDelete')}.show();return false;"/>
                     <br/>
-                    <h:commandLink rendered="#{!customerDetailBean.isScheduleDone(item)}" action="#{customerDetailBean.performScheduleDone(item)}" value="Task Done"/>
+                    <a4j:commandLink rendered="#{!customerDetailBean.isScheduleDone(item)}" execute="" render="scheduleMain" action="#{customerDetailBean.performScheduleDone(item)}" value="Task Done"/>
                 </rich:column>
             </rich:dataTable>
         </h:panelGroup> 
-        <br/>
-        <a4j:commandButton execute="@this" render="newschedule" value="#{bundleCrm.NewScheduleButton}" actionListener="#{customerDetailBean.prepareNewSchedule()}" oncomplete="#{rich:component('newschedule')}.show();return false;"/>
-        <ui:include src="/pages/customer/NewSchedule_Popup.xhtml"/>
-        <ui:include src="/pages/customer/UpdateSchedule_Popup.xhtml"/>
-        <ui:include src="/pages/customer/ScheduleDeletePopup.xhtml"/>
     </h:panelGroup>
 </ui:composition>
 

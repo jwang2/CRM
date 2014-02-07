@@ -145,7 +145,7 @@ public class CrmConstants {
         private final boolean value;
     }
     
-    public enum LeadOwnerType {
+    public enum RepresentativeType {
         Internal, External
     }
 }

@@ -38,21 +38,22 @@
                     <h:outputLabel value="County:" style=" font-weight: bold"/>
                     <h:outputLabel value="#{customerDetailBean.selectedMainAddress.county}"/>
 
+                    <h:outputLabel value="#{bundle.ViewCustomerLabel_status}" style=" font-weight: bold"/>
+                    <h:outputLabel  value="#{customerDetailBean.selected.status}"/>
+
+                    <h:outputLabel value="Internal Representative:" style="font-weight: bold"/>
+                    <h:outputLabel value="#{customerDetailBean.selected.internalRepresentativesStr}"/>
+
+                    <h:outputLabel value="State:" style=" font-weight: bold" />
+                    <h:outputLabel value="#{customerDetailBean.selectedMainAddress.state}"/>
+
                     <h:outputText value="#{bundle.ViewCustomerLabel_lastUpdated}" style=" font-weight: bold"/>
                     <h:outputText value="#{customerDetailBean.selected.lastUpdated}" title="#{bundle.ViewCustomerTitle_lastUpdated}">
                         <!--<f:convertDateTime locale="en_US" type="both" pattern="MM/dd/yyyy HH:mm:ss" timeZone="EDT"/>-->
                     </h:outputText>
 
-                    <h:outputLabel value="#{bundle.ViewCustomerLabel_status}" style=" font-weight: bold"/>
-                    <h:outputLabel  value="#{customerDetailBean.selected.status}"/>
-
-                    <h:outputLabel value="State:" style=" font-weight: bold" />
-                    <h:outputLabel value="#{customerDetailBean.selectedMainAddress.state}"/>
-
-                    <h:outputLabel value="" />
-                    <h:outputLabel value="" />
-                    <h:outputLabel value="" />
-                    <h:outputLabel value="" />
+                    <h:outputLabel value="External Representative:" style="font-weight: bold"/>
+                    <h:outputLabel value="#{customerDetailBean.selected.externalRepresentativesStr}"/>
 
                     <h:outputLabel value="Zipcode:" style=" font-weight: bold" />
                     <h:outputLabel value="#{customerDetailBean.selectedMainAddress.zipCode}"/>
@@ -64,9 +65,17 @@
                     <h:outputLabel value="" />
                     <a4j:commandButton style="float: right;" execute="@this" render="updatecustomer" value="Edit Customer" action="#{customerDetailBean.prepareEditCustomer()}" oncomplete="#{rich:component('updatecustomer')}.show();return false;"/>
 
-                </h:panelGrid>   
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <a4j:commandButton style="float: right;" execute="@this" render="updatecustomerrep" value="Edit Representative" action="#{customerDetailBean.prepareEditRepresentative()}" oncomplete="#{rich:component('updatecustomerrep')}.show();return false;"/>
+                </h:panelGrid>
+
             </rich:panel>
             <ui:include src="/pages/customer/UpdateCustomer_Popup.xhtml"/>
+            <ui:include src="/pages/customer/UpdateCustomerRep_Popup.xhtml"/>
         </h:panelGroup>
         <br/>
         <h:panelGroup>

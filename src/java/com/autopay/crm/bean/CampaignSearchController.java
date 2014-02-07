@@ -12,6 +12,7 @@ import com.autopay.crm.util.CrmConstants.CampaignType;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +38,6 @@ public class CampaignSearchController implements Serializable {
     private PaginationHelper pagination;
     private int rowsPerPage = CrmConstants.DEFAULT_ITEMS_PER_PAGE;
     private List<Campaign> searchResult;
-    private boolean allowEditCampaign = false;
     private Campaign campaign_orig;
     private CampaignSearchCriteria campaignSearchCriteria;
     private boolean noCampaignFound = false;
@@ -137,9 +137,7 @@ public class CampaignSearchController implements Serializable {
 
     public List<ActiveStatusType> getCampaignStatusList() {
         List<ActiveStatusType> result = new ArrayList<ActiveStatusType>();
-        for (ActiveStatusType type : ActiveStatusType.values()) {
-            result.add(type);
-        }
+        result.addAll(Arrays.asList(ActiveStatusType.values()));
         return result;
     }
 
@@ -315,63 +313,45 @@ public class CampaignSearchController implements Serializable {
     /**
      * ************************************************
      * OVERVIEW SECTION 
-     * ************************************************
+     * ***********************************************
      */
-    public boolean isAllowEditCampaign() {
-        return allowEditCampaign;
-    }
-
-    public void setAllowEditCampaign(boolean allowEditCampaign) {
-        this.allowEditCampaign = allowEditCampaign;
-    }
-
-    public String getCampaignEditButtonName() {
-        if (allowEditCampaign) {
-            return "Commit Changes";
-        } else {
-            return "Edit Campaign";
-        }
-    }
-
     public void performCampaignEdit(final String userName) {
-        if (allowEditCampaign) {
-            if (current.getStartDate() == null) {
-                if ((campaign_orig.getAssignedUser() == null || campaign_orig.getAssignedUser().trim().length() == 0)
-                        && (current.getAssignedUser() != null && current.getAssignedUser().trim().length() > 0)) {
-                    final Date campaignStartDate = new Date();
-                    current.setStartDate(campaignStartDate);
-                    //update start date for all customers in this campaign
-                    for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {
-                        cc.setStartDate(campaignStartDate);
-                        ejbCampaignCustomer.edit(cc);
-                    }
-                }
-            } else {
-                if (campaign_orig.getStartDate() == null || campaign_orig.getStartDate().equals(current.getStartDate())) {
-                    //update start date for all customers in this campaign
-                    for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {
-                        cc.setStartDate(current.getStartDate());
-                        ejbCampaignCustomer.edit(cc);
-                    }
+        if (current.getStartDate() == null) {
+            if ((campaign_orig.getAssignedUser() == null || campaign_orig.getAssignedUser().trim().length() == 0)
+                    && (current.getAssignedUser() != null && current.getAssignedUser().trim().length() > 0)) {
+                final Date campaignStartDate = new Date();
+                current.setStartDate(campaignStartDate);
+                //update start date for all customers in this campaign
+                for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {
+                    cc.setStartDate(campaignStartDate);
+                    ejbCampaignCustomer.edit(cc);
                 }
             }
-
-            //save campaign
-            current.setLastUpdated(new Date());
-            current.setUpdateUser(userName);
-            ejbCampaign.edit(current);
-
-            setAllowEditCampaign(false);
-            campaign_orig = null;
         } else {
-            setAllowEditCampaign(true);
-            campaign_orig = new Campaign();
-            cloneCampaign(campaign_orig, current);
+            if (campaign_orig.getStartDate() == null || campaign_orig.getStartDate().equals(current.getStartDate())) {
+                //update start date for all customers in this campaign
+                for (CampaignCustomer cc : current.getCampaignCustomerCollection()) {
+                    cc.setStartDate(current.getStartDate());
+                    ejbCampaignCustomer.edit(cc);
+                }
+            }
         }
+
+        //save campaign
+        current.setLastUpdated(new Date());
+        current.setUpdateUser(userName);
+        ejbCampaign.edit(current);
+
+        campaign_orig = null;
+
     }
 
+    public void prepareEditCampaign() {
+        campaign_orig = new Campaign();
+        cloneCampaign(campaign_orig, current);
+    }
+    
     public String cancelCampaignEditAction() {
-        setAllowEditCampaign(false);
         if (campaign_orig != null) {
             cloneCampaign(current, campaign_orig);
         }
@@ -389,20 +369,23 @@ public class CampaignSearchController implements Serializable {
 
     public List<String> autocomplete(String prefix) {
         List<String> result = ejbCampaign.getCampaignNamesByName(prefix);
-        Collections.sort(result);
+        if (result != null) {
+            Collections.sort(result);
+        }
         return result;
     }
 
     public List<String> autocompleteAssignTo(String prefix) {
         List<String> result = ejbUser.getUserNamesByName(prefix);
-        Collections.sort(result);
+        if (result != null) {
+            Collections.sort(result);
+        }
         return result;
     }
 
     /**
      * *******************************************
-     * CUSTOMERS SECTION
-     ********************************************
+     * CUSTOMERS SECTION *******************************************
      */
     public List<CampaignCustomer> getCampaignCustomers() {
         List<CampaignCustomer> result = new ArrayList<CampaignCustomer>();

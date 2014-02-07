@@ -16,7 +16,7 @@
         <script type="text/javascript">
             var displayPoweredBy = false;
             var notSupportedBrowsers = [{'os': 'Any', 'browser': 'MSIE', 'version': 9}, {'os': 'Any', 'browser': 'Firefox', 'version': 3}, {'os': 'Any', 'browser': 'Safari', 'version': 5}];
-
+            
             function stopEnterKey(evt) {
                 var evt = (evt) ? evt : ((event) ? event : null);
                 var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
@@ -26,7 +26,7 @@
                     }
                 }
             }
-
+            
             document.onkeypress = stopEnterKey;
         </script>
 
@@ -41,7 +41,7 @@
                 document.getElementById("statPane").style.verticalAlign = "middle";
                 document.getElementById("statPane").style.visibility = "visible";
             }
-
+            
             function done() {
                 document.getElementById("statPane").style.visibility = "hidden";
             }
@@ -87,6 +87,20 @@
                         </li>
                         <li class="#{view.viewId.startsWith('/pages/admin/', 0) ? 'current' : ''}">
                             <h:link outcome="/pages/admin/AdminPage.xhtml" value="Admin" rendered="#{loginBean.superUser}"/>
+                            <!--<ul>
+                                <li>
+                                    <h:commandLink action="#{adminBean.prepareLinkCutomers()}" value="Link Customers" 
+                                                   rendered="#{loginBean.superUser}" id="linkcustomers"/>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{adminBean.prepareUnLinkCutomers()}" value="UnLink Customers" 
+                                                   rendered="#{loginBean.superUser}" id="unlinkcustomers"/>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{adminBean.prepareAssignRep()}" value="Assign Representative" 
+                                                   rendered="#{loginBean.superUser}" id="assignrepresentative"/>
+                                </li>
+                            </ul>-->
                         </li>
                     </ul>
                 </h:form>

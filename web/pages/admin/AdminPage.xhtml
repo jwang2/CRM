@@ -4,19 +4,18 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
     <ui:define name="body">
-        <h:outputText value="Admin Page" style="font-weight:bold; font-size: 1.5em"/>
-        <br/>
         <br/>
         <h:form id="adminForm">
-            <rich:tabPanel switchType="ajax" id="adminTabPanel" activeItem="#{customerDetailBean.currentTab}">
-                <rich:tab header="Link Customers" id="tabLinkCustomers" name="linkcusomers">
-                    <ui:include src="LinkCustomers.xhtml"/>
-                </rich:tab>
-                <rich:tab header="UnLink Customers" id="tabUnLinkCustomers" name="unlinkcusomers">
-                    <ui:include src="UnlinkCustomers.xhtml"/>
-                </rich:tab>
-                
-            </rich:tabPanel>
+            <rich:panel header="Adminitration Panel">
+                <h:panelGrid>
+                    <h:link outcome="/pages/admin/LinkCustomers" value="Link Customers"/>
+                    <br/>
+                    <h:link outcome="/pages/admin/UnlinkCustomers" value="UnLink Customers"/>
+                    <br/>
+                    <h:link outcome="/pages/admin/AssignRep" value="Assign Representative"/>
+                    <br/>
+                </h:panelGrid>
+            </rich:panel>
         </h:form>
     </ui:define>
 </ui:composition>

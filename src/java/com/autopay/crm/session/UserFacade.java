@@ -6,6 +6,7 @@ package com.autopay.crm.session;
 
 import com.autopay.crm.model.dealer.Role;
 import com.autopay.crm.model.dealer.User;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -58,6 +59,22 @@ public class UserFacade extends AbstractFacade<User> {
             return result;
         } catch (Exception e) {
             log.error(e);
+            return null;
+        }
+    }
+    
+    public List<String> getUserNamesAndFullNameByName(final String name) {
+        
+        try {
+            String queryStr = "select * from user where username like '" + name + "%'";
+            List<User> users = (List<User>) em.createNativeQuery(queryStr, User.class).getResultList();
+            List<String> result = new ArrayList<String>();
+            for (User user : users) {
+                result.add(user.getUsername() + " (" + user.getFirstName() + " " + user.getLastName() + ")");
+            }
+            return result;
+        } catch (Exception e) {
+            //log.error(e);
             return null;
         }
     }

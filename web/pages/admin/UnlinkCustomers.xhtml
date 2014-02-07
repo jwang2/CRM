@@ -1,35 +1,53 @@
-<ui:composition xmlns:h="http://java.sun.com/jsf/html"
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j">
-    <h:panelGroup>
-        <h:outputLabel value="Linked Customer:"/>
-        <h:selectOneMenu value="#{adminBean.selectedLinkedCustomer}">
-            <f:selectItems value="#{adminBean.linkedCustomerList}" var="linkedcustomer" itemLabel="#{linkedcustomer.name}" itemValue="#{linkedcustomer}"/>
-        </h:selectOneMenu>
-        <h:commandButton value="Show Linked Customers" action="#{adminBean.getLinkedCustomerForCustomer()}"/>
-    </h:panelGroup>
-    <br/>
-    <rich:dataTable id="linkedcustomertable" rendered="#{adminBean.linkedCustomersForSelectCustomer.size()>0}" styleClass="table" value="#{adminBean.linkedCustomersForSelectCustomer}" 
-                    var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="vertical-align: middle; text-align: center; border:solid 1px; width: 100%">
-        <rich:column width="150px">
-            <f:facet name="header">
-                <h:outputText value="Customer to Link"/>
-            </f:facet>
-            <h:selectBooleanCheckbox value="#{item.selected}" disabled="#{item.mainflag}">
-                <a4j:ajax execute="@this" event="valueChange" render="linkedcustomertable"/>
-            </h:selectBooleanCheckbox>#{item.mainflag ? "(main)" : ""}
-        </rich:column>
-        <rich:column width="650px">
-            <f:facet name="header">
-                <h:outputText value="Customer"/>
-            </f:facet>
-            <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="2" value="#{adminBean.getCustomerDetail(item)}"/>
-        </rich:column>
-    </rich:dataTable>
-    <h:panelGroup rendered="#{adminBean.linkedCustomersForSelectCustomer.size()>0}">
-        <h:commandButton value="UnLink Customers" action="#{adminBean.unLinkCustomer()}" style="float: right"/>
-    </h:panelGroup>
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:define name="title">
+        <h:outputText value="UnLink Customers"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="unlinkCustomersForm" styleClass="jsfcrud_list_form">
+            <br/>
+            <h:outputLabel value="UnLink Customers" style="color: #591f00; font-family: Arial, Verdana, sans-serif; font-weight:bold;font-size: 1.5em"/>
+            <br/>
+            <br/>
+            <h:panelGroup>
+                <h:outputLabel value="Linked Customer:"/>
+                <h:selectOneMenu value="#{adminBean.selectedLinkedCustomer}">
+                    <f:selectItems value="#{adminBean.linkedCustomerList}" var="linkedcustomer" itemLabel="#{linkedcustomer.name}" itemValue="#{linkedcustomer}"/>
+                </h:selectOneMenu>
+                <a4j:commandButton render="result111" value="Show Linked Customers" action="#{adminBean.getLinkedCustomerForCustomer()}"/>
+            </h:panelGroup>
+            <br/>
+            <br/>
+            <h:panelGroup id="result111">
+                <rich:dataTable id="linkedcustomertable" rendered="#{adminBean.getLinkedCustomersCount() > 0}" styleClass="table" value="#{adminBean.linkedCustomersForSelectCustomer}" 
+                                var="item" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" style="vertical-align: middle; text-align: center; border:solid 1px; width: 100%">
+                    <rich:column width="150px">
+                        <f:facet name="header">
+                            <h:outputText value="Customer to Link"/>
+                        </f:facet>
+                        <h:selectBooleanCheckbox value="#{item.selected}" disabled="#{item.mainflag}">
+                            <a4j:ajax execute="@this" event="valueChange" render="linkedcustomertable"/>
+                        </h:selectBooleanCheckbox>#{item.mainflag ? "(main)" : ""}
+                    </rich:column>
+                    <rich:column width="650px">
+                        <f:facet name="header">
+                            <h:outputText value="Customer"/>
+                        </f:facet>
+                        <h:inputTextarea readonly="true" style="width: 100%; border:none; background-color: transparent" rows="2" value="#{adminBean.getCustomerDetail(item)}"/>
+                    </rich:column>
+                </rich:dataTable>
+                <h:panelGroup rendered="#{adminBean.getLinkedCustomersCount() > 0}">
+                    <h:commandButton value="UnLink Customers" action="#{adminBean.unLinkCustomer()}" style="float: right"/>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
 </ui:composition>

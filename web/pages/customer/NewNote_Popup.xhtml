@@ -12,9 +12,9 @@
             </h:panelGroup>
             <br/>
             <h:panelGroup>
-                <a4j:commandButton value="Cancel" onclick="#{rich:component('newnote')}.hide(event);
+                <a4j:commandButton style="float: left" value="Cancel" onclick="#{rich:component('newnote')}.hide(event);
                         return false;"/>
-                <a4j:commandButton execute="newnote" render="notemain" value="Create" action="#{customerDetailBean.addNewNote(loginBean.userName)}" oncomplete="#{rich:component('newnote')}.hide(event);return false;"/>
+                    <a4j:commandButton style="float: right" execute="newnote" render="notemain" value="Create" action="#{customerDetailBean.addNewNote(loginBean.userName)}" oncomplete="#{rich:component('newnote')}.hide(event);return false;"/>
             </h:panelGroup>
         </h:form>
     </rich:popupPanel>

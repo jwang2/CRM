@@ -1,0 +1,52 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns="http://www.w3.org/1999/xhtml">
+    <h:commandButton value="#{bundleCrm.CreateCampaignButton}" rendered="#{loginBean.superUser}" style="float: right; height : 30px !important; width: 120px !important;">
+        <rich:componentControl event="click" operation="show" target="lp"/>
+    </h:commandButton>
+
+    <rich:popupPanel id="lp" header="Create A Campaign" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false" domElementAttachment="parent">
+        <h:panelGroup rendered="#{!customerSearchBean.searchStateMatchStateUserRepresent(loginBean.userName)}">
+            <h:outputLabel value="All the customers in search result are in the different states that you represent. This campaign is invalid."/>
+            <br/>
+            <br/>
+            <a4j:commandButton style="float: right" value="OK" onclick="#{rich:component('lp')}.hide(event);return false;"/>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{customerSearchBean.searchStateMatchStateUserRepresent(loginBean.userName)}">
+            <h:panelGroup rendered="#{dashboardBean.isCustomerReprentative(loginBean.userName)}">
+                <h:outputLabel value="You are a representative for states : #{customerSearchBean.getStatesLoginUserRepresent(loginBean.userName)}."/>
+                <br/>
+                <h:outputLabel value="Only customers in these states will be included in this campaign."/>
+                <br/>
+                <br/>
+            </h:panelGroup>
+            <h:panelGrid columns="2" width="100%" >
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_name}" />
+                <h:inputText title="#{bundle.CreateCampaignTitle_name}" value="#{customerSearchBean.campaignName}" size="40"/>
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_description}"/>
+                <h:inputText title="#{bundle.CreateCampaignTitle_description}" value="#{customerSearchBean.campaignDesc}" size="40"/>
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_active}"/>
+                <h:selectOneMenu value="#{customerSearchBean.campaignStatus}">
+                    <f:selectItems value="#{campaignSearchBean.campaignStatusList}" var="status" itemLabel="#{status}" itemValue="#{status}"/>
+                </h:selectOneMenu>
+                <h:outputLabel value="#{bundle.CreateCampaignLabel_assignedUser}"/>    
+                <rich:autocomplete value="#{customerSearchBean.campaignAssignto}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" style="border: none; background: transparent"/>
+                <h:outputLabel value="Type:"/>
+                <h:selectOneMenu value="#{customerSearchBean.campaignType}">
+                    <f:selectItems value="#{campaignSearchBean.campaignTypeList}" var="type" itemLabel="#{type}" itemValue="#{type}"/>
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <h:panelGroup>
+                <a4j:commandButton style="float: left" value="Cancel" onclick="#{rich:component('lp')}.hide(event);
+                        return false;"/>
+                <a4j:commandButton style="float: right" render="customerResultPanel" value="Create" action="#{customerSearchBean.createCampaign(loginBean.userName)}" oncomplete="#{rich:component('lp')}.hide(event);return false;"/>
+            </h:panelGroup>
+        </h:panelGroup>
+    </rich:popupPanel>
+
+</ui:composition>
+
+

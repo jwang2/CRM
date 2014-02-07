@@ -219,7 +219,7 @@ header, section, article, footer, nav, form {
 
 /* selected menu element */
 #nav .current a, #nav li:hover > a {
-    background:#4C8411 url(../../images/bg.png) repeat-x 0 -20px;
+    background:#7788aa url(../../images/bg.png) repeat-x 0 -20px;
     color:#000;
     border-top:1px solid #f8f8f8;
 

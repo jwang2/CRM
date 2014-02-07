@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditRepresentativeTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{representativeController.selected.id}" title="#{bundle.EditRepresentativeTitle_id}" required="true" requiredMessage="#{bundle.EditRepresentativeRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_type}" for="type" />
+                    <h:inputText id="type" value="#{representativeController.selected.type}" title="#{bundle.EditRepresentativeTitle_type}" />
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_firstName}" for="firstName" />
+                    <h:inputText id="firstName" value="#{representativeController.selected.firstName}" title="#{bundle.EditRepresentativeTitle_firstName}" />
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_lastName}" for="lastName" />
+                    <h:inputText id="lastName" value="#{representativeController.selected.lastName}" title="#{bundle.EditRepresentativeTitle_lastName}" />
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_username}" for="username" />
+                    <h:inputText id="username" value="#{representativeController.selected.username}" title="#{bundle.EditRepresentativeTitle_username}" required="true" requiredMessage="#{bundle.EditRepresentativeRequiredMessage_username}"/>
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_email}" for="email" />
+                    <h:inputText id="email" value="#{representativeController.selected.email}" title="#{bundle.EditRepresentativeTitle_email}" />
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{representativeController.selected.createUser}" title="#{bundle.EditRepresentativeTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{representativeController.selected.dateCreated}" title="#{bundle.EditRepresentativeTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{representativeController.selected.updateUser}" title="#{bundle.EditRepresentativeTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.EditRepresentativeLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{representativeController.selected.lastUpdated}" title="#{bundle.EditRepresentativeTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                </h:panelGrid>
+                <h:commandLink action="#{representativeController.update}" value="#{bundle.EditRepresentativeSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditRepresentativeViewLink}"/>
+                <br />
+                <h:commandLink action="#{representativeController.prepareList}" value="#{bundle.EditRepresentativeShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditRepresentativeIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

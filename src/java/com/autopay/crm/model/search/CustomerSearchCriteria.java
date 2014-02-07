@@ -1,7 +1,6 @@
 package com.autopay.crm.model.search;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
@@ -22,6 +21,7 @@ public final class CustomerSearchCriteria implements Serializable{
     private String totalLoanOperator;
     private String statusOperator;
     private String sortBy;
+    private String representative;
     
     public CustomerSearchCriteria() {
         
@@ -30,7 +30,7 @@ public final class CustomerSearchCriteria implements Serializable{
     public CustomerSearchCriteria(final String name, final String type, final String status, 
             final String phone, final String city, final String county, final String state, final String zipcode,
             final Integer totalFinanced, final String totalFinancedOperator, final int totalLoan, final String totalLoanOperator, 
-            final String statusOperator) {
+            final String statusOperator, final String representative) {
         this.name = name;
         this.type = type;
         this.status = status;
@@ -44,6 +44,7 @@ public final class CustomerSearchCriteria implements Serializable{
         this.totalLoan = totalLoan;
         this.totalLoanOperator = totalLoanOperator;
         this.statusOperator = statusOperator;
+        this.representative = representative;
     }
 
     public String getName() {
@@ -166,23 +167,32 @@ public final class CustomerSearchCriteria implements Serializable{
         this.sortBy = sortBy;
     }
 
+    public String getRepresentative() {
+        return representative;
+    }
+
+    public void setRepresentative(String representative) {
+        this.representative = representative;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 67 * hash + (this.type != null ? this.type.hashCode() : 0);
-        hash = 67 * hash + (this.status != null ? this.status.hashCode() : 0);
-        hash = 67 * hash + (this.phone != null ? this.phone.hashCode() : 0);
-        hash = 67 * hash + (this.city != null ? this.city.hashCode() : 0);
-        hash = 67 * hash + (this.county != null ? this.county.hashCode() : 0);
-        hash = 67 * hash + (this.state != null ? this.state.hashCode() : 0);
-        hash = 67 * hash + (this.zipcode != null ? this.zipcode.hashCode() : 0);
-        hash = 67 * hash + (this.totalFinanced != null ? this.totalFinanced.hashCode() : 0);
-        hash = 67 * hash + (this.totalLoan != null ? this.totalLoan.hashCode() : 0);
-        hash = 67 * hash + (this.totalFinancedOperator != null ? this.totalFinancedOperator.hashCode() : 0);
-        hash = 67 * hash + (this.totalLoanOperator != null ? this.totalLoanOperator.hashCode() : 0);
-        hash = 67 * hash + (this.statusOperator != null ? this.statusOperator.hashCode() : 0);
-        hash = 67 * hash + (this.sortBy != null ? this.sortBy.hashCode() : 0);
+        int hash = 3;
+        hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 97 * hash + (this.type != null ? this.type.hashCode() : 0);
+        hash = 97 * hash + (this.status != null ? this.status.hashCode() : 0);
+        hash = 97 * hash + (this.phone != null ? this.phone.hashCode() : 0);
+        hash = 97 * hash + (this.city != null ? this.city.hashCode() : 0);
+        hash = 97 * hash + (this.county != null ? this.county.hashCode() : 0);
+        hash = 97 * hash + (this.state != null ? this.state.hashCode() : 0);
+        hash = 97 * hash + (this.zipcode != null ? this.zipcode.hashCode() : 0);
+        hash = 97 * hash + (this.totalFinanced != null ? this.totalFinanced.hashCode() : 0);
+        hash = 97 * hash + (this.totalLoan != null ? this.totalLoan.hashCode() : 0);
+        hash = 97 * hash + (this.totalFinancedOperator != null ? this.totalFinancedOperator.hashCode() : 0);
+        hash = 97 * hash + (this.totalLoanOperator != null ? this.totalLoanOperator.hashCode() : 0);
+        hash = 97 * hash + (this.statusOperator != null ? this.statusOperator.hashCode() : 0);
+        hash = 97 * hash + (this.sortBy != null ? this.sortBy.hashCode() : 0);
+        hash = 97 * hash + (this.representative != null ? this.representative.hashCode() : 0);
         return hash;
     }
 
@@ -237,12 +247,32 @@ public final class CustomerSearchCriteria implements Serializable{
         if ((this.sortBy == null) ? (other.sortBy != null) : !this.sortBy.equals(other.sortBy)) {
             return false;
         }
+        if ((this.representative == null) ? (other.representative != null) : !this.representative.equals(other.representative)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "CustomerSearchCriteria{" + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", sortBy=" + sortBy + '}';
+        return "CustomerSearchCriteria{" + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", sortBy=" + sortBy + ", representative=" + representative + '}';
     }
 
+    public boolean isEmptyCriteria() {
+        boolean result = true;
+        if ((name != null && name.trim().length() > 0) ||
+                (type != null && type.trim().length() > 0) ||
+                (status != null && status.trim().length() > 0) ||
+                (phone != null && phone.trim().length() > 0) ||
+                (city != null && city.trim().length() > 0) ||
+                (county != null && county.trim().length() > 0) ||
+                (state != null && state.trim().length() > 0) ||
+                (zipcode != null && zipcode.trim().length() > 0) ||
+                (totalFinanced != null) ||
+                (totalLoan != null) ||
+                (representative != null && representative.trim().length() > 0)) {
+            result = false;
+        }
+        return result;
+    }
 }

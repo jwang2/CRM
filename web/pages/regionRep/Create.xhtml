@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateRegionRepTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateRegionRepLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{regionRepController.selected.id}" title="#{bundle.CreateRegionRepTitle_id}" required="true" requiredMessage="#{bundle.CreateRegionRepRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateRegionRepLabel_createUser}" for="createUser" />
+                    <h:inputText id="createUser" value="#{regionRepController.selected.createUser}" title="#{bundle.CreateRegionRepTitle_createUser}" />
+                    <h:outputLabel value="#{bundle.CreateRegionRepLabel_dateCreated}" for="dateCreated" />
+                    <h:inputText id="dateCreated" value="#{regionRepController.selected.dateCreated}" title="#{bundle.CreateRegionRepTitle_dateCreated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateRegionRepLabel_updateUser}" for="updateUser" />
+                    <h:inputText id="updateUser" value="#{regionRepController.selected.updateUser}" title="#{bundle.CreateRegionRepTitle_updateUser}" />
+                    <h:outputLabel value="#{bundle.CreateRegionRepLabel_lastUpdated}" for="lastUpdated" />
+                    <h:inputText id="lastUpdated" value="#{regionRepController.selected.lastUpdated}" title="#{bundle.CreateRegionRepTitle_lastUpdated}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateRegionRepLabel_regionId}" for="regionId" />
+                    <h:selectOneMenu id="regionId" value="#{regionRepController.selected.regionId}" title="#{bundle.CreateRegionRepTitle_regionId}" required="true" requiredMessage="#{bundle.CreateRegionRepRequiredMessage_regionId}">
+                        <f:selectItems value="#{regionController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateRegionRepLabel_representativeId}" for="representativeId" />
+                    <h:selectOneMenu id="representativeId" value="#{regionRepController.selected.representativeId}" title="#{bundle.CreateRegionRepTitle_representativeId}" required="true" requiredMessage="#{bundle.CreateRegionRepRequiredMessage_representativeId}">
+                        <f:selectItems value="#{representativeController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{regionRepController.create}" value="#{bundle.CreateRegionRepSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{regionRepController.prepareList}" value="#{bundle.CreateRegionRepShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateRegionRepIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

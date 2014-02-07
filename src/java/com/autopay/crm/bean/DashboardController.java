@@ -1,8 +1,12 @@
 package com.autopay.crm.bean;
 
 import com.autopay.crm.model.Campaign;
+import com.autopay.crm.model.Customer;
+import com.autopay.crm.model.Representative;
 import com.autopay.crm.model.Schedules;
 import com.autopay.crm.session.CampaignFacade;
+import com.autopay.crm.session.CustomerFacade;
+import com.autopay.crm.session.RepresentativeFacade;
 import com.autopay.crm.session.SchedulesFacade;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -20,18 +24,23 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 @SessionScoped
 public class DashboardController implements Serializable {
+
     private Campaign currentCampaign;
     private Schedules currentSchedule;
     private List<Campaign> activeCampaigns;
     private List<Schedules> activeSchedules;
+    private List<Customer> representedCustomers;
     
     @EJB
     private CampaignFacade ejbCampaign;
     @EJB
     private SchedulesFacade ejbSchedules;
-    
+    @EJB
+    private CustomerFacade ejbCustomer;
+    @EJB
+    private RepresentativeFacade ejbRep;
+
     public DashboardController() {
-        
     }
 
     public Campaign getCurrentCampaign() {
@@ -71,30 +80,64 @@ public class DashboardController implements Serializable {
     public void setActiveSchedules(List<Schedules> activeSchedules) {
         this.activeSchedules = activeSchedules;
     }
-    
+
     public String getTodayDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         return sdf.format(new Date());
     }
-    
+
     public String refreshActiveCampaigns(final String currentUser) {
         activeCampaigns = ejbCampaign.getUserActiveCampaigns(currentUser);
         return "/pages/dashboard/DashboardPage";
     }
-    
+
     public String refreshActiveSchedules(final String currentUser) {
         activeSchedules = ejbSchedules.getUserNotCompletedScheduledTasks(currentUser);
         return "/pages/dashboard/DashboardPage";
     }
-    
+
     public String getCurrentViewPageID() {
         String currentViewID = FacesContext.getCurrentInstance().getViewRoot().getViewId();
         System.out.println("===== currentViewID : " + currentViewID);
         return currentViewID;
     }
-    
+
     public String isCurrentActiveView(String viewID) {
         String currentViewID = getCurrentViewPageID();
         return viewID.equals(currentViewID) ? "current" : "";
+    }
+
+    /**
+     * **********************************
+     * Customer Representative section
+     **********************************
+     */
+    public boolean isCustomerReprentative(final String currentUser) {
+        final Representative rep = ejbRep.getRepresentativeByUsername(currentUser);
+        if (rep == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public List<Customer> getRepresentedCustomers() {
+        return representedCustomers;
+    }
+
+    public void setRepresentedCustomers(List<Customer> representedCustomers) {
+        this.representedCustomers = representedCustomers;
+    }
+
+    public void refreshRepresentedCustomers(final String currentUser) {
+        representedCustomers = ejbCustomer.getCustomersUserRepresented(currentUser);
+    }
+
+    public int getRepCustomerCount() {
+        if (representedCustomers == null) {
+            return 0;
+        } else {
+            return representedCustomers.size();
+        }
     }
 }
