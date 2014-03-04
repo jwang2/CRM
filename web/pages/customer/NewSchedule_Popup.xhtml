@@ -9,10 +9,9 @@
             <h:panelGrid columns="2" rendered="true">
                 <h:outputLabel value="Assign To:"/>
                 <h:panelGroup>
-                    <rich:autocomplete id="assignedUser111" value="#{customerDetailBean.currentSchedule.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" styleClass="inputSearch2" style="border: none; background: transparent; vertical-align: middle" required="true" requiredMessage="Assigned user is required.">
+                    <rich:autocomplete id="assignedUser111" value="#{customerDetailBean.currentSchedule.assignedUser}" mode="cachedAjax" minChars="1" autocompleteMethod="#{campaignSearchBean.autocompleteAssignTo}" autofill="false" styleClass="inputSearch2" style="border: none; background: transparent; vertical-align: middle">
                         <f:validateRequired/>
                     </rich:autocomplete>
-                    <rich:message for="assignedUser111"/>
                 </h:panelGroup>
                 <h:outputLabel value="Task:"/>
                 <h:selectOneMenu value="#{customerDetailBean.currentTask.name}">
@@ -42,7 +41,7 @@
             <h:panelGroup>
                 <a4j:commandButton style="float: left" value="Cancel" onclick="#{rich:component('newschedule')}.hide(event);
                         return false;"/>
-                <a4j:commandButton style="float: right" execute="newschedule" render="scheduleMain" value="Create" action="#{customerDetailBean.performScheduleAction(loginBean.userName, true)}" oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('newschedule')}.hide(event);return false;}"/>
+                <a4j:commandButton style="float: right" execute="newschedule" render="scheduleMain" value="Create" action="#{customerDetailBean.performScheduleAction(loginBean.userName, true)}" oncomplete="#{rich:component('newschedule')}.hide(event);return false;"/>
 
             </h:panelGroup>
         </h:form>

@@ -295,8 +295,8 @@ public class UploadLegacyCapexData {
             model.setContactUpdateDate(data.get(41).equals("\\N") ? null : data.get(41));
 
         } else {
-            System.out.println("@@@@@@@@@@@@@@@@@@@@ size: " + data.size());
-            System.out.println("#############################\n" + data.toString());
+            System.out.println("@@@@ size: " + data.size());
+            System.out.println("####\n" + data.toString());
         }
     }
 }

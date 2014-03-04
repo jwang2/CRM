@@ -132,7 +132,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
         try {
             if (whereStr.trim().length() > 0) {
                 queryStr = queryStr + whereStr;
-                System.out.println("============================ search sql: \n" + queryStr);
+                System.out.println("==== search sql: \n" + queryStr);
                 List<Campaign> result = (List<Campaign>) em.createNativeQuery(queryStr, Campaign.class).getResultList();
                 getCampaignCustomers(result);
                 return result;
@@ -148,7 +148,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
     public List<Campaign> getUserActiveCampaigns(final String userName) {
         String queryStr = "select * from campaign where active = true and assigned_user = '" + userName + "'";
         try {
-            System.out.println("============================ search sql: \n" + queryStr);
+            System.out.println("==== search sql: \n" + queryStr);
             List<Campaign> result = (List<Campaign>) em.createNativeQuery(queryStr, Campaign.class).getResultList();
             return result;
         } catch (Exception e) {
@@ -160,7 +160,7 @@ public class CampaignFacade extends AbstractFacade<Campaign> {
     public List<String> getCampaignNamesByName(final String name) {
         String queryStr = "select * from " + Campaign.class.getName() + " where name like '" + name + "%'";
         try {
-            System.out.println("============================ search sql: \n" + queryStr);
+            System.out.println("==== search sql: \n" + queryStr);
             Query query = em.createQuery(queryStr);
             List<String> result = query.getResultList();
             return result;

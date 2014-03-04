@@ -29,7 +29,6 @@ public class RegionAreaFacade extends AbstractFacade<RegionArea> {
     }
     
     public void deleteRegionAreas(final List<RegionArea> regionAreas) {
-        System.out.println("======= deleteRegionAreas");
         String ids = "";
         for (RegionArea ra : regionAreas) {
             if (ids.length() == 0) {
@@ -39,7 +38,6 @@ public class RegionAreaFacade extends AbstractFacade<RegionArea> {
             }
         }
         String queryStr = "delete from region_area where id in (" + ids + ")";
-        System.out.println("==== queryStr: " + queryStr);
         try{
             em.createNativeQuery(queryStr).executeUpdate();
         } catch (Exception e) {

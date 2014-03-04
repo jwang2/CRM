@@ -231,7 +231,7 @@ public class FileUploadController implements Serializable {
 //                }
             }
             long end = System.currentTimeMillis();
-            System.out.println("=================== total spent =============== " + (end-start));
+            System.out.println("==== total spent ==== " + (end-start));
         }
     }
     
@@ -317,7 +317,7 @@ public class FileUploadController implements Serializable {
         if (dealer != null && fico != null) {
             newLead = new Lead();
         } else {
-            System.out.println("======== failed to add lead : " + dataModel.toString());
+            System.out.println("==== failed to add lead : " + dataModel.toString());
         }
         if (newLead != null) {
             newLead.setTotalFinanced(dataModel.getTotalFinanced());
@@ -351,7 +351,7 @@ public class FileUploadController implements Serializable {
     
     private List<ExcelRowDataModel> createExcelRowDataModel(final List<String[]> dataList) {
         List<ExcelRowDataModel> result = new ArrayList<ExcelRowDataModel>();
-        System.out.println("\n\n=================total======================: " + dataList.size() + "\n\n\n");
+        System.out.println("\n\n====total====: " + dataList.size() + "\n\n\n");
         for (String[] rowData : dataList) {
             ExcelRowDataModel dataModel = new ExcelRowDataModel(rowData[0].trim(),
                     rowData[1].trim(),

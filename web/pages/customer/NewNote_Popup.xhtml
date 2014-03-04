@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j">
 
-    <rich:popupPanel id="newnote" header="Create A Note" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="false" domElementAttachment="parent">
+    <rich:popupPanel id="newnote" header="Create A Note" autosized="true" modal="false" moveable="true" resizeable="false" followByScroll="true" domElementAttachment="parent">
         <h:form>
             <h:panelGroup>
                 <h:inputTextarea rows="5" cols="50" value="#{customerDetailBean.newNoteContent}"/>

@@ -8,7 +8,7 @@
         <rich:componentControl event="click" operation="show" target="lp"/>
     </h:commandButton>
 
-    <rich:popupPanel id="lp" header="Create A Campaign" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false" domElementAttachment="parent">
+    <rich:popupPanel id="lp" header="Create A Campaign" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="true" domElementAttachment="parent">
         <h:panelGroup rendered="#{!customerSearchBean.searchStateMatchStateUserRepresent(loginBean.userName)}">
             <h:outputLabel value="All the customers in search result are in the different states that you represent. This campaign is invalid."/>
             <br/>

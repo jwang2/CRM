@@ -34,7 +34,7 @@ public class SchedulesFacade extends AbstractFacade<Schedules> {
     public List<Schedules> getUserNotCompletedScheduledTasks(final String userName) {
         String queryStr = "select * from schedules where status <> '" + CrmConstants.ScheduleStatus.DONE.name() + "' and assigned_user = '" + userName + "'";
         try {
-            System.out.println("========== sql: " + queryStr);
+            System.out.println("==== sql: " + queryStr);
             List<Schedules> result = (List<Schedules>)em.createNativeQuery(queryStr, Schedules.class).getResultList();
             return result;
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class SchedulesFacade extends AbstractFacade<Schedules> {
     public List<Schedules> getScheduledTasksByDate(final Date date) {
         String queryStr = "select * from schedules where status <> '" + CrmConstants.ScheduleStatus.DONE.name() + "' and scheduled_datetime = '" + CrmUtils.getDateString(date, "yyyy-MM-dd") + "'";
         try {
-            System.out.println("========== sql: " + queryStr);
+            System.out.println("==== sql: " + queryStr);
             List<Schedules> result = (List<Schedules>)em.createNativeQuery(queryStr, Schedules.class).getResultList();
             return result;
         } catch (Exception e) {

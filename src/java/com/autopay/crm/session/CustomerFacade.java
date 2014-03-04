@@ -344,18 +344,16 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             //fill out some details
             long start = System.currentTimeMillis();
             getCustomerTotalFinanced(result, startDate, endDate);
-            System.out.println("@@@@@@@@@@@@ sql execution time (total fianced): " + (System.currentTimeMillis() - start));
+            System.out.println("@@@@ sql execution time (total fianced): " + (System.currentTimeMillis() - start));
             start = System.currentTimeMillis();
             getCustomerCampaignInfo(result);
-            System.out.println("@@@@@@@@@@@@ sql execution time (campaign info): " + (System.currentTimeMillis() - start));
+            System.out.println("@@@@ sql execution time (campaign info): " + (System.currentTimeMillis() - start));
             start = System.currentTimeMillis();
             getCustomerAddressInfo(result);
-            System.out.println("@@@@@@@@@@@@ sql execution time (address info): " + (System.currentTimeMillis() - start));
+            System.out.println("@@@@ sql execution time (address info): " + (System.currentTimeMillis() - start));
             return result;
         } else {
-            System.out.println("###### aStr: " + aStr);
-            System.out.println("###### lStr: " + lStr);
-            System.out.println("###### cWhere: " + cWhere);
+            System.out.println("#### cWhere: " + cWhere);
             if (cWhere.length() > 0) {
                 cWhere = cWhere + " and case when c.linked_customer_id is null then true else c.linked_customer_id = c.id end ";
             } else {
@@ -373,10 +371,10 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             }
             try {
                 if (queryStr.trim().length() > 0) {
-                    System.out.println("============================ search sql: \n" + queryStr);
+                    System.out.println("==== search sql: \n" + queryStr);
                     long start = System.currentTimeMillis();
                     List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
-                    System.out.println("@@@@@@@@@@@@ sql execution time: " + (System.currentTimeMillis() - start));
+                    System.out.println("@@@@ sql execution time: " + (System.currentTimeMillis() - start));
 
                     if (customerSearchCriteria.getRepresentative() != null && customerSearchCriteria.getRepresentative().trim().length() > 0) {
                         start = System.currentTimeMillis();
@@ -401,18 +399,18 @@ public class CustomerFacade extends AbstractFacade<Customer> {
                             }
                             result = result1;
                         }
-                        System.out.println("@@@@@@@@@@@@ sql execution time (rep): " + (System.currentTimeMillis() - start));
+                        System.out.println("@@@@ sql execution time (rep): " + (System.currentTimeMillis() - start));
                     }
                     //fill out some details
                     start = System.currentTimeMillis();
                     getCustomerTotalFinanced(result, startDate, endDate);
-                    System.out.println("@@@@@@@@@@@@ sql execution time (total fianced): " + (System.currentTimeMillis() - start));
+                    System.out.println("@@@@ sql execution time (total fianced): " + (System.currentTimeMillis() - start));
                     start = System.currentTimeMillis();
                     getCustomerCampaignInfo(result);
-                    System.out.println("@@@@@@@@@@@@ sql execution time (campaign info): " + (System.currentTimeMillis() - start));
+                    System.out.println("@@@@ sql execution time (campaign info): " + (System.currentTimeMillis() - start));
                     start = System.currentTimeMillis();
                     getCustomerAddressInfo(result);
-                    System.out.println("@@@@@@@@@@@@ sql execution time (address info): " + (System.currentTimeMillis() - start));
+                    System.out.println("@@@@ sql execution time (address info): " + (System.currentTimeMillis() - start));
                     return result;
                 } else {
                     return null;
@@ -927,7 +925,7 @@ public class CustomerFacade extends AbstractFacade<Customer> {
                 }
             }
             queryStr = "select c.* from customer c, customer_rep cr, representative r where r.username = '" + userName + "' and r.id = cr.representative_id and cr.customer_id = c.id";
-            System.out.println("===== queryStr: " + queryStr);
+            System.out.println("==== queryStr: " + queryStr);
             List<Customer> customers = em.createNativeQuery(queryStr, Customer.class).getResultList();
             if (customers != null && !customers.isEmpty()) {
                 if (result == null) {

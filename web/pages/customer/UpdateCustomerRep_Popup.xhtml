@@ -55,7 +55,7 @@
                             <f:facet name="header">
                                 <h:outputText value=""/>
                             </f:facet>
-                            <a4j:commandLink execute="main222" render="main222" value="Remove" action="#{customerDetailBean.removeExternalRep(selectedExRep)}"/>
+                            <a4j:commandLink execute="main222" render="main222" value="Remove" rendered="#{!selectedExRep.endsWith(')*')}" action="#{customerDetailBean.removeExternalRep(selectedExRep)}"/>
                         </h:column>
                     </h:dataTable>
                 </h:panelGrid>

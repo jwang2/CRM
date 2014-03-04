@@ -648,8 +648,8 @@ public class CustomerService {
     public void updateUser(@WebParam(name = "user") UserObj user) throws Exception {
         if (user != null && user.getUserName() != null) {
             Users existUser = usersFacade.findUser(user.getUserName());
-            System.out.println("################ updateUser: " + user.getUserName() + ", " + user.getStatus());
-            System.out.println("############ existUser : " + existUser);
+            System.out.println("#### updateUser: " + user.getUserName() + ", " + user.getStatus());
+            System.out.println("#### existUser : " + existUser);
             if (existUser != null) {
                 if (user.getFirstName() != null && user.getFirstName().trim().length() > 0) {
                     existUser.setFirstName(user.getFirstName());

@@ -75,13 +75,12 @@ public class LoadDataToDB {
         
         Date dateOfFile;
         for (String filePath : filesToLoad.keySet()) {
-            System.out.println("======================file path: " + filePath);
+            System.out.println("====file path: " + filePath);
             long start = System.currentTimeMillis();
         
             String dateOfFileStr = filesToLoad.get(filePath);
             try {
                 dateOfFile = df.parse(dateOfFileStr);
-System.out.println("@@@@@@@@ dateOfFile: " + dateOfFile);
                 final File importFile = new File(filePath);
                 if (importFile.exists()) {
                     importDataFromExcel(importFile, dateOfFile.getTime());
@@ -90,7 +89,7 @@ System.out.println("@@@@@@@@ dateOfFile: " + dateOfFile);
                 Logger.getLogger(LoadDataToDB.class.getName()).log(Level.SEVERE, null, ex);
             }
             long end = System.currentTimeMillis();
-            System.out.println("===================== time: " + (end-start));
+            System.out.println("==== time: " + (end-start));
         }
     }
     
@@ -139,7 +138,7 @@ System.out.println("@@@@@@@@ dateOfFile: " + dateOfFile);
             dataList = excelImportPOI.loadRows();
         }
         
-        System.out.println("======= dataList: " + dataList);
+        System.out.println("==== dataList: " + dataList);
     }
     
     private void importDataFromExcel(final File fileToLoad, final long dateOfFile) {
@@ -277,7 +276,7 @@ System.out.println("@@@@@@@@ dateOfFile: " + dateOfFile);
         if (dealer != null && fico != null) {
             newLead = new Lead();
         } else {
-            System.out.println("======== failed to add lead : " + dataModel.toString());
+            System.out.println("==== failed to add lead : " + dataModel.toString());
         }
         if (newLead != null) {
             newLead.setTotalFinanced(dataModel.getTotalFinanced());
@@ -310,7 +309,7 @@ System.out.println("@@@@@@@@ dateOfFile: " + dateOfFile);
     
     private List<ExcelRowDataModel> createExcelRowDataModel(final List<String[]> dataList) {
         List<ExcelRowDataModel> result = new ArrayList<ExcelRowDataModel>();
-        System.out.println("=================total======================: " + dataList.size());
+        System.out.println("====total====: " + dataList.size());
         for (String[] rowData : dataList) {
             ExcelRowDataModel dataModel = new ExcelRowDataModel(rowData[0],
                     rowData[1],

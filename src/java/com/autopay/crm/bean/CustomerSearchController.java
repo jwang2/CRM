@@ -127,7 +127,7 @@ public class CustomerSearchController implements Serializable {
             recreateModel();
             pagination = null;
             searchResult = getFacade().getCustomersBySearchCriterias(customerSearchCriteria);
-            System.out.println("########### search time: " + (System.currentTimeMillis() - start));
+            System.out.println("#### search time: " + (System.currentTimeMillis() - start));
             if (searchResult != null) {
                 searchResult_backup = new ArrayList<Customer>(searchResult);
             }
@@ -144,7 +144,7 @@ public class CustomerSearchController implements Serializable {
     }
 
     public String searchAgain() {
-        System.out.println("======== searchAgain: " + searchByName);
+        System.out.println("==== searchAgain: " + searchByName);
         if (searchByName != null && searchResult != null) {
             recreateModel();
             pagination = null;
@@ -398,7 +398,6 @@ public class CustomerSearchController implements Serializable {
 
     public void createCampaign(final String user) {
         if (searchResult != null) {
-            System.out.println("========== create Campaign: " + user);
             List<String> statesUserRepresent = getStatesListLoginUserRepresent(user);
             Campaign newCampaign = new Campaign();
             String criteria = "";
@@ -551,7 +550,7 @@ public class CustomerSearchController implements Serializable {
             return true;
         } else {
             if (statesUserRepresent.isEmpty()) {
-                return true;
+                return false;
             } else {
                 if (statesUserRepresent.contains(customerSearchCriteria.getState())) {
                     return true;

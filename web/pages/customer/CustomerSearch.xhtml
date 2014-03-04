@@ -16,7 +16,7 @@
                     <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
                 </h:panelGroup>
                 <h:panelGroup>
-                    <h:commandButton action="#{customerDetailBean.prepareCreate}" value="#{bundleCrm.CreateCustomerButton}"/>
+                    <h:commandButton id="createcustomer" action="#{customerDetailBean.prepareCreate}" value="#{bundleCrm.CreateCustomerButton}"/>
                 </h:panelGroup>
                 <rich:collapsiblePanel header="Search Customer">
                     <h:panelGrid columns="4" width="100%">
@@ -36,7 +36,7 @@
 
                         <h:outputLabel value="#{bundleCrm.SearchCustomerByStatus}" for="status"/>
                         <h:panelGroup>
-                            <h:selectOneMenu value="#{customerSearchBean.customerSearchCriteria.statusOperator}">
+                            <h:selectOneMenu id="statusoperator" value="#{customerSearchBean.customerSearchCriteria.statusOperator}">
                                 <f:selectItems value="#{customerSearchBean.statusOperators}" var="statusOperator" itemLabel="#{statusOperator}" itemValue="#{statusOperator}"/>
                             </h:selectOneMenu><h:outputText  value="&#160;&#160;&#160;" />
                             <h:selectOneMenu  id="status" value="#{customerSearchBean.customerSearchCriteria.status}">

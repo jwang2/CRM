@@ -30,7 +30,6 @@ public class AddressFacade extends AbstractFacade<Address> {
     public Address getAddress(final String address1, final String zipcode) {
         String queryStr = "select * from address where address1 = '" + address1 + "' and zip_code = '" + zipcode + "'";
         try {
-            //System.out.println("============ sql: " + queryStr);
             Address result = (Address)em.createNativeQuery(queryStr, Address.class).getSingleResult();
             return result;
         } catch (Exception e) {

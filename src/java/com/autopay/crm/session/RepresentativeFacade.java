@@ -58,7 +58,9 @@ public class RepresentativeFacade extends AbstractFacade<Representative> {
             List<String> result = new ArrayList<String>();
             if (reps != null && !reps.isEmpty()) {
                 for (Representative rep : reps) {
-                    result.add(rep.getUsername() + " (" + rep.getFirstName() + " " + rep.getLastName() + ")");
+                    if (!result.contains(rep.getUsername() + " (" + rep.getFirstName() + " " + rep.getLastName() + ")")) {
+                        result.add(rep.getUsername() + " (" + rep.getFirstName() + " " + rep.getLastName() + ")");
+                    }
                 }
             }
             return result;

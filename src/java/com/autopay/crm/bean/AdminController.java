@@ -491,7 +491,6 @@ public class AdminController implements Serializable {
     }
 
     public void prepareRegionDetail(final Region region) {
-        System.out.println("######## prepareRegionDetail: " + region.getName());
         setCurrentRegion(region);
         origRegionName = region.getName();
         statesForRegion = new ArrayList<String>();

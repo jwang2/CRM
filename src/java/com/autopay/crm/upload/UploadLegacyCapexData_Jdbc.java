@@ -151,8 +151,8 @@ public class UploadLegacyCapexData_Jdbc {
             model.setContactAddressUpdateDate(data.get(48).trim().equalsIgnoreCase(NULL_VALUE) ? null : data.get(48).trim());
 
         } else {
-            System.out.println("@@@@@@@@@@@@@@@@@@@@ size: " + data.size());
-            System.out.println("#############################\n" + data.toString());
+            System.out.println("@@@@ size: " + data.size());
+            System.out.println("####\n" + data.toString());
         }
     }
 

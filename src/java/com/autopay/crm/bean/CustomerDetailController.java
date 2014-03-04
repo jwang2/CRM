@@ -1373,7 +1373,6 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void prepareScheduleDetail(final Schedules schedule) {
-        System.out.println("======== prepareScheduleDetail......");
         setCurrentSchedule(schedule);
         for (Task task : schedule.getTaskCollection()) {
             setCurrentTask(task);
@@ -1423,7 +1422,6 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void prepareNewSchedule() {
-        System.out.println("========= prepareNewSchedule.....");
         Schedules newSchedule = new Schedules();
         newSchedule.setScheduledDatetime(new Date());
         setCurrentSchedule(newSchedule);
@@ -1433,7 +1431,6 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void performDeleteSchedule() {
-        System.out.println("====== performDeleteSchedule....");
         ejbSchedule.remove(currentSchedule);
         current.getSchedulesCollection().remove(currentSchedule);
         sendEmailNotificationForDeletedSchedule(currentSchedule, currentTask);
@@ -1512,7 +1509,6 @@ public class CustomerDetailController implements Serializable {
     }
 
     public String performScheduleDone(final Schedules schedule) {
-        System.out.println("========== perform schedule done...." + (schedule == null ? null : schedule.getId()));
         if (schedule != null) {
             schedule.setFinishedDatetime(new Date());
             schedule.setStatus(CrmConstants.ScheduleStatus.DONE.name());
@@ -1522,7 +1518,6 @@ public class CustomerDetailController implements Serializable {
     }
 
     public void performScheduleAction(final String userName, final boolean newSchedule) {
-        System.out.println("========== performScheduleAction.....");
         if (newSchedule) {
             currentSchedule.setCustomerId(current);
             currentTask.setSchedulesId(currentSchedule);
