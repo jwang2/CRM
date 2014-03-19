@@ -51,7 +51,7 @@ public class FileUploadController implements Serializable {
     private byte[] fileToUpload;
     private Date uploadFileDate;
     private boolean needShowPopup;
-    
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FileUploadController.class);
     @EJB
     private CustomerFacade ejbCustomer;
     @EJB
@@ -231,7 +231,7 @@ public class FileUploadController implements Serializable {
 //                }
             }
             long end = System.currentTimeMillis();
-            System.out.println("==== total spent ==== " + (end-start));
+            log.info("==== total spent ==== " + (end-start));
         }
     }
     
@@ -317,7 +317,7 @@ public class FileUploadController implements Serializable {
         if (dealer != null && fico != null) {
             newLead = new Lead();
         } else {
-            System.out.println("==== failed to add lead : " + dataModel.toString());
+            log.info("==== failed to add lead : " + dataModel.toString());
         }
         if (newLead != null) {
             newLead.setTotalFinanced(dataModel.getTotalFinanced());
@@ -351,7 +351,7 @@ public class FileUploadController implements Serializable {
     
     private List<ExcelRowDataModel> createExcelRowDataModel(final List<String[]> dataList) {
         List<ExcelRowDataModel> result = new ArrayList<ExcelRowDataModel>();
-        System.out.println("\n\n====total====: " + dataList.size() + "\n\n\n");
+        log.info("\n\n====total====: " + dataList.size() + "\n\n\n");
         for (String[] rowData : dataList) {
             ExcelRowDataModel dataModel = new ExcelRowDataModel(rowData[0].trim(),
                     rowData[1].trim(),

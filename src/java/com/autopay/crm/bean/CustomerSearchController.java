@@ -122,12 +122,12 @@ public class CustomerSearchController implements Serializable {
 
     public String search() {
         try {
-            System.out.println(customerSearchCriteria.toString());
+            log.info(customerSearchCriteria.toString());
             long start = System.currentTimeMillis();
             recreateModel();
             pagination = null;
             searchResult = getFacade().getCustomersBySearchCriterias(customerSearchCriteria);
-            System.out.println("#### search time: " + (System.currentTimeMillis() - start));
+            log.info("#### search time: " + (System.currentTimeMillis() - start));
             if (searchResult != null) {
                 searchResult_backup = new ArrayList<Customer>(searchResult);
             }
@@ -144,7 +144,7 @@ public class CustomerSearchController implements Serializable {
     }
 
     public String searchAgain() {
-        System.out.println("==== searchAgain: " + searchByName);
+        log.info("==== searchAgain: " + searchByName);
         if (searchByName != null && searchResult != null) {
             recreateModel();
             pagination = null;

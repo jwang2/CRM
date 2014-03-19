@@ -71,7 +71,7 @@ public class CustomerContactFacade extends AbstractFacade<CustomerContact> {
         }
     }
 //    public void deleteCustomerContact(final CustomerContact contact) {
-//        System.out.println("############ deleteCustomerContact: " + contact);
+//        log.info("############ deleteCustomerContact: " + contact);
 //        if (contact.getAddressId() != null) {
 //            if (contact.getAddressId().getCustomerId() == null) {
 //                String queryStr = "select id from " + CustomerContact.class.getName() + " where address_id = " + contact.getAddressId().getId();
@@ -83,18 +83,18 @@ public class CustomerContactFacade extends AbstractFacade<CustomerContact> {
 //                        Address a = em.find(Address.class, contact.getAddressId().getId());
 //                        em.remove(a);
 //                    }
-//                    System.out.println("00000000000000000");
+//                    log.info("00000000000000000");
 //                } catch (Exception e) {
 //                    log.error(e);
 //                }
 //            }
-//            System.out.println("11111111111111111111");
+//            log.info("11111111111111111111");
 //        } 
 //        try {
 //            //em.remove(em.contains(contact) ? contact : em.merge(contact));
 //            CustomerContact cc = em.find(CustomerContact.class, contact.getId());
 //            em.remove(cc);
-//            System.out.println("22222222222222222222");
+//            log.info("22222222222222222222");
 //        } catch (Exception e) {
 //            log.error(e);
 //        }

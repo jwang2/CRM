@@ -196,7 +196,7 @@ public class LeadFacade extends AbstractFacade<Lead> {
         }
         try {
             if (queryStr.trim().length() > 0) {
-                System.out.println("==== search sql: \n" + queryStr);
+                log.info("==== search sql: \n" + queryStr);
                 List<Lead> result = (List<Lead>) em.createNativeQuery(queryStr, Lead.class).getResultList();
                 return result;
             } else {

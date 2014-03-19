@@ -185,7 +185,7 @@ public class CampaignSearchController implements Serializable {
     public String search() {
         try {
             recreateModel();
-            System.out.println("==== campaign search criteria: " + campaignSearchCriteria.toString());
+            log.info("==== campaign search criteria: " + campaignSearchCriteria.toString());
             searchResult = ejbCampaign.getCampaignsBySearchCriterias(campaignSearchCriteria);
             if (searchResult == null || searchResult.isEmpty()) {
                 setNoCampaignFound(true);

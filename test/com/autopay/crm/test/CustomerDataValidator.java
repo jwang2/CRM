@@ -50,7 +50,6 @@ public class CustomerDataValidator {
     //
      @Test
      public void checkDuplicatedCustomer() {
-         System.out.println("===== start");
          Connection conn = getDBConnection();
          String sql = "select a.* from address a inner join (select address1, zip_code from address group by address1, zip_code having count(*) > 1) b on a.address1 = b.address1 and a.zip_code = b.zip_code where a.address1 <> \"\" order by a.address1";
          PreparedStatement ps = null;

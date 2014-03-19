@@ -43,7 +43,7 @@ import org.jboss.ws.api.annotation.WebContext;
 @Stateless()
 @WebContext(authMethod = "BASIC", transportGuarantee = "CONFIDENTIAL", secureWSDLAccess = true, contextRoot = "/crmws", urlPattern = "/crmws")
 public class CustomerService {
-
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CustomerService.class);
     @EJB
     private CustomerFacade customerFacade;
     @EJB
@@ -648,8 +648,8 @@ public class CustomerService {
     public void updateUser(@WebParam(name = "user") UserObj user) throws Exception {
         if (user != null && user.getUserName() != null) {
             Users existUser = usersFacade.findUser(user.getUserName());
-            System.out.println("#### updateUser: " + user.getUserName() + ", " + user.getStatus());
-            System.out.println("#### existUser : " + existUser);
+            log.info("#### updateUser: " + user.getUserName() + ", " + user.getStatus());
+            log.info("#### existUser : " + existUser);
             if (existUser != null) {
                 if (user.getFirstName() != null && user.getFirstName().trim().length() > 0) {
                     existUser.setFirstName(user.getFirstName());

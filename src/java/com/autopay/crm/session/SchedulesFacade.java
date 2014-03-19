@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -19,6 +20,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class SchedulesFacade extends AbstractFacade<Schedules> {
+    private static Logger log = Logger.getLogger(SchedulesFacade.class);
     @PersistenceContext(unitName = "CRMPU")
     private EntityManager em;
 
@@ -34,7 +36,7 @@ public class SchedulesFacade extends AbstractFacade<Schedules> {
     public List<Schedules> getUserNotCompletedScheduledTasks(final String userName) {
         String queryStr = "select * from schedules where status <> '" + CrmConstants.ScheduleStatus.DONE.name() + "' and assigned_user = '" + userName + "'";
         try {
-            System.out.println("==== sql: " + queryStr);
+            log.info("==== sql: " + queryStr);
             List<Schedules> result = (List<Schedules>)em.createNativeQuery(queryStr, Schedules.class).getResultList();
             return result;
         } catch (Exception e) {
@@ -45,7 +47,7 @@ public class SchedulesFacade extends AbstractFacade<Schedules> {
     public List<Schedules> getScheduledTasksByDate(final Date date) {
         String queryStr = "select * from schedules where status <> '" + CrmConstants.ScheduleStatus.DONE.name() + "' and scheduled_datetime = '" + CrmUtils.getDateString(date, "yyyy-MM-dd") + "'";
         try {
-            System.out.println("==== sql: " + queryStr);
+            log.info("==== sql: " + queryStr);
             List<Schedules> result = (List<Schedules>)em.createNativeQuery(queryStr, Schedules.class).getResultList();
             return result;
         } catch (Exception e) {

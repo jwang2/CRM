@@ -98,7 +98,6 @@ public class DashboardController implements Serializable {
 
     public String getCurrentViewPageID() {
         String currentViewID = FacesContext.getCurrentInstance().getViewRoot().getViewId();
-        System.out.println("===== currentViewID : " + currentViewID);
         return currentViewID;
     }
 

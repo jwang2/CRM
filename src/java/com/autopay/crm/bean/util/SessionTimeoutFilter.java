@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class SessionTimeoutFilter implements Filter {
 
-    private final Logger logger = Logger.getLogger(SessionTimeoutFilter.class);
+    private final Logger log = Logger.getLogger(SessionTimeoutFilter.class);
     private String startPage = "/CRM/";
     private String timeoutPage = "public/welcome.xhtml";
     private static final String pushServletURLMapping = "__richfaces_push"; 
@@ -82,7 +82,7 @@ public class SessionTimeoutFilter implements Filter {
                     // if the difference between now and lastAccessed is >= the maxActiveInterval, invalidate the session  
                     if (secondsDifference >= sessionMaxActiveInterval.longValue() == true)  
                     {  
-                        logger.info("timeout reached, invalidating session: " + sessionId);  
+                        log.info("timeout reached, invalidating session: " + sessionId);  
                         session.invalidate();  
                     }                  
                 }  
@@ -105,35 +105,35 @@ public class SessionTimeoutFilter implements Filter {
 
     private boolean isSessionControlRequiredForThisResource(HttpServletRequest httpServletRequest) {
         String requestPath = httpServletRequest.getRequestURI();
-        System.out.println("======= requestPath: " + requestPath);
+        log.info("======= requestPath: " + requestPath);
         boolean controlRequired = requestPath.equals(getStartPage());
         if (controlRequired) {
             return false;
         }
         controlRequired = !StringUtils.contains(requestPath, getTimeoutPage());
-        System.out.println("=========== controlRequired: " + controlRequired);
+        log.info("=========== controlRequired: " + controlRequired);
         return controlRequired;
     }
 
     private boolean isSessionInvalid(HttpServletRequest httpServletRequest) {
-//        System.out.println("!!!!!!!!!!!!!111 : " + httpServletRequest.getRequestedSessionId());
-//        System.out.println("!!!!!!!!!!!!!222 : " + httpServletRequest.isRequestedSessionIdValid());
+//        log.info("!!!!!!!!!!!!!111 : " + httpServletRequest.getRequestedSessionId());
+//        log.info("!!!!!!!!!!!!!222 : " + httpServletRequest.isRequestedSessionIdValid());
 //        String requestPath = httpServletRequest.getRequestURI();
-//        System.out.println("======= requestPath: " + requestPath);
+//        log.info("======= requestPath: " + requestPath);
 //        boolean controlRequired = StringUtils.contains(requestPath, getTimeoutPage());
-//        System.out.println("======== controlRequired: " + controlRequired);
+//        log.info("======== controlRequired: " + controlRequired);
 //        if (!controlRequired) {
 //            return false;
 //        }
         boolean sessionInValid = (httpServletRequest.getRequestedSessionId() != null)
                 && !httpServletRequest.isRequestedSessionIdValid();
-        System.out.println("############## sessionInvalid: " + sessionInValid);
+        log.info("############## sessionInvalid: " + sessionInValid);
         return sessionInValid;
     }
 
     @Override
     public void destroy() {
-        logger.info("destroy()");  
+        log.info("destroy()");  
     }
 
     public String getTimeoutPage() {

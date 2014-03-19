@@ -257,7 +257,7 @@ public class LoginBean implements Serializable {
 
     private void init() {
         retrivedUser = ejbFacade.findUser(userName); //this.user.getUsername());
-        System.out.println("===== retrivedUser: " + retrivedUser);
+        log.info("===== retrivedUser: " + retrivedUser);
         if (retrivedUser != null) {
             user.setCompanyId(retrivedUser.getCompanyId());
             user.setFirstName(retrivedUser.getFirstName());
