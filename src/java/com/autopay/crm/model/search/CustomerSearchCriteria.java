@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @author Judy
  */
 public final class CustomerSearchCriteria implements Serializable{
+    private String id;
     private String name;
     private String type;
     private String status;
@@ -27,10 +28,11 @@ public final class CustomerSearchCriteria implements Serializable{
         
     }
     
-    public CustomerSearchCriteria(final String name, final String type, final String status, 
+    public CustomerSearchCriteria(final String id, final String name, final String type, final String status, 
             final String phone, final String city, final String county, final String state, final String zipcode,
             final Integer totalFinanced, final String totalFinancedOperator, final int totalLoan, final String totalLoanOperator, 
             final String statusOperator, final String representative) {
+        this.id = id;
         this.name = name;
         this.type = type;
         this.status = status;
@@ -45,6 +47,14 @@ public final class CustomerSearchCriteria implements Serializable{
         this.totalLoanOperator = totalLoanOperator;
         this.statusOperator = statusOperator;
         this.representative = representative;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -178,6 +188,7 @@ public final class CustomerSearchCriteria implements Serializable{
     @Override
     public int hashCode() {
         int hash = 3;
+        hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
         hash = 97 * hash + (this.type != null ? this.type.hashCode() : 0);
         hash = 97 * hash + (this.status != null ? this.status.hashCode() : 0);
@@ -205,6 +216,9 @@ public final class CustomerSearchCriteria implements Serializable{
             return false;
         }
         final CustomerSearchCriteria other = (CustomerSearchCriteria) obj;
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+            return false;
+        }
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
@@ -255,12 +269,13 @@ public final class CustomerSearchCriteria implements Serializable{
 
     @Override
     public String toString() {
-        return "CustomerSearchCriteria{" + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", sortBy=" + sortBy + ", representative=" + representative + '}';
+        return "CustomerSearchCriteria{" + "id=" + id + "name=" + name + ", type=" + type + ", status=" + status + ", phone=" + phone + ", city=" + city + ", county=" + county + ", state=" + state + ", zipcode=" + zipcode + ", totalFinanced=" + totalFinanced + ", totalLoan=" + totalLoan + ", totalFinancedOperator=" + totalFinancedOperator + ", totalLoanOperator=" + totalLoanOperator + ", statusOperator=" + statusOperator + ", sortBy=" + sortBy + ", representative=" + representative + '}';
     }
 
     public boolean isEmptyCriteria() {
         boolean result = true;
-        if ((name != null && name.trim().length() > 0) ||
+        if ((id != null && id.trim().length() > 0) ||
+                (name != null && name.trim().length() > 0) ||
                 (type != null && type.trim().length() > 0) ||
                 (status != null && status.trim().length() > 0) ||
                 (phone != null && phone.trim().length() > 0) ||

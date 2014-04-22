@@ -226,6 +226,39 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             return null;
         }
         String queryStr;
+        Date startDate;
+        Date endDate;
+        Date latestDate = getLatestDataInLeadRecords();
+        if (latestDate != null) {
+            startDate = CrmUtils.convertToFirstDayOfMonth(latestDate);
+            endDate = CrmUtils.converToLastDayOfMonth(latestDate);
+        } else {
+            startDate = CrmUtils.getLastMonthStartDate();
+            endDate = CrmUtils.getLastMonthEndDate();
+        }
+        if (customerSearchCriteria.getId() != null && customerSearchCriteria.getId().trim().length() > 0) {
+            try {
+                queryStr = "select * from customer where id = " + customerSearchCriteria.getId();
+                log.info("==== search sql: \n" + queryStr);
+                long start = System.currentTimeMillis();
+                List<Customer> result = em.createNativeQuery(queryStr, Customer.class).getResultList();
+                log.info("@@@@ sql execution time: " + (System.currentTimeMillis() - start));
+                //fill out some details
+                start = System.currentTimeMillis();
+                getCustomerTotalFinanced(result, startDate, endDate);
+                log.info("@@@@ sql execution time (total fianced): " + (System.currentTimeMillis() - start));
+                start = System.currentTimeMillis();
+                getCustomerCampaignInfo(result);
+                log.info("@@@@ sql execution time (campaign info): " + (System.currentTimeMillis() - start));
+                start = System.currentTimeMillis();
+                getCustomerAddressInfo(result);
+                log.info("@@@@ sql execution time (address info): " + (System.currentTimeMillis() - start));
+                return result;
+            } catch (Exception e) {
+                log.error(e);
+                return null;
+            }
+        }
         boolean joinAddress = false;
         boolean joinLead = false;
         if ((customerSearchCriteria.getCity() != null && customerSearchCriteria.getCity().trim().length() > 0)
@@ -255,16 +288,7 @@ public class CustomerFacade extends AbstractFacade<Customer> {
             }
         }
         String lStr = "";
-        Date startDate;
-        Date endDate;
-        Date latestDate = getLatestDataInLeadRecords();
-        if (latestDate != null) {
-            startDate = CrmUtils.convertToFirstDayOfMonth(latestDate);
-            endDate = CrmUtils.converToLastDayOfMonth(latestDate);
-        } else {
-            startDate = CrmUtils.getLastMonthStartDate();
-            endDate = CrmUtils.getLastMonthEndDate();
-        }
+
         if (joinLead) {
             boolean hasTotalFinanced = false;
             boolean hasTotalLoan = false;

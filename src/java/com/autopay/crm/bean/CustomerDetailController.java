@@ -60,6 +60,7 @@ public class CustomerDetailController implements Serializable {
     private String externalRep;
     private List<String> assignedInReps;
     private List<String> assignedExReps;
+    private Address currentMainAddress;
     //contact related
     private CustomerContact currentContact;
     private CustomerContact currentContact_Orig;
@@ -144,17 +145,19 @@ public class CustomerDetailController implements Serializable {
         setCurrentTab(null);
         return "/pages/customer/CustomerDetail";
     }
-    
+
     private void resetValues() {
         currentRelatedFicos = null;
         currentNonRelatedFicos = null;
         currentDeals = null;
         campaignCustomer = null;
         currentSchedule = null;
+        currentMainAddress = null;
     }
 
     public String prepareCreate() {
         current = new Customer();
+        currentMainAddress = null;
         List<Address> addressCollection = new ArrayList<Address>();
         Address a = new Address();
         a.setPrincipal(true);
@@ -239,12 +242,16 @@ public class CustomerDetailController implements Serializable {
     }
 
     public Address getSelectedMainAddress() {
-        Customer customer = getSelected();
-        Address address = getCustomerMainAddress(customer);
-        if (address == null) {
-            address = new Address();
+        if (currentMainAddress == null) {
+            Customer customer = getSelected();
+            Address address = getCustomerMainAddress(customer);
+            if (address == null) {
+                currentMainAddress = new Address();
+            } else {
+                currentMainAddress = address;
+            }
         }
-        return address;
+        return currentMainAddress;
     }
 
     private Address getCustomerMainAddress(final Customer customer) {
@@ -314,6 +321,7 @@ public class CustomerDetailController implements Serializable {
         if (customer_orig != null) {
             cloneCustomer(current, customer_orig);
         }
+        currentMainAddress = null;
         return "";
     }
 
@@ -322,8 +330,12 @@ public class CustomerDetailController implements Serializable {
         ejbCustomer.create(current);
         Address address = getSelectedMainAddress();
         if (address != null) {
-            address.setUpdateUser(userName);
-            address.setLastUpdated(new Date());
+            address.setCreateUser(userName);
+            if (address.getAddress1().startsWith("P O BOX")) {
+                address.setType(CrmConstants.AddressType.POBOX.name());
+            } else {
+                address.setType(CrmConstants.AddressType.REGULAR.name());
+            }
             address.setCustomerId(current);
             ejbAddress.create(address);
         }
@@ -384,15 +396,32 @@ public class CustomerDetailController implements Serializable {
             ejbCustomer.edit(current);
             Address address = getSelectedMainAddress();
             if (address != null) {
-                address.setUpdateUser(userName);
-                address.setLastUpdated(new Date());
-                ejbAddress.edit(address);
+                if (address.getId() == null) {
+                    if (!isAddressEmpty(address)) {
+                        address.setCreateUser(userName);
+                        address.setDateCreated(new Date());
+                        address.setCustomerId(current);
+                        if (address.getAddress1() != null && address.getAddress1().startsWith("P O BOX")) {
+                            address.setType(CrmConstants.AddressType.POBOX.name());
+                        } else {
+                            address.setType(CrmConstants.AddressType.REGULAR.name());
+                        }
+                        address.setPrincipal(true);
+                        ejbAddress.create(address);
+                        current.getAddressCollection().add(address);
+                    }
+                } else {
+                    address.setUpdateUser(userName);
+                    address.setLastUpdated(new Date());
+                    ejbAddress.edit(address);
+                }
             }
         } catch (Exception e) {
             log.error("Unable to update customer.", e);
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
         }
         customer_orig = null;
+        currentMainAddress = null;
     }
 
     private void cloneCustomer(final Customer newcustomer, final Customer origcustomer) {
@@ -407,15 +436,43 @@ public class CustomerDetailController implements Serializable {
         newcustomer.setCampaignID(origcustomer.getCampaignID());
         Address origaddress = getCustomerMainAddress(origcustomer);
         if (origaddress != null) {
-            Address newaddress = new Address();
-            newaddress.setAddress1(origaddress.getAddress1());
-            newaddress.setCity(origaddress.getCity());
-            newaddress.setState(origaddress.getState());
-            newaddress.setZipCode(origaddress.getZipCode());
-            newaddress.setPrincipal(true);
-            List<Address> addressCollection = new ArrayList<Address>();
-            addressCollection.add(newaddress);
-            newcustomer.setAddressCollection(addressCollection);
+            Address newaddress = getCustomerMainAddress(newcustomer);
+            if (newaddress != null) {
+                newaddress.setAddress1(origaddress.getAddress1());
+                newaddress.setAddress2(origaddress.getAddress2());
+                newaddress.setCity(origaddress.getCity());
+                newaddress.setState(origaddress.getState());
+                newaddress.setZipCode(origaddress.getZipCode());
+                newaddress.setPrincipal(true);
+                newaddress.setCountry(origaddress.getCountry());
+                newaddress.setCounty(origaddress.getCounty());
+                newaddress.setType(origaddress.getType());
+                newaddress.setCreateUser(origaddress.getCreateUser());
+                newaddress.setDateCreated(origaddress.getDateCreated());
+                newaddress.setUpdateUser(origaddress.getUpdateUser());
+                newaddress.setLastUpdated(origaddress.getLastUpdated());
+            } else {
+                if (newcustomer.getAddressCollection() == null) {
+                    newcustomer.setAddressCollection(new ArrayList<Address>());
+                }
+                newaddress = new Address();
+                newaddress.setAddress1(origaddress.getAddress1());
+                newaddress.setAddress2(origaddress.getAddress2());
+                newaddress.setCity(origaddress.getCity());
+                newaddress.setState(origaddress.getState());
+                newaddress.setZipCode(origaddress.getZipCode());
+                newaddress.setPrincipal(true);
+                newaddress.setCountry(origaddress.getCountry());
+                newaddress.setCounty(origaddress.getCounty());
+                newaddress.setType(origaddress.getType());
+                newaddress.setCreateUser(origaddress.getCreateUser());
+                newaddress.setDateCreated(origaddress.getDateCreated());
+                newaddress.setUpdateUser(origaddress.getUpdateUser());
+                newaddress.setLastUpdated(origaddress.getLastUpdated());
+                newaddress.setCustomerId(origaddress.getCustomerId());
+                
+                newcustomer.getAddressCollection().add(newaddress);
+            }
         }
     }
 
@@ -947,6 +1004,24 @@ public class CustomerDetailController implements Serializable {
         }
     }
 
+    public String getPrimaryContactName() {
+        CustomerContact cc = getPrimaryContact(null);
+        if (cc != null) {
+            return (cc.getFirstName() == null ? "" : cc.getFirstName()) + " " + (cc.getLastName() == null ? "" : cc.getLastName());
+        } else {
+            return "";
+        }
+    }
+
+    public String getPrimaryContactPhone() {
+        CustomerContact cc = getPrimaryContact(null);
+        if (cc != null) {
+            return cc.getPrimaryPhone() == null ? (cc.getSecondaryPhone() == null ? "" : cc.getSecondaryPhone()) : cc.getPrimaryPhone();
+        } else {
+            return "";
+        }
+    }
+
     public String getContactAddressStr(final Address address) {
         String result = "";
         if (address != null && !isAddressEmpty(address)) {
@@ -954,7 +1029,7 @@ public class CustomerDetailController implements Serializable {
         }
         return result;
     }
-    
+
     public void validateContactFirstName(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         String firstname = (String) value;
         if (firstname == null || firstname.trim().length() == 0) {
@@ -964,7 +1039,7 @@ public class CustomerDetailController implements Serializable {
             throw new ValidatorException(fm);
         }
     }
-    
+
     public void validateContactLastName(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         String lastname = (String) value;
         if (lastname == null || lastname.trim().length() == 0) {

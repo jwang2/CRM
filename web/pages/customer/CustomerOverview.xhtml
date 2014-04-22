@@ -47,16 +47,33 @@
                     <h:outputLabel value="State:" style=" font-weight: bold" />
                     <h:outputLabel value="#{customerDetailBean.selectedMainAddress.state}"/>
 
-                    <h:outputText value="#{bundle.ViewCustomerLabel_lastUpdated}" style=" font-weight: bold"/>
-                    <h:outputText value="#{customerDetailBean.selected.lastUpdated}" title="#{bundle.ViewCustomerTitle_lastUpdated}">
-                        <!--<f:convertDateTime locale="en_US" type="both" pattern="MM/dd/yyyy HH:mm:ss" timeZone="EDT"/>-->
-                    </h:outputText>
+                    <h:outputLabel value="Main Contact:" style=" font-weight: bold" />
+                    <h:outputLabel value="#{customerDetailBean.primaryContactName}"/>
+
 
                     <h:outputLabel value="External Representative:" style="font-weight: bold"/>
                     <h:outputLabel value="#{customerDetailBean.selected.externalRepresentativesStr}"/>
 
                     <h:outputLabel value="Zipcode:" style=" font-weight: bold" />
                     <h:outputLabel value="#{customerDetailBean.selectedMainAddress.zipCode}"/>
+
+                    <h:outputLabel value="Contact Phone:" style=" font-weight: bold" />
+                    <h:outputLabel value="#{customerDetailBean.primaryContactPhone}"/>
+
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+
+                    <h:outputText value="#{bundle.ViewCustomerLabel_lastUpdated}" style=" font-weight: bold"/>
+                    <h:outputText value="#{customerDetailBean.selected.lastUpdated}" title="#{bundle.ViewCustomerTitle_lastUpdated}">
+                        <!--<f:convertDateTime locale="en_US" type="both" pattern="MM/dd/yyyy HH:mm:ss" timeZone="EDT"/>-->
+                    </h:outputText>
+
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
+                    <h:outputLabel value="" />
 
                     <h:outputLabel value="" />
                     <h:outputLabel value="" />
